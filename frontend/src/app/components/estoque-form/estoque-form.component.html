@@ -1,0 +1,235 @@
+<div class="modal-content">
+    <form #form="ngForm" (ngSubmit)="submit(form)" (keydown.enter)="$event.preventDefault()" class="card card-load mb-0"
+      [ngClass]="{'card-load': loading}">
+    
+        <div class="modal-header">
+            <h4>
+                {{ crud | titlecase }} Estoque
+                <span *ngIf="dados.tipo == 'py'">
+                    <img src="assets/img/py.svg" class="flag" alt="Paraguai">
+                </span>
+                <span *ngIf="dados.tipo == 'usa'">
+                    <img src="assets/img/usa.svg" class="flag" alt="Estados Unidos">
+                </span>
+                <span *ngIf="dados.tipo == 'br'">
+                    <img src="assets/img/br.svg" class="flag" alt="Brasil">
+                </span>
+            </h4>
+            <button type="button" class="close" aria-label="Close" (click)="close()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-sm-5 form-group">
+                    <div class="img-link">
+                        <img class="img-fluid img-circle" style="cursor: pointer; border-radius: 10px; width: 100%; height: 245px;"
+                            [src]="dados.path? dados.path:'/assets/img/sem_foto.jpg'" (click)="openPhotoPicker()">
+                    </div>
+                    <div id="divFile">
+                        <input type="file" id="inputProduto" #inputProduto accept="image/x-png,image/jpeg"
+                        (change)="handleFileInput($event.target.files)" multiple>
+                    </div>
+                </div>
+                <div class="col-sm-7">
+                    <div class="row">
+                        <div class="col-sm-4 form-group">
+                            <label>*Tipo:</label>
+                            <select required class="form-control" name="tipo"
+                                (change)="clearForm()"
+                                [(ngModel)]="dados.tipo" #tipo="ngModel"
+                                [ngClass]="{'is-invalid': !tipo.valid && (tipo.selected || form.submitted)}">
+                                <option value="">--> Selecione</option>
+                                <option value="br">Brasil</option>
+                                <option value="usa">Estados Unidos</option>
+                                <option value="py">Paraguai</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-4 form-group">
+                            <label for="status">*Status:</label>
+                            <select required class="form-control" name="status" [(ngModel)]="dados.status" #status="ngModel"
+                                [ngClass]="{'is-invalid': !status.valid && (status.touched || form.submitted)}">
+                                    <option value="pago">Pago</option>
+                                    <option value="pendente">Enviado</option>
+                                    <option value="ok">Em Estoque</option>
+                                    <option value="vendido">Vendido</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-4 form-group">
+                            <label>*Und:</label>
+                            <input type="number" required class="form-control" name="und"
+                                [(ngModel)]="dados.und" #und="ngModel"
+                                [ngClass]="{'is-invalid': !und.valid && (und.touched || form.submitted)}" />
+                        </div>
+                        <div class="col-sm-12 form-group">
+                            <label>*Nome:</label>
+                            <input type="text" required class="form-control" name="name" [(ngModel)]="dados.name" #name="ngModel"
+                            [ngClass]="{'is-invalid': !name.valid && (name.touched || form.submitted)}" />
+                        </div>
+                        <div class="col-sm-12 form-group">
+                            <label>Descrição:</label>
+                            <input type="text" class="form-control" name="descricao" [(ngModel)]="dados.descricao" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 form-group">
+                    <label for="fornecedor">*Fornecedor:</label>
+                    <div class="input-group">
+                        <input type="text" readonly class="form-control" name="fornecedor" 
+                            [(ngModel)]="dados.fornecedor" #fornecedor="ngModel"/>
+                        
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" (click)="openFornecedores()">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="col-sm-6 form-group">
+                    <label for="fornecedor">*Categoria:</label>
+                    <div class="input-group">
+                        <select required class="form-control" name="categoria_id" [(ngModel)]="dados.categoria_id"
+                            #categoria_id="ngModel"
+                            [ngClass]="{'is-invalid': !categoria_id.valid && (categoria_id.touched || form.submitted)}">
+                            <option value="">Selecione uma categoria</option>
+                            <option *ngFor="let item of categories" [value]="item.id_categoria">{{ item.categoria | titlecase }} / {{ item.subcategoria | titlecase }}</option>
+                        </select>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" (click)="addCategory()">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <mat-tab-group mat-align-tabs="center">
+                    <mat-tab label="Valores da Compra">
+                        <div class="row" *ngIf="dados.tipo !== ''" [@enterAnimation]>
+                            <div class="form-group col-sm-3" *ngIf="dados.tipo == 'py' || dados.tipo == 'usa'">
+                                <label for="valor_site" class="fieldset">Valor Site</label>
+                                <input type="text" class="form-control" id="valor_site" name="valor_site"
+                                    (blur)="calcCompra()" 
+                                    currencyMask [options]="{ prefix: '$ '}"
+                                    [(ngModel)]="dados.valor_site" #valor_site="ngModel">
+                            </div>
+                            <div class="form-group col-sm-3" *ngIf="dados.tipo == 'py' || dados.tipo == 'usa'">
+                                <label for="dolar" class="fieldset">Dolar</label>
+                                <input type="text" class="form-control" id="dolar" name="dolar"
+                                    currencyMask [options]="{ prefix: '$ '}"
+                                    (blur)="calcCompra()" 
+                                    [(ngModel)]="dados.dolar" #dolar="ngModel">
+                            </div>
+                            <div class="form-group col-sm-3">
+                                <label for="total_site" class="fieldset">Total Site</label>
+                                <input type="text" class="form-control" id="total_site" currencyMask name="total_site" 
+                                    (blur)="calcBr()"        
+                                    [(ngModel)]="dados.total_site" #total_site
+                                    [disabled]="dados.tipo == 'py' || dados.tipo == 'usa'">
+                            </div>
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="Valores do Frete">
+                        <div class="row" *ngIf="dados.tipo !== ''" [@enterAnimation]>
+                            <div class="d-flex flex-column ml-2">
+                                <div class="p-1" *ngIf="dados.tipo == 'usa'">
+                                    <label for="frete_mia_pjc" class="fieldset">Frete MIA-PJC</label>
+                                    <input type="text" class="form-control" id="frete_mia_pjc" name="frete_mia_pjc" 
+                                        currencyMask [options]="{ prefix: '$ '}"
+                                        (blur)="calcFreteMiami()" 
+                                        [(ngModel)]="dados.frete_mia_pjc" #frete_mia_pjc="ngModel">
+                                </div>
+                                <div class="p-1" *ngIf="dados.tipo == 'usa'">
+                                    <label for="dolar_frete" class="fieldset">Dolar</label>
+                                    <input type="text" class="form-control" id="dolar_frete" name="dolar_frete"
+                                        currencyMask
+                                        (blur)="calcFreteMiami()"
+                                        [(ngModel)]="dados.dolar_frete" #dolar_frete="ngModel">
+                                </div>
+                                
+                                <div class="p-1" *ngIf="dados.tipo == 'usa'">
+                                    <label for="total_frete_mia_pjc" class="fieldset">Total Frete MIA-PJC</label>
+                                    <input type="text" class="form-control" id="total_frete_mia_pjc" name="total_frete_mia_pjc" 
+                                        currencyMask
+                                        [(ngModel)]="dados.total_frete_mia_pjc" #total_frete_mia_pjc
+                                        [disabled]="dados.tipo == 'usa'">
+                                </div>
+                            </div>
+                            <div class="d-flex flex-column">
+                                <div class="p-1" *ngIf="dados.tipo == 'usa' || dados.tipo == 'py'">
+                                    <label for="frete_pjc_gyn" class="fieldset">Frete PJC-GYN</label>
+                                    <input type="text" class="form-control" id="frete_pjc_gyn" name="frete_pjc_gyn" 
+                                        currencyMask
+                                        (blur)="calcFrete()"
+                                        [(ngModel)]="dados.frete_pjc_gyn" #frete_pjc_gyn>
+                                </div>
+                                
+                                <div class="p-1" *ngIf="dados.tipo == 'usa' || dados.tipo == 'br'">
+                                    <label for="total_frete" class="fieldset">Total Frete</label>
+                                    <input type="text" class="form-control" id="total_frete" name="total_frete"
+                                        currencyMask
+                                        (blur)="calcBr()" 
+                                        [(ngModel)]="dados.total_frete" #total_frete
+                                        [disabled]="dados.tipo == 'usa'">
+                                </div>
+                            </div>
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="Valores totais">
+                        <div class="row" *ngIf="dados.tipo !== ''" [@enterAnimation]>
+                            <div class="form-group col-sm-3">
+                                <label for="preco" class="fieldset">Preço de venda</label>
+                                <input type="text" class="form-control" id="preco" name="preco" 
+                                    currencyMask [(ngModel)]="dados.preco" #preco="ngModel" required>
+                            </div>
+                            <div class="form-group col-sm-4">
+                                <label for="valor_total" class="fieldset text-danger">Valor Total</label>
+                                <input type="text" class="form-control" id="valor_total" name="valor_total" 
+                                    currencyMask 
+                                    [(ngModel)]="dados.valor_total" #valor_total="ngModel"
+                                    disabled required>
+                            </div>
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="Datas" *ngIf="data !== undefined">
+                        <div class="row">
+                            <div class="form-group col-sm-3">
+                                <label for="data_pedido" class="fieldset">Data do Pedido:</label>
+                                <input type="date" class="form-control" id="data_pedido" name="data_pedido"
+                                    [(ngModel)]="dados.data_pedido" #data_pedido="ngModel">
+                            </div>
+                            <div class="form-group col-sm-3">
+                                <label for="data_miami" class="fieldset">Entregue MIAMI:</label>
+                                <input type="date" class="form-control" id="data_miami" name="data_miami"
+                                    [(ngModel)]="dados.data_miami" #data_miami="ngModel">
+                            </div>
+                            <div class="form-group col-sm-3">
+                                <label for="data_pjc" class="fieldset">Entregue PJC:</label>
+                                <input type="date" class="form-control" id="data_pjc" name="data_pjc"
+                                    [(ngModel)]="dados.data_pjc" #data_pjc="ngModel">
+                            </div>
+                            <div class="form-group col-sm-3">
+                                <label for="data_gyn" class="fieldset">Entregue GYN:</label>
+                                <input type="date" class="form-control" id="data_gyn" name="data_gyn"
+                                    [(ngModel)]="dados.data_gyn" #data_gyn="ngModel">
+                            </div>
+                        </div>
+                    </mat-tab>
+                </mat-tab-group>
+            </div>
+        </div>
+    
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="close()">Voltar</button>
+            <button type="submit" class="btn btn-success" [disabled]="loading">
+            <div class="spinner-border text-success" role="status" *ngIf="loading">
+                <span class="sr-only">Loading...</span>
+            </div>
+            <span *ngIf="!loading">Salvar</span>
+            </button>
+        </div>
+        <div class="card-loader" *ngIf="loading"><i class="fas fa-sync-alt anim-rotate"></i></div>
+    </form>
+</div>

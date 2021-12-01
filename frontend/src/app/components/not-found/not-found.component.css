@@ -1,0 +1,90 @@
+.app {
+    background-color: #343A40;
+    overflow-x: hidden;
+    height: 100vh;
+}
+
+.app .row{
+    text-align: center;
+    align-items: center;
+    vertical-align: middle;
+}
+
+.message-box {
+    color: #FFF;
+    font-family: Roboto;
+    font-weight: 300;
+}
+
+.message-box h1 {
+    font-size: 60px;
+    line-height: 46px;
+    margin-bottom: 40px;
+}
+
+.buttons-con .action-link-wrap {
+    margin-top: 40px;
+}
+
+.buttons-con .action-link-wrap a {
+    background: #28A745;
+    padding: 8px 25px;
+    border-radius: 4px;
+    color: #FFF;
+    font-weight: bold;
+    font-size: 14px;
+    transition: all 0.3s linear;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.buttons-con .action-link-wrap a:hover {
+    background: #5A5C6C;
+    color: #fff;
+}
+
+#Polygon-1 , #Polygon-2 , #Polygon-3 , #Polygon-4 , #Polygon-4, #Polygon-5 {
+    animation: float 1s infinite ease-in-out alternate;
+}
+
+#Polygon-2 {
+    animation-delay: .2s; 
+}
+
+#Polygon-3 {
+    animation-delay: .4s; 
+}
+
+#Polygon-4 {
+    animation-delay: .6s; 
+}
+
+#Polygon-5 {
+    animation-delay: .8s; 
+}
+
+h1 {
+    font-weight: normal;
+    color: #dd7732;
+}
+
+@keyframes float {
+    100% {
+      transform: translateY(20px);
+    }
+}
+
+@media (max-width: 450px) {
+    .message-box {
+        position: absolute;
+        top: 20%;
+        text-align: center !important;
+        align-items: center !important;
+        vertical-align: middle !important;
+    }
+    
+    .buttons-con{
+        margin-left: 15px;
+    }
+
+}

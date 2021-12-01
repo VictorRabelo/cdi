@@ -1,0 +1,7 @@
+.nav-item,.brand-link:hover{
+  cursor: pointer;
+}
+
+.nav-treeview{
+  display: none;
+}

@@ -1,0 +1,54 @@
+<div class="modal-content">
+  <div class="card mb-0" [ngClass]="{'card-load': loading}">
+    <div class="modal-header">
+      <h4 class="title-card-header-cutsom">Pesquisar {{ type | titlecase }}</h4>
+      <button type="button" class="close" aria-label="Close" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-sm-4 form-group">
+          <input type="text" name="table_search" class="form-control" [(ngModel)]="term" placeholder="Pesquisar...">
+        </div>
+    
+        <div class="col-sm-3 form-group">
+          <button class="btn btn-primary" (click)="addPessoal()">
+            <i class="fas fa-plus"></i> Cadastrar
+          </button>
+        </div>
+      </div>
+
+      <div class="table-responsive p-0" style="height: 100%;">
+        <table class="table table-head-fixed text-nowrap">
+            <thead>
+                <tr>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Telefone</th>
+                    <th scope="col">Ação</th>
+                </tr>
+            </thead>
+            <tbody *ngFor="let item of dataSource | filter:term">
+                <tr>
+                    <td *ngIf="this.type == 'clientes'">{{ item.name }}</td>
+                    <td *ngIf="this.type == 'fornecedores'">{{ item.fornecedor }}</td>
+                    <td>{{ item.telefone | mask: '(00) 0 0 0000-0000' }}</td>
+                    <td class="text-center" width="10%">
+                      <button type="button" class="btn btn-sm btn-primary" (click)="close(item)">
+                        <i class="fas fa-check"></i>
+                      </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody *ngIf="dataSource == {}">
+                <tr>
+                    <td colspan="10">Não há dados no momento</td>
+                </tr>
+            </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card-loader" *ngIf="loading"><i class="fas fa-sync-alt anim-rotate"></i></div>
+  </div>
+</div>

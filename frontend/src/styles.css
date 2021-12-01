@@ -1,0 +1,89 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body, html{
+    height: 100%;
+    width: 100%;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    scroll-behavior: smooth;
+}
+
+body::-webkit-scrollbar, .modal::-webkit-scrollbar {
+    width: 8px;               /* width of the entire scrollbar */
+}
+
+body::-webkit-scrollbar-track, .modal::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.5);        /* color of the tracking area */
+}
+  
+body::-webkit-scrollbar-thumb, .modal::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.5);      /* color of the scroll thumb */
+    border-radius: 20px;  /* creates padding around scroll thumb */
+}
+
+.mat-tab-body-content::-webkit-scrollbar {
+    height: 8px;               /* width of the entire scrollbar */
+}
+.mat-tab-body-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.5);        /* color of the tracking area */
+}
+.mat-tab-body-content::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.5);      /* color of the scroll thumb */
+    border-radius: 20px;  /* creates padding around scroll thumb */
+}
+
+.link-active i {
+    color: #fff;
+}
+
+.link-active p {
+    color: #fff;
+}
+
+.flag{
+    height: 30px;
+    width: 30px;
+}
+
+.card-load {
+    position: relative;
+    overflow: hidden;
+}    
+
+.card-load .card-loader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    background-color: rgba(256, 256, 256,0.7);
+    z-index: 999;
+}
+
+.card-load .card-loader i {
+    margin: 0 auto;
+    color: #0069d9;
+    font-size: 24px;
+    align-items: center;
+    display: flex;
+}
+
+.anim-rotate {
+    animation: anim-rotate 1s linear infinite;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+   -webkit-appearance: none;
+}
+@keyframes anim-rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

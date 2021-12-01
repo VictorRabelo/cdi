@@ -1,0 +1,77 @@
+.card-body::-webkit-scrollbar {
+    height: 5px;               /* width of the entire scrollbar */
+}
+  
+.card-body::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.5);        /* color of the tracking area */
+}
+  
+.card-body::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.5);      /* color of the scroll thumb */
+    border-radius: 20px;  /* creates padding around scroll thumb */
+}
+
+thead{
+    cursor: pointer;
+}
+
+th, td{
+    text-align: center;
+    align-items: center;
+    vertical-align: middle;
+}
+
+#modal-create, #modal-add{
+    overflow-y: auto;
+}
+
+.produtos{
+    height: 50px;
+    width: 50px;
+}
+
+.produtoSelecionado {
+    height: 60px;
+    width: 60px;
+    margin-top: 25px;
+}
+
+.btn-add-prod{
+    width: 80%;   
+}
+
+.descricao{
+    white-space: pre-wrap;
+}
+
+.flag{
+    height: 30px;
+    width: 30px;
+}
+
+legend {
+    font-size: 12pt;
+    font-weight: bold;
+}
+
+.fieldset {
+    font-size: 10pt;
+}
+
+.custom-file-label::after { content: "Selecionar"; }
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+#table-body-list {
+    cursor: pointer;
+}

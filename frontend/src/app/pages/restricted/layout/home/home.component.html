@@ -1,0 +1,164 @@
+<div class="content-wrapper">
+    <!-- Cabeçalho -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 d-inline">Dashboard / {{ today | date }}</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right"> 
+                        <li class="breadcrumb-item"><p>{{ random }}</p></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-info">
+                        <div class="inner">
+                            <h3 *ngIf="!loadingVendasMes">{{ mes }}</h3>
+                            <h3 *ngIf="loadingVendasMes"><span><div class="spinner-border ml-2 mb-1 text-danger spinner-border-sm" role="status"><span class="sr-only">Loading...</span></div></span></h3>
+                            <p>Vendas do Mês</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-bag"></i>
+                        </div>
+                        <a [routerLink]="['/restricted/vendas']" class="small-box-footer">Mais informação <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-success">
+                        <div class="inner">
+                            <h3 *ngIf="!loadingVendasDia">{{ dia }}</h3>
+                            <h3 *ngIf="loadingVendasDia"><span><div class="spinner-border ml-2 mb-1 text-warning spinner-border-sm" role="status"><span class="sr-only">Loading...</span></div></span></h3>
+                            <p>Vendas do Dia</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-stats-bars"></i>
+                        </div>
+                        <a [routerLink]="['/restricted/vendas']" class="small-box-footer">Mais informação <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-warning">
+                        <div class="inner">
+                            <h3 *ngIf="!loadingVendasTotal">{{ total }}</h3>
+                            <h3 *ngIf="loadingVendasTotal"><span><div class="spinner-border ml-2 mb-1 text-dark spinner-border-sm" role="status"><span class="sr-only">Loading...</span></div></span></h3>
+                            <p>Total de Vendas</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-person-add"></i>
+                        </div>
+                        <a [routerLink]="['/restricted/vendas']" class="small-box-footer">Mais informação <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-danger">
+                        <div class="inner">
+                            <h3 *ngIf="!loadingProdutosEnviados">{{ enviados }}</h3>
+                            <h3 *ngIf="loadingProdutosEnviados"><span><div class="spinner-border ml-2 mb-1 text-white spinner-border-sm" role="status"><span class="sr-only">Loading...</span></div></span></h3>
+                            <p>Produtos Enviados</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-paper-airplane"></i>
+                        </div>
+                        <a [routerLink]="['/restricted/estoque']" class="small-box-footer">Mais informação <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <!-- ./col -->
+            </div>
+
+            <div class="row">
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-danger">
+                        <div class="inner">
+                            <h3 *ngIf="!loadingProdutosPagos">{{ pagos }}</h3>
+                            <h3 *ngIf="loadingProdutosPagos"><span><div class="spinner-border ml-2 mb-1 text-white spinner-border-sm" role="status"><span class="sr-only">Loading...</span></div></span></h3>
+                            <p>Produtos Pago</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-checkmark-round"></i>
+                        </div>
+                        <a [routerLink]="['/restricted/estoque']" class="small-box-footer">Mais informação <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-warning">
+                        <div class="inner">
+                            <h3 *ngIf="!loadingProdutosEstoque">{{ estoque }}</h3>
+                            <h3 *ngIf="loadingProdutosEstoque"><span><div class="spinner-border ml-2 mb-1 text-dark spinner-border-sm" role="status"><span class="sr-only">Loading...</span></div></span></h3>
+                            <p>Produtos em Estoque</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-bag"></i>
+                        </div>
+                        <a [routerLink]="['/restricted/estoque']" class="small-box-footer">Mais informação <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                 
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-success">
+                        <div class="inner">
+                            <h3 *ngIf="!loadingContasReceber">{{ contasReceber }}</h3>
+                            <h3 *ngIf="loadingContasReceber"><span><div class="spinner-border ml-2 mb-1 text-warning spinner-border-sm" role="status"><span class="sr-only">Loading...</span></div></span></h3>
+                            <p>Contas a Receber</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-stats-bars"></i>
+                        </div>
+                        <a [routerLink]="['/restricted/a-receber']" class="small-box-footer">Mais informação <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-info">
+                        <div class="inner">
+                            <h3 *ngIf="!loadingTotalClientes">{{ clientes }}</h3>
+                            <h3 *ngIf="loadingTotalClientes"><span><div class="spinner-border ml-2 mb-1 text-danger spinner-border-sm" role="status"><span class="sr-only">Loading...</span></div></span></h3>
+                            <p>Total de Clientes</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-person-stalker"></i>
+                        </div>
+                        <a [routerLink]="['/restricted/clientes']" class="small-box-footer">Mais informação <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-warning">
+                        <div class="inner">
+                            <h3 *ngIf="!loadingProdutosVendidos">{{ vendidos }}</h3>
+                            <h3 *ngIf="loadingProdutosVendidos"><span><div class="spinner-border ml-2 mb-1 text-dark spinner-border-sm" role="status"><span class="sr-only">Loading...</span></div></span></h3>
+                            <p>Produtos Vendidos</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-bag"></i>
+                        </div>
+                        <a [routerLink]="['/restricted/estoque']" class="small-box-footer">Mais informação <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>

@@ -1,0 +1,69 @@
+.container{
+    overflow-y: auto;
+}
+
+.inputs{
+    float: right;
+}
+
+.fa-clock{
+    color: #2F8BDF;
+}
+
+.fa-search-dollar{
+    color: #D87687;
+}
+
+.lupa{
+    color: #E9AF59;
+}
+
+.fa-hand-holding-usd{
+    color: #36B663;
+}
+
+.text-danger{
+    font-weight: 500;
+}
+
+th, td{
+    text-align: center;
+}
+
+.badge{
+    border-radius: 10px;
+    color: #fff;
+}
+
+.form-control{
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    font-size: 10pt;
+    font-weight: 500;
+}
+
+.form-control:hover{
+    cursor: pointer;
+}
+
+.home{
+    font-size: 35pt;
+    position: relative;
+    top: 22px;
+    right: 10px;
+}
+
+.card{
+    height: 100%;
+}
+
+.badge{
+    font-size: 10pt;
+}
+
+@media (max-width: 480px){
+    .home{
+        top: -15px;
+        left: 2px;
+    }
+}

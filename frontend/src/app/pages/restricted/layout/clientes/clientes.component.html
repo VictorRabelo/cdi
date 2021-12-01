@@ -1,0 +1,81 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Lista de {{ title | titlecase }}</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card" [ngClass]="{'card-load': loading}">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <button type="button" class="btn btn-primary mr-2" (click)="openForm('cadastrar')">
+                                    <i class="fas fa-plus"></i> Novo Cliente
+                                </button>
+                            </div>
+                            <div class="card-tools">
+                                <div class="input-group input-group-sm" style="width: 200px;">
+                                    <input type="text" name="table_search" class="form-control float-right" [(ngModel)]="term" placeholder="Pesquisar...">
+                
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-default">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0" style="height: 100%;">
+                            <table class="table table-head-fixed text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#ID</th>
+                                        <th scope="col">Nome</th>
+                                        <th scope="col">Telefone</th>
+                                        <th scope="col">Ação</th>
+                                    </tr>
+                                </thead>
+                                <tbody *ngFor="let cliente of dados | filter:term">
+                                    <tr>
+                                        <th scope="row">#{{ cliente.id_cliente }}</th>
+                                        <td>{{ cliente.name }}</td>
+                                        <td>{{ cliente.telefone | mask: '(00) 00000-0000' }}</td>
+                                        <td>
+                                            <button class="btn btn-warning btn-sm mr-3" title="Editar" (click)="openForm('alterar', cliente.id_cliente)">
+                                                <i class="nav-icon fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" title="Excluir" (click)="delete(cliente.id_cliente)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody *ngIf="dados.length == 0">
+                                    <tr>
+                                        <td colspan="4">Não há Clientes no momento</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                        <div class="card-loader" *ngIf="loading"><i class="fas fa-sync-alt anim-rotate"></i></div>
+                    </div>
+                  <!-- /.card -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+    <p-toast position="bottom-center" key="bc"></p-toast>
+</div>

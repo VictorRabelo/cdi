@@ -1,0 +1,74 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 d-inline">Relatórios</h1>
+                    <span><img *ngIf="loading" class="spin d-inline ml-3 mb-1" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" /></span>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <!--  
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item active">Dashboard v1</li>
+                        -->
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    <div class="card card-default">
+                        <!-- 
+                        <div class="card-header">
+                          <h3 class="card-title">
+                            <i class="fas fa-bullhorn"></i>
+                            Callouts
+                          </h3>
+                        </div>
+                        /.card-header -->
+                        <div class="card-body">
+                          <div class="callout callout-danger">
+                            <button type="button" (click)="downloadVendas()" class="btn btn-danger">
+                              Relatórios de Vendas 
+                              <i class="ml-2 fas fa-file-download"></i>
+                            </button>
+                          </div>
+                          <div class="callout callout-info">
+                            <button type="button" (click)="downloadEstoque()" class="btn btn-info">
+                              Produtos em Estoque 
+                              <i class="ml-2 fas fa-file-download"></i>
+                            </button>
+                          </div>
+                          <div class="callout callout-warning">
+                            <button type="button" (click)="downloadClientes()" class="btn btn-warning">
+                              Melhores Clientes 
+                              <i class="ml-2 fas fa-file-download"></i>
+                            </button>
+                          </div>
+                          <div class="callout callout-success">
+                            <button type="button" (click)="downloadVendidos()" class="btn btn-success">
+                              Produtos mais Vendidos 
+                              <i class="ml-2 fas fa-file-download"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <!-- /.card-body -->
+                      </div>
+                      <!-- /.card -->
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <p-toast position="bottom-center" key="bc"></p-toast>
+    <!-- /.content -->
+</div>

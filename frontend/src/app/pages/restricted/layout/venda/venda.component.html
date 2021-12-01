@@ -1,0 +1,603 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Vendas / Mês {{ today | date:'MM' }}</h1>
+                </div><!-- /.col -->
+                <div class="col-2 ml-auto">
+                    <select class="form-control d-inline" name="date" [(ngModel)]="date" (change)="rangeDate()">
+                        <option selected value="" *ngIf="date == ''">Aguarde...</option>
+                        <option value="0">Todas</option>
+                        <option value="01">Janeiro</option>
+                        <option value="02">Fevereiro</option>
+                        <option value="03">Março</option>
+                        <option value="04">Abril</option>
+                        <option value="05">Maio</option>
+                        <option value="06">Junho</option>
+                        <option value="07">Julho</option>
+                        <option value="08">Agosto</option>
+                        <option value="09">Setembro</option>
+                        <option value="10">Outubro</option>
+                        <option value="11">Novembro</option>
+                        <option value="12">Dezembro</option>
+                    </select>                     
+                </div>
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row text-right">
+                <div class="col-4 col-md-3">
+                    <label class="text-danger">Total de vendas:</label>
+                    <span class="pl-2">{{ total | currency: 'R$' }}</span>
+                </div>
+                <div class="col-4 col-md-3">
+                    <label class="text-danger">Vendas do mês:</label>
+                    <span class="pl-2">{{ totalMensal | currency: 'R$' }}</span>
+                </div>
+                <div class="col-4 col-md-3 ml-auto">
+                    <label class="text-danger">Recebido:</label>
+                    <span class="pl-2">{{ pago | currency: 'R$' }}</span>
+                </div>
+                <div class="col-4 col-md-3">
+                    <label class="text-danger">Lucro:</label>
+                    <span class="pl-2">{{ lucro | currency: 'R$' }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-create">
+                                    <i class="fas fa-plus" title="Novo Produto"></i>
+                                </button>
+                                <span><img *ngIf="loading" class="spin d-inline ml-3" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" /></span>
+                                <span><div *ngIf="loadingDelete" class="spinner-border ml-2 text-danger spinner-border-sm" role="status"><span class="sr-only">Loading...</span></div></span>
+                            </div>
+                            <div class="card-tools">
+                                <div class="input-group input-group-sm" style="width: 200px;">
+                                    <input type="text" name="table_search" class="form-control float-right" [(ngModel)]="term" placeholder="Pesquisar...">
+                
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-default">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0">
+                            <table class="table hover text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" [appSort]="vendas" data-order="desc" data-name="id_venda">#ID</th>
+                                        <th scope="col">Cliente</th>
+                                        <th scope="col">Vendedor</th>
+                                        <th scope="col">Data da Venda</th>
+                                        <th scope="col" [appSort]="vendas" data-order="desc" data-name="pagamento">Pagamento</th>
+                                        <th scope="col" [appSort]="vendas" data-order="desc" data-name="total_final">Valor Total</th>
+                                        <th scope="col" [appSort]="vendas" data-order="desc" data-name="pago">Pago</th>
+                                        <th scope="col" [appSort]="vendas" data-order="desc" data-name="lucro">Lucro</th>
+                                        <th scope="col" [appSort]="vendas" data-order="desc" data-name="status">Status</th>
+                                        <th scope="col">Ação</th>
+                                    </tr>
+                                </thead>
+                                <tbody *ngFor="let venda of vendas | filter:term">
+                                    <tr>
+                                        <th scope="row">{{ venda.id_venda }}</th>
+                                        <td>{{ venda.name_cliente | titlecase }}</td>
+                                        <td>{{ venda.name_vendedor | titlecase }}</td>
+                                        <td>{{ venda.created_at }}</td>
+                                        <td>{{ venda.pagamento | titlecase }}</td>
+                                        <td>{{ venda.total_final | currency: 'R$' }}</td>
+                                        <td>{{ venda.pago | currency: 'R$' }}</td>
+                                        <td>{{ venda.lucro | currency: 'R$' }}</td>
+                                        <td>
+                                            <div class="d-flex justify-content-center">
+                                                <span class="badge badge-success" *ngIf="venda.status === 'pago' ">Pago</span>
+                                                <span class="badge badge-warning" *ngIf="venda.status === 'pendente' ">Pendente</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-warning btn-sm mx-2" title="Editar" (click)="upProduto(venda.id_venda)">
+                                                <i class="nav-icon fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" title="Excluir" (click)="delete(venda.id_venda)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody *ngIf="vendas == [] ">
+                                    <tr>
+                                        <td colspan="10">Não há Vendas</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                  <!-- /.card -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modals-->
+        <!-- Modal Update-->
+        <div class="modal fade" id="modal-update">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Atualizar Venda</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form [formGroup]="updateForm" (ngSubmit)="onUpdate()" no-validate>
+                        <div class="spinner-border text-primary" role="status" *ngIf="loadingUp">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                        <div class="modal-body" *ngIf="!loadingUp">
+                            <div class="card-body">
+
+                                <div class="form-row">
+                                    <div class="form-group col-sm">
+                                        <label for="clienteUpdate">Cliente</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="clienteUpdate" placeholder="*Cliente" name="clienteUpdate" formControlName="clienteUpdate" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                
+                                <fieldset class="border rounded p-1 mt-1">
+                                    <legend class="w-auto">Lista de Produtos</legend>
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            <div class="card-body table-responsive p-0">
+
+                                                <table class="table text-nowrap">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">#COD</th>
+                                                            <th scope="col">Qtd.</th>
+                                                            <th scope="col">Produto</th>
+                                                            <th scope="col">Valor</th>
+                                                            <th scope="col">Lucro</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody *ngFor="let produto of vendaProdutoDetalhe">
+                                                        <tr>
+                                                            <th scope="row">#{{ produto.produto[0].id_produto }}</th>
+                                                            <td>{{ produto.qtd_venda }}</td>
+                                                            <td>{{ produto.produto[0].name }}</td>
+                                                            <td>{{ produto.preco_venda | currency: 'R$' }}</td>
+                                                            <td>{{ produto.lucro_venda | currency: 'R$' }}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+
+                                <div class="form-row">
+                                    <div class="form-group col-sm">
+                                        <fieldset class="border p-1">
+                                            <legend class="w-auto">Total</legend>
+                                            <div class="d-flex flex-column">
+                                                <div class="p-1">
+                                                    <label for="totalFinalUpdate" class="fieldset">Total final:</label>
+                                                    <input type="text" class="form-control" id="totalFinalUpdate" currencyMask name="totalFinalUpdate" formControlName="totalFinalUpdate" disabled>
+                                                </div>
+                                                <div class="p-1">
+                                                    <label for="pagoUpdate" class="fieldset">*Pago:</label>
+                                                    <input type="text" class="form-control" id="pagoUpdate" currencyMask name="pagoUpdate" formControlName="pagoUpdate">
+                                                </div>
+                                                <div class="p-1">
+                                                    <label for="lucroUpdate" class="fieldset">Lucro:</label>
+                                                    <input type="text" class="form-control" id="lucroUpdate" currencyMask name="lucroUpdate" formControlName="lucroUpdate" disabled>
+                                                </div>
+                                                <div class="p-1">
+                                                    <label for="exampleInputEmail1" class="fieldset">*Pagamento:</label>
+                                                    <select class="custom-select custom-select-sm" formControlName="pagamentoUpdate">
+                                                        <option value="dinheiro">Dinheiro</option>
+                                                        <option value="debito">Cartão de Débito</option>
+                                                        <option value="credito">Cartão de Crédito</option>
+                                                        <option value="pix">Pix</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group col-sm-4">
+                                        <label for="exampleInputEmail1" class="fieldset">*Status:</label>
+                                        <select class="custom-select custom-select-sm" formControlName="statusUpdate">
+                                            <option value="pendente">Pendente</option>
+                                            <option value="pago">Pago</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">
+                                    <p class="d-inline" *ngIf="!loadingUpdate">Atualizar</p>
+                                    <img *ngIf="loadingUpdate" class="spin d-inline" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- /Modal Update-->
+        
+        <!-- Modal Create-->
+        <div class="modal fade" id="modal-create">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Cadastrar Venda</h4>
+                        <button type="button" class="btn btn-primary btn-sm d-inline ml-3" (click)="openCliente()">
+                            <i class="fas fa-plus" title="Novo Cliente"></i>
+                        </button>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form [formGroup]="createForm" (ngSubmit)="onSubmit()" no-validate>
+                        <div class="modal-body">
+                            <div class="card-body">
+                                
+                                <div class="form-row">
+                                    <div class="form-group col-sm">
+                                        <label for="cliente">*Cliente</label>
+                                        <div class="">
+                                            <ng-autocomplete 
+                                                [data]="clientes"
+                                                [searchKeyword]="keywordCliente"
+                                                (selected)='selectEventCliente($event)'
+                                                [itemTemplate]="itemTemplateFornecedor"
+                                                placeholder="*Nome do Cliente">                                 
+                                            </ng-autocomplete>
+                                            
+                                            <ng-template #itemTemplateFornecedor let-item>
+                                                <a [innerHTML]="item.name+' - '+item.telefone"></a>
+                                            </ng-template>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <fieldset class="border rounded p-1 mt-1">
+                                    <legend class="w-auto">Lista de Produtos</legend>
+                                    <div class="form-row">
+                                        <div class="form-group col-sm">
+                                            <div class="card-body table-responsive p-0">
+
+                                                <table class="table text-nowrap">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">#COD</th>
+                                                            <th scope="col">Qtd.</th>
+                                                            <th scope="col">Produto</th>
+                                                            <th scope="col">Valor</th>
+                                                            <th scope="col">Lucro</th>
+                                                            <th scope="col">Ação</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody *ngFor="let produto of produtosSelecionados">
+                                                        <tr>
+                                                            <th scope="row">#{{ produto.cod_rastreio }}</th>
+                                                            <td>{{ produto.qtdVenda }}</td>
+                                                            <td>{{ produto.name }}</td>
+                                                            <td>{{ produto.precoVenda | currency: 'R$' }}</td>
+                                                            <td>{{ produto.lucroVenda | currency: 'R$' }}</td>
+                                                            <td>
+                                                                <button type="button" class="btn btn-warning btn-sm mx-2" title="Editar" (click)="getProdutoSelecionado(produto)">
+                                                                    <i class="nav-icon fas fa-edit"></i>
+                                                                </button>
+                                                                <button type="button" class="btn btn-danger btn-sm" title="Excluir" (click)="deleteProduto(produto)">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-row text-center">
+                                        <div class="form-group col-sm">
+                                            <button type="button" class="btn btn-primary btn-add-prod mr-auto" (click)="listarProduto()">Adicionar produtos <i class="ml-2 fas fa-plus fa-sm"></i> </button>
+                                        </div>
+                                    </div>
+                                </fieldset>
+
+                                <div class="form-row mt-2">
+                                    <div class="form-group col-sm">
+                                        <fieldset class="border p-1">
+                                            <legend class="w-auto">Total</legend>
+                                            <div class="d-flex flex-column">
+                                                <div class="p-1">
+                                                    <label for="total_final" class="fieldset">Total final:</label>
+                                                    <input type="text" class="form-control" id="total_final" currencyMask name="total_final" formControlName="total_final" disabled>
+                                                </div>
+                                                <div class="p-1">
+                                                    <label for="lucro" class="fieldset">Lucro:</label>
+                                                    <input type="text" class="form-control" id="lucro" name="lucro" currencyMask formControlName="lucro" disabled>
+                                                </div>
+                                                <div class="p-1">
+                                                    <label for="pago" class="fieldset">*Pago:</label>
+                                                    <input type="text" class="form-control" id="pago" name="pago" currencyMask formControlName="pago">
+                                                </div>
+                                                <div class="p-1">
+                                                    <label for="exampleInputEmail1" class="fieldset">*Pagamento:</label>
+                                                    <select class="custom-select custom-select-sm" formControlName="pagamento">
+                                                        <option value="dinheiro">Dinheiro</option>
+                                                        <option value="debito">Cartão de Débito</option>
+                                                        <option value="credito">Cartão de Crédito</option>
+                                                        <option value="pix">Pix</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group col-sm-4">
+                                        <label for="exampleInputEmail1" class="fieldset">*Status:</label>
+                                        <select class="custom-select custom-select-sm" formControlName="status">
+                                            <option value="pendente">Pendente</option>
+                                            <option value="pago">Pago</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group pl-5 col-sm-4">
+                                        <label class="fieldset ml-4">*Caixa:</label>
+                                        <div class="row text-center">
+                                            <div class="custom-control custom-radio col-sm-4">
+                                                <input class="custom-control-input" type="radio" id="geral" formControlName="status_movition" name="status_movition" value="geral">
+                                                <label for="geral" class="custom-control-label">
+                                                    <i class="fas fa-globe"></i>
+                                                </label>
+                                            </div>
+                                            <div class="custom-control custom-radio col-sm-4">
+                                                <input class="custom-control-input" type="radio" id="eletronico" formControlName="status_movition" name="status_movition" value="eletronico">
+                                                <label for="eletronico" class="custom-control-label">
+                                                    <i class="fas fa-mobile-alt"></i>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group col-sm-4">
+                                        <label for="prazo" class="fieldset">A prazo?:</label>
+                                        <input class="form-check-input ml-3" type="checkbox" id="prazo" name="prazo" formControlName="prazo">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">
+                                    <p class="d-inline" *ngIf="!loadingCreate">Cadastrar</p>
+                                    <img *ngIf="loadingCreate" class="spin d-inline" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+                                </button>
+                                <button type="button" class="btn btn-danger btn-sm ml-2" data-dismiss="modal" *ngIf="createClose">&times;</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- /Modal Create-->
+
+        <!-- Modal Add-->
+        <div class="modal fade" id="modal-add">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Lista de Produtos</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row-fluid">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="input-group input-group-sm" style="width: 100%;">
+                                        <input type="text" name="table_search" class="form-control float-right" [(ngModel)]="termProduto" placeholder="Pesquisar...">
+                    
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-default">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body table-responsive p-0">
+                                    <p-progressBar mode="indeterminate" [style]="{'height': '4px'}" *ngIf="progress"></p-progressBar>
+                                    <table class="table text-nowrap">
+                                        <tbody *ngFor="let estoque of estoques | filter:termProduto" id="table-body-list">
+                                            <tr (click)="getProduto(estoque)">
+                                                <th scope="row">#{{ estoque.id_produto }}</th>
+                                                <td><img [src]="estoque.path" class="produtos" alt="Produto"></td>
+                                                <td>{{ estoque.und }}</td>
+                                                <td>{{ estoque.preco | currency: 'R$' }}</td>
+                                                <td>{{ estoque.name }}</td>
+                                                <td>{{ estoque.data_pedido | date: 'dd/MM/yyyy' }}</td>
+                                            </tr>
+                                        </tbody>
+                                        <div class="d-flex justify-content-center py-2">
+                                            <div class="spinner-border text-primary" role="status" *ngIf="loadingProduto">
+                                                <span class="sr-only">Loading...</span>
+                                            </div>
+                                        </div>
+                                    </table>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                          <!-- /.card -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Modal Add-->
+
+        <!-- Modal View-->
+        <div class="modal fade" id="modal-view">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Produto</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-row text-center">
+                            <div class="form-group col-12">
+                                <h5>{{ produto.name }}</h5>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-6 text-center">
+                                <img [src]="produto.path" class="produtoSelecionado" alt="Produto">
+                            </div>
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="form-group col-12">
+                                        <label class="fieldset">Qtd. em Estoque</label>
+                                        <span class="d-block">{{ produto.und }}</span>
+                                    </div>
+                                    <div class="form-group col-12">
+                                        <label class="fieldset">Valor Total:</label>
+                                        <span class="d-block">{{ produto.valor_total | currency: 'R$' }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-4">
+                                <label for="precoVenda" class="fieldset">Preço de Venda</label>
+                                <input type="text" class="form-control" id="precoVenda" name="precoVenda" [(ngModel)]="precoVenda" currencyMask required>
+                            </div>
+                            <div class="form-group col-2">
+                                <label for="qtdVenda" class="fieldset">Qtd.</label>
+                                <input type="number" class="form-control" id="qtdVenda" name="qtdVenda" [(ngModel)]="qtdVenda" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" (click)="setProduto()">Adicionar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Modal View-->
+
+        <!-- Modal View Update-->
+        <div class="modal fade" id="modal-view-update">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Produto</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-row text-center">
+                            <div class="form-group col-12">
+                                <h5>{{ produto.name }}</h5>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-6 text-center">
+                                <img [src]="produto.path" class="produtoSelecionado" alt="Produto">
+                            </div>
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="form-group col-12">
+                                        <label class="fieldset">Qtd. em Estoque</label>
+                                        <span class="d-block">{{ produto.und }}</span>
+                                    </div>
+                                    <div class="form-group col-12">
+                                        <label class="fieldset">Preço Sugerido:</label>
+                                        <span class="d-block">{{ produto.valor_total | currency: 'R$' }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-4">
+                                <label for="precoVendaUpdate" class="fieldset">Preço de Venda</label>
+                                <input type="text" class="form-control" id="precoVendaUpdate" [(ngModel)]="precoVendaUpdate" currencyMask required>
+                            </div>
+                            <div class="form-group col-2">
+                                <label for="qtdVendaUpdate" class="fieldset">Qtd.</label>
+                                <input type="number" class="form-control" id="qtdVendaUpdate" [(ngModel)]="qtdVendaUpdate" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" (click)="putProduto()">Atualizar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Modal View Update-->
+        <!--Modals Cliente-->
+        <div class="modal fade" id="modal-cliente">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Cadastrar Cliente</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form [formGroup]="clienteForm" (ngSubmit)="onSubmitCliente()" no-validate>
+                        <div class="modal-body">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Nome do Cliente" name="nameCliente" formControlName="nameCliente" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" name="telefoneCliente" formControlName="telefoneCliente" mask="(00) 00000-0000" placeholder="(00) 00000-0000" required>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">
+                                    <p class="d-inline" *ngIf="!loadingCliente">Cadastrar</p>
+                                    <img *ngIf="loadingCliente" class="spin d-inline" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- /Modals Cliente -->
+        </div>
+    <!-- /Modals-->
+    <p-toast position="bottom-center" key="bc"></p-toast>
+</div>

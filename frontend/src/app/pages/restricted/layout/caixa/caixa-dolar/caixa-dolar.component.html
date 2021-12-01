@@ -1,0 +1,166 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Caixa Dolar</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <!--  
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item active">Dashboard v1</li>
+                        -->
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row text-right">
+                <div class="col-4 col-md-3 ml-auto">
+                    <label class="text-danger">Média:</label>
+                    <span class="pl-2">{{ media | currency: 'R$' }}</span>
+                </div>
+                <div class="col-4 col-md-3">
+                    <label class="text-danger">Saldo:</label>
+                    <span class="pl-2">{{ saldo | currency: '$' }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                
+                                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-create">
+                                    <i class="fas fa-plus" title="Criar"></i>
+                                </button>
+                                <span><img *ngIf="loading" class="spin d-inline ml-3" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" /></span>
+                            </div>
+                            <div class="card-tools">
+                                <div class="input-group input-group-sm" style="width: 200px;">
+                                    <input type="text" name="table_search" class="form-control float-right" [(ngModel)]="term" placeholder="Pesquisar...">
+                
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-default">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0" style="height: 100%;">
+                            <table class="table table-head-fixed text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Data</th>
+                                        <th scope="col">Valor do Dolar</th>
+                                        <th scope="col">Preço do Dolar</th>
+                                        <th scope="col">Valor Pago</th>
+                                        <th scope="col">Descrição</th>
+                                        <th scope="col">D/C</th>
+                                        <th scope="col">Ação</th>
+                                    </tr>
+                                </thead>
+                                <tbody *ngFor="let dolar of dolars | filter:term">
+                                    <tr>
+                                        <td>{{ dolar.created_at }}</td>
+                                        <td *ngIf="dolar.status === 'saida'" >{{- dolar.montante | currency: '$' }}</td>
+                                        <td *ngIf="dolar.status === 'entrada'" >{{ dolar.montante | currency: '$' }}</td>
+                                        <td>{{ dolar.valor_dolar | currency: 'R$' }}</td>
+                                        <td>{{ dolar.valor_pago | currency: 'R$' }}</td>
+                                        <td>{{ dolar.descricao }}</td>
+                                        <td>
+                                            <div class="d-flex justify-content-center">
+                                                <span class="badge badge-danger" *ngIf="dolar.status === 'saida' ">D</span>
+                                                <span class="badge badge-primary" *ngIf="dolar.status === 'entrada' ">C</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-danger btn-sm" title="Excluir" (click)="delete(dolar.id_dolar)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody *ngIf="dolars == [] ">
+                                    <tr>
+                                        <td colspan="4">Não há nada no Caixa Dolar no momento</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                  <!-- /.card -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--Modals-->
+    
+    <div class="modal fade" id="modal-create">
+        <!--Modals Create-->
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Criar</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form #form="ngForm" (ngSubmit)="onSubmit(form)" (keydown.enter)="$event.preventDefault()" no-validate>
+                    <div class="modal-body">
+                        <div class="card-body">
+                            <div class="form-row">
+                                <div class="form-group col-4">
+                                    <label for="montante">*Montante:</label>
+                                    <input type="text" class="form-control" name="montante" currencyMask [options]="{ prefix: '$ '}" [(ngModel)]="dados.montante" #montante="ngModel">
+                                </div>
+                                <div class="form-group col-4">
+                                    <label for="valor_dolar">*Valor do Dolar:</label>
+                                    <input type="text" class="form-control" name="valor_dolar" currencyMask [(ngModel)]="dados.valor_dolar" #valor_dolar="ngModel" (blur)="soma()" required>
+                                </div>
+                                <div class="form-group col-4">
+                                    <label for="valor_pago">Valor Pago:</label>
+                                    <input type="text" class="form-control" name="valor_pago" currencyMask [(ngModel)]="dados.valor_pago" #valor_pago="ngModel">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-9">
+                                    <label for="descricao" class="fieldset">*Descrição:</label>
+                                    <input type="text" class="form-control" name="descricao" [(ngModel)]="dados.descricao" #descricao="ngModel" required>
+                                </div>
+                                <div class="form-group col-3">
+                                    <label for="status" class="fieldset">*Status:</label>
+                                    <select class="custom-select custom-select-sm" name="status" [(ngModel)]="dados.status" #status="ngModel">
+                                        <option value="entrada">C</option>
+                                        <option value="saida">D</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">
+                                <p class="d-inline" *ngIf="!loadingCreate">Criar</p>
+                                <img *ngIf="loadingCreate" class="spin d-inline" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- /Modals Create -->
+    </div>
+
+    <p-toast position="bottom-center" key="bc"></p-toast>
+</div>

@@ -1,0 +1,129 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <p-progressBar mode="indeterminate" [style]="{'height': '4px'}" *ngIf="progress"></p-progressBar>
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Estoque</h1>
+                </div>
+                <div class="col-2 ml-auto">
+                    <select class="form-control d-inline" name="status" [(ngModel)]="status" (change)="rangeStatus()">
+                        <option value="all">Todos</option>
+                        <option value="ok">Em Estoque</option>
+                        <option value="pendente">Enviado</option>
+                        <option value="vendido">Vendido</option>
+                        <option value="pago">Pago</option>
+                    </select>                     
+                </div>
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-3 col-md-3 ml-auto">
+                    <label class="text-danger">Em Estoque:</label>
+                    <span class="pl-2 text-success">{{ estoque }}</span>
+                </div>
+                <div class="col-3 col-md-3">
+                    <label class="text-danger">Enviados:</label>
+                    <span class="pl-2 text-success">{{ enviados }}</span>
+                </div>
+                <div class="col-3 col-md-3">
+                    <label class="text-danger">Pagos:</label>
+                    <span class="pl-2 text-success">{{ pagos }}</span>
+                </div>
+                <div class="col-3 col-md-3">
+                    <label class="text-danger">Vendidos:</label>
+                    <span class="pl-2 text-success">{{ vendidos }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card" [ngClass]="{'card-load': loading}">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <button class="btn btn-primary btn-sm" (click)="openForm('cadastrar')">
+                                    <i class="fas fa-plus" title="Novo Produto"></i>
+                                </button>
+                            </div>
+                            <div class="card-tools">
+                                <div class="input-group input-group-sm" style="width: 200px;">
+                                    <input type="text" name="table_search" class="form-control float-right" [(ngModel)]="term" placeholder="Pesquisar...">
+                
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-default">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0" style="height: 100%;">
+                            <table class="table table-head-fixed text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" [appSort]="estoques" data-order="desc" data-name="id_produto">#COD.</th>
+                                        <th scope="col">Foto</th>
+                                        <th scope="col">Und.</th>
+                                        <th scope="col" [appSort]="estoques" data-order="desc" data-name="name">Nome</th>
+                                        <th scope="col" [appSort]="estoques" data-order="desc" data-name="valor_total">Custo</th>
+                                        <th scope="col" [appSort]="estoques" data-order="desc" data-name="preco">Preço</th>
+                                        <th scope="col" [appSort]="estoques" data-order="desc" data-name="categoria">Categoria</th>
+                                        <th scope="col" [appSort]="estoques" data-order="desc" data-name="fornecedor">Fornecedor</th>
+                                        <th scope="col" [appSort]="estoques" data-order="desc" data-name="status">Status</th>
+                                        <th scope="col">Ação</th>
+                                    </tr>
+                                </thead>
+                                <tbody *ngFor="let estoque of estoques | filter:term">
+                                    <tr>
+                                        <th scope="row">#{{ estoque.id_produto }}</th>
+                                        <td>
+                                            <img [src]="estoque.path" class="produtos" alt="Produto">
+                                        </td>
+                                        <td>{{ estoque.und }}</td>
+                                        <td>{{ estoque.name }}</td>
+                                        <td>{{ estoque.valor_total | currency: 'R$' }}</td>
+                                        <td>{{ estoque.preco | currency: 'R$' }}</td>
+                                        <td>{{ estoque.categoria }}</td>
+                                        <td>{{ estoque.fornecedor }}</td>
+                                        <td>
+                                            <div class="d-flex justify-content-center">
+                                                <span class="badge badge-success" *ngIf="estoque.status === 'ok' ">Em Estoque</span>
+                                                <span class="badge badge-warning" *ngIf="estoque.status === 'pendente' ">Enviado</span>
+                                                <span class="badge badge-danger" *ngIf="estoque.status === 'vendido' ">Vendido</span>
+                                                <span class="badge badge-primary" *ngIf="estoque.status === 'pago' ">Pago</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-warning btn-sm mx-2" title="Editar" (click)="openForm('alterar', estoque.id_estoque)">
+                                                <i class="nav-icon fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" title="Excluir" (click)="delete(estoque.id_estoque)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody *ngIf="estoques == ''">
+                                    <tr>
+                                        <td colspan="10">Não há Produtos em Estoque</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card-loader" *ngIf="loading"><i class="fas fa-sync-alt anim-rotate"></i></div>
+                    </div>
+                  <!-- /.card -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <p-toast position="bottom-center" key="bc"></p-toast>
+</div>
