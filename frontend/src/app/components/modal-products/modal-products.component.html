@@ -1,0 +1,53 @@
+<div class="modal-content">
+  <div class="card mb-0" [ngClass]="{'card-load': loading}">
+    
+    <div class="modal-header">
+      <h4 class="title-card-header-cutsom">Pesquisar Produtos</h4>
+      <button type="button" class="close" aria-label="Close" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-sm-4 form-group">
+          <input type="text" name="table_search" class="form-control" [(ngModel)]="term" placeholder="Pesquisar...">
+        </div>
+      </div>
+    
+      <div class="table-responsive p-0">
+        <table class="table table-hover text-nowrap">
+          <thead>
+            <tr>
+              <th scope="col">#COD</th>
+              <th scope="col">Foto</th>
+              <th scope="col">Nome</th>
+              <th scope="col">Und.</th>
+              <th scope="col">Preço</th>
+              <th scope="col">Data Pedido</th>
+              <th scope="col">Ação</th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let item of dataSource | filter:term">
+            <tr>
+              <th scope="row">#{{ item.id_produto }}</th>
+              <td>
+                <img [src]="item.path" class="produtos" alt="Produto" />
+              </td>
+              <td>{{ item.name }}</td>
+              <td>{{ item.und }}</td>
+              <td>{{ item.preco | currency: 'R$' }}</td>
+              <td>{{ item.data_pedido | date: 'dd/MM/yyyy' }}</td>
+              <td class="text-center">
+                <button type="button" class="btn btn-sm btn-primary" (click)="openProduct(item)">
+                  <i class="fas fa-check"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card-loader" *ngIf="loading"><i class="fas fa-sync-alt anim-rotate"></i></div>
+    </div>
+  </div>
+</div>

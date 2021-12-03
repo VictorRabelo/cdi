@@ -42,8 +42,9 @@ class FornecedorRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.min' => ':attribute muito pequeno.',
-            'name.required' => 'Necessita de um :attribute.',
+            'fornecedor.min' => ':attribute muito pequeno.',
+            'fornecedor.max' => ':attribute muito grande.',
+            'fornecedor.required' => 'Necessita de um :attribute.',
             'telefone.unique' => 'Número de :attribute já cadastrado!.',
             'telefone.min' => 'Número de :attribute inválido!',
             'telefone.max' => 'Número de :attribute inválido!',
@@ -52,6 +53,6 @@ class FornecedorRequest extends FormRequest
     
     protected function failedValidation(Validator $validator)
     {
-        throw new HttpResponseException(response()->json($validator->errors(), 422));
+        throw new HttpResponseException(response()->json($validator->errors(), 500));
     }
 }

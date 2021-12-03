@@ -44,3 +44,10 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+
+@media (max-width: 450px) {
+    select#status{
+        position: relative;
+        bottom: 36px;
+    }
+}

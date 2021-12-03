@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Cliente;
 use App\Models\User;
 use App\Models\Produto;
-use App\Models\Historico;
+use App\Models\Movition;
 use App\Models\ProdutoVenda;
 
 class Venda extends Model
@@ -26,7 +26,7 @@ class Venda extends Model
         'qtd_produto',
         'restante',
         'status',
-        'caixa',
+        'caixa'
     ];
 
     protected $hidden = [];
@@ -56,8 +56,8 @@ class Venda extends Model
         return $this->belongsToMany(Produto::class, 'produto_venda', 'venda_id', 'produto_id')->orderBy('created_at', 'desc');
     }
 
-    public function historico()
+    public function movition()
     {
-        return $this->hasMany(Historico::class, 'id_historico', 'venda_id');
+        return $this->hasMany(Movition::class, 'id_movition', 'venda_id');
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AuthRequest;
+use App\Http\Requests\Auth\AuthRequest;
 use App\Repositories\Eloquent\Auth\AuthRepository;
 use Illuminate\Http\Request;
 

@@ -11,8 +11,6 @@ use App\Models\Valor;
 use App\Models\Frete;
 use App\Models\ProdutoProduto;
 use App\Models\Fornecedor;
-use App\Models\Historico;
-use Illuminate\Support\Facades\Storage;
 
 class Produto extends Model
 {
@@ -32,32 +30,16 @@ class Produto extends Model
         'name', 
         'descricao', 
         'preco', 
-        'unitario', 
-        'comissao', 
         'valor_total', 
         'tipo', 
-        'tipo_entrega', 
-        'status'
+        'status',
+
     ];
 
     protected $hidden = [];
 
     protected $casts = [];
 
-    public function getPathAttribute()
-    {
-        if (!isset($this->attributes['path'])) {
-            return null;
-        }
-        
-        $path = $this->attributes['path'];
-        
-        if (Storage::disk('public')->exists($path) && isset($this->attributes['path'])) {
-            return Storage::url($path);
-        }
-        return null;
-    }
-    
     public function vendas() {
         return $this->belongsToMany(Venda::class, 'produto_venda', 'venda_id', 'produto_id')->orderBy('created_at', 'desc');
     }
@@ -84,10 +66,5 @@ class Produto extends Model
 
     public function fornecedor() {
         return $this->hasOne(Fornecedor::class, 'id_fornecedor', 'fornecedor_id');
-    }
-
-    public function historico()
-    {
-        return $this->hasMany(Historico::class, 'produto_id', 'id_historico');
     }
 }

@@ -29,7 +29,11 @@ export class APagarComponent extends ControllerBase {
 
   saldo: number = 0;
   
-  constructor(private messageService: MessageService, private despesaService: DespesaService, private formBuilder: FormBuilder) { 
+  constructor(
+    private messageService: MessageService, 
+    private despesaService: DespesaService, 
+    private formBuilder: FormBuilder
+  ) { 
     super();
   }
 

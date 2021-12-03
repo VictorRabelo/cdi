@@ -12,7 +12,7 @@ class Dolar extends Model
     public $timestamps = true;
     
     protected $fillable = [
-        'valor', 'descricao', 'status',
+        'montante', 'valor_pago', 'valor_dolar', 'descricao', 'status',
     ];
 
     protected $hidden = [];

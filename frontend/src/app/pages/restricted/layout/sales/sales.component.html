@@ -1,0 +1,137 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <div class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        
+        <div class="col-sm-6">
+          <h1 class="m-0">Vendas / Mês {{ today | date:'MM' }}</h1>
+        </div>
+        
+        <div class="col-2 ml-auto">
+          <select class="form-control d-inline" name="date" [(ngModel)]="filters.date" (change)="getAll()">
+            <option selected value="" *ngIf="filters.date == ''">Aguarde...</option>
+            <option value="0">Todas</option>
+            <option value="01">Janeiro</option>
+            <option value="02">Fevereiro</option>
+            <option value="03">Março</option>
+            <option value="04">Abril</option>
+            <option value="05">Maio</option>
+            <option value="06">Junho</option>
+            <option value="07">Julho</option>
+            <option value="08">Agosto</option>
+            <option value="09">Setembro</option>
+            <option value="10">Outubro</option>
+            <option value="11">Novembro</option>
+            <option value="12">Dezembro</option>
+          </select>                     
+        </div>
+      </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+  </div>
+  <!-- /.content-header -->
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row text-right">
+              
+        <div class="col-4 col-md-3">
+          <label class="text-danger">Total de vendas:</label>
+          <span class="pl-2">{{ totalVendas | currency: 'R$' }}</span>
+        </div>
+        <div class="col-4 col-md-3">
+          <label class="text-danger">Vendas do mês:</label>
+          <span class="pl-2">{{ totalMensal | currency: 'R$' }}</span>
+        </div>
+        <div class="col-4 col-md-3 ml-auto">
+          <label class="text-danger">Recebido:</label>
+          <span class="pl-2">{{ recebido | currency: 'R$' }}</span>
+        </div>
+        <div class="col-4 col-md-3">
+          <label class="text-danger">Lucro:</label>
+          <span class="pl-2">{{ lucro | currency: 'R$' }}</span>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-12">
+          
+          <div class="card" [ngClass]="{'card-load': loading}">
+            <div class="card-header">
+              <div class="card-title">
+                <button class="btn btn-primary btn-sm" (click)="add()">
+                  <i class="fas fa-plus" title="Novo Produto"></i>
+                </button>
+              </div>
+              <div class="card-tools">
+                <div class="input-group input-group-sm" style="width: 200px;">
+                  <input type="text" name="table_search" class="form-control float-right" [(ngModel)]="term" placeholder="Pesquisar...">
+        
+                  <div class="input-group-append">
+                    <button type="submit" class="btn btn-default">
+                      <i class="fas fa-search"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0">
+              <table class="table table-hover text-nowrap">
+                <thead>
+                  <tr>
+                    <th scope="col">#ID</th>
+                    <th scope="col">Cliente</th>
+                    <th scope="col">Vendedor</th>
+                    <th scope="col">Data da Venda</th>
+                    <th scope="col">Pagamento</th>
+                    <th scope="col">Valor Total</th>
+                    <th scope="col">Pago</th>
+                    <th scope="col">Lucro</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Ação</th>
+                  </tr>
+                </thead>
+                <tbody *ngFor="let item of dataSource | filter:term">
+                  <tr>
+                    <th scope="row">{{ item.id_venda }}</th>
+                    <td>{{ item.name_cliente | titlecase }}</td>
+                    <td>{{ item.name_vendedor | titlecase }}</td>
+                    <td>{{ item.created_at }}</td>
+                    <td>{{ item.pagamento | titlecase }}</td>
+                    <td>{{ item.total_final | currency: 'R$' }}</td>
+                    <td>{{ item.pago | currency: 'R$' }}</td>
+                    <td>{{ item.lucro | currency: 'R$' }}</td>
+                    <td>
+                      <div class="d-flex justify-content-center">
+                        <span class="badge badge-success" *ngIf="item.status === 'pago' ">Pago</span>
+                        <span class="badge badge-warning" *ngIf="item.status === 'pendente' ">Pendente</span>
+                        <span class="badge badge-danger" *ngIf="item.status === 'cancelada' ">Cancelada</span>
+                      </div>
+                    </td>
+                    <td>
+                      <button class="btn btn-warning btn-sm mx-2" title="Editar" (click)="editVenda(item.id_venda)">
+                        <i class="nav-icon fas fa-edit"></i>
+                      </button>
+                      <button class="btn btn-danger btn-sm" title="Excluir" (click)="delete(venda.id_venda)">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+                <tbody *ngIf="dataSource.length == 0">
+                  <tr class="text-center">
+                    <td colspan="10">Não há vendas no momento</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="card-loader" *ngIf="loading"><i class="fas fa-sync-alt anim-rotate"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

@@ -25,7 +25,7 @@ export class AuthenticationService {
    * @param login
    * @param password
    */
-    login(login: string, password: string) {
+    logar(login: string, password: string) {
         return this.http.post<any>(`${environment.apiUrl}/login`, { login, password })
             .pipe(map(resp => {
                 if (resp && resp.token) {

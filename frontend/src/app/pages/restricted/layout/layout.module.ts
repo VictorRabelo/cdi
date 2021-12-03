@@ -3,19 +3,23 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { LayoutRoutingModule } from './layout-routing.module';
+import { ComponentsModule } from '@app/components/components.module';
 import { LayoutComponent } from "./layout.component";
 import { NavTopComponent } from "./nav-top/nav-top.component";
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { HomeComponent } from "./home/home.component";
 import { FooterComponent } from './footer/footer.component';
 
-import { VendaComponent } from './venda/venda.component';
 import { EstoqueComponent } from './estoque/estoque.component';
 import { ClientesComponent } from './clientes/clientes.component';
 import { RelatoriosComponent } from './relatorios/relatorios.component';
 import { FornecedoresComponent } from './fornecedores/fornecedores.component';
 import { CategoriasComponent } from './categorias/categorias.component';
 import { PerfilComponent } from './perfil/perfil.component';
+import { SalesComponent } from './sales/sales.component';
+import { SaleDetalheComponent } from './sales/sale-detalhe/sale-detalhe.component';
+import { SaleFinishComponent } from './sales/sale-detalhe/sale-finish/sale-finish.component';
+import { EntregasComponent } from './entregas/entregas.component';
 
 import { SortDirective } from '@app/directive/sort.directive';
 
@@ -33,8 +37,6 @@ import { CurrencyMaskInputMode, NgxCurrencyModule } from "ngx-currency";
 import { NgxIziToastModule } from 'ngx-izitoast';
 import { DataTablesModule } from 'angular-datatables';
 import { NgbDropdownModule, NgbModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
-import { ComponentsModule } from '@app/components/components.module';
-import { EntregasComponent } from './entregas/entregas.component';
  
 export const customCurrencyMaskConfig = {
     align: "left",
@@ -83,7 +85,9 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     SidebarComponent,
     FooterComponent,
     SortDirective,
-    VendaComponent,
+    SalesComponent,
+    SaleDetalheComponent,
+    SaleFinishComponent,
     EstoqueComponent,
     ClientesComponent,
     RelatoriosComponent,

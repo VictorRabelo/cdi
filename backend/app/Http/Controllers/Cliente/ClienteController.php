@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cliente;
 
 use App\Enums\CodeStatusEnum;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Cliente\ClienteRequest;
 use Illuminate\Http\Request;
 use App\Repositories\Contracts\Cliente\ClienteRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -68,7 +69,7 @@ class ClienteController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(ClienteRequest $request)
     {
         try {
             $dados = $request->all();

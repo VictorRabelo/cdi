@@ -9,10 +9,13 @@
       </div>
 
       <div class="card-body">
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" no-validate>
+        <form #form="ngForm" (ngSubmit)="onSubmit(form)" (keydown.enter)="$event.preventDefault()">
           
           <div class="input-group mb-3">
-            <input type="text" class="form-control" formControlName="login" name="login" placeholder="Login" required>
+            <input type="text" class="form-control" placeholder="Login"
+              name="login" [(ngModel)]="dados.login" #login="ngModel"
+              [ngClass]="{'is-invalid': !login.valid && (login.touched || form.submitted)}" 
+              required />
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-user"></span>
@@ -21,7 +24,10 @@
           </div>
           
           <div class="input-group mb-3">
-            <input type="password" class="form-control" formControlName="password" name="password" placeholder="Senha">
+            <input type="password" class="form-control" placeholder="Senha"
+              name="password" [(ngModel)]="dados.password" #password="ngModel" 
+              [ngClass]="{'is-invalid': !password.valid && (password.touched || form.submitted)}" 
+              required />
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-lock"></span>
@@ -40,8 +46,9 @@
             </div>
           
             <div class="col-4">
-              <button type="submit" class="btn btn-primary btn-block">
-                <p class="d-inline" *ngIf="!loading">Entrar</p>
+              <button type="submit" class="btn btn-primary btn-block" [ngClass]="{'btn-success': loadingOk}">
+                <i class="fas fa-check d-inline" *ngIf="loadingOk && !loading"></i>
+                <p class="d-inline" *ngIf="!loading && !loadingOk">Entrar</p>
                 <img *ngIf="loading" class="spin d-inline" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
               </button>
             </div>

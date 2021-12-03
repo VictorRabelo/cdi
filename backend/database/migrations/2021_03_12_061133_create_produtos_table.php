@@ -20,7 +20,7 @@ class CreateProdutosTable extends Migration
             $table->foreignId('valor_id');
             $table->foreignId('frete_id');
             $table->foreignId('fornecedor_id');
-            $table->string('img');
+            $table->string('img')->nullable();
             $table->string('path');
             $table->string('name');
             $table->string('descricao')->nullable();

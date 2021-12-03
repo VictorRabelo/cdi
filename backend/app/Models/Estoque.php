@@ -13,7 +13,7 @@ class Estoque extends Model
     public $timestamps = false;
     
     protected $fillable = [
-        'produto_id', 'und', 'pct',
+        'produto_id', 'und'
     ];
 
     protected $hidden = [];

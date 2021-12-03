@@ -7,6 +7,6 @@ use Illuminate\Http\Request;
 
 interface VendaRepositoryInterface extends CrudRepositoryInterface
 {
-    public function index();
+    public function index($queryParams);
 
 }

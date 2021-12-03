@@ -1,13 +1,16 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '@app/services/authentication.service';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { MessageService } from 'primeng/api';
 
 declare let $: any;
 
 @Component({
   selector: 'app-nav-top',
   templateUrl: './nav-top.component.html',
-  styleUrls: ['./nav-top.component.css']
+  styleUrls: ['./nav-top.component.css'],
+  providers: [ MessageService ]
 })
 export class NavTopComponent implements OnInit {
 
@@ -15,7 +18,13 @@ export class NavTopComponent implements OnInit {
   screenWidth: any
   background: any;
 
-  constructor(private router: Router, private authenticationService: AuthenticationService) { }
+  constructor(
+    private router: Router, 
+    private authenticationService: AuthenticationService,
+    private spinner: NgxSpinnerService,
+    private messageService: MessageService,
+
+  ) { }
 
   ngOnInit() {
     let body = document.getElementsByTagName('body')[0];
@@ -46,10 +55,16 @@ export class NavTopComponent implements OnInit {
   }
 
   logout() {
+    this.spinner.show();
+    
     this.authenticationService.logout().subscribe(
       (res: any) => {
+        this.spinner.hide();
+
         localStorage.removeItem('currentUser')
         this.router.navigate(['/signin']);
+      },error => {
+        this.messageService.add({key: 'bc', severity:'error', summary: 'Atenção', detail: error});
       }
     );
   }

@@ -1,7 +1,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 
 import { first } from 'rxjs/operators';
 import { MessageService } from 'primeng/api';
@@ -19,20 +19,22 @@ import { NgxIzitoastService } from 'ngx-izitoast';
 })
 export class SigninComponent extends ControllerBase {
 
-  loginForm: FormGroup;
-  loading   = false;
-  submitted = false;
+  loading: boolean  = false;
+  loadingOk: boolean  = false;
+
   returnUrl: string;
   error = '';
   param: string;
 
+  dados: any = {};
+
   constructor(
     public iziToast: NgxIzitoastService, 
-    private title: Title, 
-    private formBuilder: FormBuilder, 
+    private title: Title,
     private messageService: MessageService,
     private router: Router, 
-    private snap: ActivatedRoute
+    private snap: ActivatedRoute,
+    private service: AuthenticationService
   ) {
     super();
 
@@ -41,7 +43,7 @@ export class SigninComponent extends ControllerBase {
       this.param = params['error'];
     });
 
-    if (this.authenticationService.currentUserValue) {
+    if (this.currentUser) {
       this.router.navigate(['/']);
     }
   }
@@ -58,30 +60,23 @@ export class SigninComponent extends ControllerBase {
       });
     }
 
-    this.loginForm = this.formBuilder.group({
-      login: ['', Validators.required],
-      password: ['', Validators.required]
-    });
   }
-
-  get f() { return this.loginForm.controls; }
   
-  onSubmit() {
-    
-    this.submitted = true;
-    
-    if (this.loginForm.invalid) {
-      return;
+  onSubmit(form: NgForm) {
+
+    if (!form.valid) {
+      return false;
     }
     
     this.loading = true;
     
-    this.authenticationService.login(this.f.login.value, this.f.password.value)
+    this.service.logar(this.dados.login, this.dados.password)
       .pipe(first())
       .subscribe(
         data => {
           this.messageService.add({key: 'bc', severity:'success', summary: `Bem - Vindo ${data.name}`, detail: this.getMessage()});
           this.loading = false;
+          this.loadingOk = true;
         },
         error => {
           this.messageService.add({key: 'bc', severity:'error', summary: 'Atenção', detail: error});
@@ -95,28 +90,4 @@ export class SigninComponent extends ControllerBase {
       );
   }
 
-  getMessage(){
-        
-    let d = new Date();
-    let hour = d.getHours();
-    
-    if(hour < 5) {
-        return "Uma Ótima Madrugada";
-    }
-    
-    if(hour < 8) {
-        return "Uma Ótimo Dia";
-    }
-
-    
-    if(hour < 12) {
-        return "Uma Ótimo Dia";
-    }
-
-    if(hour < 18) {
-        return "Uma Ótima Tarde";
-    } else {
-        return "Uma Ótima Noite";
-    }
-  }
 }

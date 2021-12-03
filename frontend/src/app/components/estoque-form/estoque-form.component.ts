@@ -14,6 +14,7 @@ import { FornecedorService } from '@app/services/fornecedor.service';
 import { ModalPessoalComponent } from '../modal-pessoal/modal-pessoal.component';
 import { ClienteFormComponent } from '../cliente-form/cliente-form.component';
 import { ControllerBase } from '@app/controller/controller.base';
+import { NgxIzitoastService } from 'ngx-izitoast';
 
 @Component({
   selector: 'app-estoque-form',
@@ -61,7 +62,8 @@ export class EstoqueFormComponent extends ControllerBase {
     private service: EstoqueService,
     private categoriaService: CategoriaService, 
     private fornecedorService: FornecedorService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private iziToast: NgxIzitoastService,
   ) {
     super();
   }
@@ -121,6 +123,7 @@ export class EstoqueFormComponent extends ControllerBase {
       reader.onload = e => {
         let img =  reader.result as string;
         this.dados.path = this.sanitizer.bypassSecurityTrustResourceUrl(img);
+        this.dados.file = img;
       }
     }
   
@@ -132,9 +135,6 @@ export class EstoqueFormComponent extends ControllerBase {
       (res: any) => {
         this.loading = false;
         this.dados = res;
-        
-        let imgURL = 'data:image/'+ this.getExtensionFileName(this.dados.img) +';base64, '+ this.dados.path;
-        this.dados.path = this.sanitizer.bypassSecurityTrustResourceUrl(imgURL);
       },
       error => {
         console.log(error)
@@ -174,11 +174,20 @@ export class EstoqueFormComponent extends ControllerBase {
 
     this.service.update(this.data, this.dados).subscribe(
       (res: any) => {
-        res.message = "Atualização bem sucedido!"
+        this.iziToast.success({
+          title: 'Sucesso!',
+          message: "Atualização bem sucedido!",
+          position: 'topRight'
+        });
         this.close(res);
       },
       error => {
         this.loading = false;
+        this.iziToast.error({
+          title: 'Atenção!',
+          message: error,
+          position: 'topRight'
+        });
         console.log(error)
       }
     )
@@ -190,6 +199,9 @@ export class EstoqueFormComponent extends ControllerBase {
 
   clearForm(){
     this.dados = {
+      path: this.dados.path? this.dados.path:'/assets/img/sem_foto.jpg',
+      file: this.dados.file? this.dados.file:'',
+      status: 'pago',
       tipo: this.dados.tipo,
       valor_site: 0,
       dolar: 0,

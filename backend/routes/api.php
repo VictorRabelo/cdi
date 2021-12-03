@@ -95,9 +95,7 @@ Route::group(['prefix' =>'/v1'], function() {
     
     Route::group(['prefix' =>'/estoques'], function() {
         
-        Route::get('/','Estoque\EstoqueController@index')->middleware(['auth:api', 'scope:admin']);
-        Route::get('/em-estoque','Estoque\EstoqueController@estoque')->middleware(['auth:api', 'scope:admin']);
-        
+        Route::get('/','Estoque\EstoqueController@index')->middleware(['auth:api', 'scope:admin']);        
         Route::get('/{id}','Estoque\EstoqueController@show')->middleware(['auth:api', 'scope:admin']);
         
         Route::post('/','Estoque\EstoqueController@store')->middleware(['auth:api', 'scope:admin']);

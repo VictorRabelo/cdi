@@ -1,0 +1,88 @@
+<div class="card" [ngClass]="{'card-load': loading}">
+  <div class="card-loader" *ngIf="loading"><i class="fas fa-sync-alt anim-rotate"></i></div>
+
+  <div class="card-header">
+    <h4 class="title-card-header-cutsom">
+      <button type="button" class="btn btn-sm mr-2" [routerLink]="[ '/sales' ]">
+        <i class="fa fa-arrow-left"></i>
+      </button>
+      Detalhes da venda:
+      <span class="badge badge-danger" *ngIf="vendaCurrent.status === 'pago'">{{vendaCurrent.status}}</span>
+      <span class="badge badge-secondary" *ngIf="vendaCurrent.status === 'pendente'">{{vendaCurrent.status}}</span>
+      <span class="badge badge-success" *ngIf="vendaCurrent.status === 'cancelada'">{{vendaCurrent.status}}</span>
+    </h4>
+
+    <div class="card-header-right">
+      <button type="button" class="btn btn-success mr-2" (click)="finishSale()">
+        <i class="fas fa-check"></i> Finalizar
+      </button>
+    </div>
+
+  </div>
+
+  <div class="card-body">
+
+    <div class="row form-group">
+      <div class="col-sm-3 form-group">
+        <span>Cliente:</span>
+        <div class="input-group">
+          <input type="text" readonly class="form-control" [(ngModel)]="vendaCurrent.cliente">
+          <div class="input-group-append">
+            <button class="btn btn-light" (click)="openPessoal()">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-2 form-group">
+        <span>Lucro:</span>
+        <input type="tel" readonly currencyMask class="form-control" [(ngModel)]="vendaCurrent.lucro">
+      </div>
+
+      <div class="col-sm-2 form-group">
+        <span>Total:</span>
+        <input type="tel" readonly currencyMask class="form-control" [(ngModel)]="vendaCurrent.total_final">
+      </div>
+
+    </div>
+
+    <div class="row">
+      <div class="col-sm-4 form-group">
+        <button class="btn btn-primary" (click)="openProducts()">
+          <i class="fas fa-search"></i> Pesquisar Produtos
+        </button>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover text-nowrap">
+        <thead>
+          <th width="5%">#COD</th>
+          <th width="15%" class="text-center">Qtd.</th>
+          <th width="30%">Produto</th>
+          <th width="15%" class="text-right">Valor</th>
+          <th width="20%" class="text-right">Lucro</th>
+          <th width="15%">Ação</th>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of vendaCurrent.itens;">
+            <td width="5%">{{ item.id_produto }}</td>
+            <td width="30%">{{ item.produto | titlecase }}</td>
+            <td width="15%" class="text-center">{{item.quantidade | number}}</td>
+            <td width="15%" class="text-right">{{ item.valor_unitario | currency:'R$' }}</td>
+            <td width="20%" class="text-right">{{ item.total | currency:'R$' }}</td>
+            <td width="15%" class="text-right">
+              <button class="btn btn-sm btn-primary mr-2" (click)="openItem(item)">
+                <i class="fas fa-pen"></i>
+              </button>
+              <button class="btn btn-sm btn-danger" (click)="deleteItemConfirm(item, i)">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

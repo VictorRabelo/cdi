@@ -26,6 +26,10 @@ class DespesaRepository extends AbstractRepository implements DespesaRepositoryI
     public function index()
     {
         $model = Despesa::orderBy('created_at', 'desc')->get();
+        if (!$model) {
+            return ['message' => 'Falha ao processar as despesas!', 'code' => 500];
+        }
+
         $saldo = $this->tools->calcularSaldo($model);
 
         return ['response' => $model, 'saldo' => $saldo];

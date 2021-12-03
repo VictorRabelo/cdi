@@ -15,7 +15,7 @@ export class HttpProgressInterceptor implements HttpInterceptor {
     if (request.reportProgress) {
       // only intercept when the request is configured to report its progress
       return next.handle(request).pipe(
-        tap((event: HttpEvent<any>) => {
+        tap((event: HttpEvent<Object>) => {
           if (event.type === HttpEventType.DownloadProgress) {
             this.status.setProgressBar(true);
           } else if (event.type === HttpEventType.Response) {

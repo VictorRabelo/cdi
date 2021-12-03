@@ -26,11 +26,11 @@ class VendaController extends Controller
         $this->vendaRepository = $vendaRepository;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         try {
-
-            $res = $this->vendaRepository->index();
+            $queryParams = $request->all();
+            $res = $this->vendaRepository->index($queryParams);
 
             if (!$res) {
                 return response()->json(['response' => 'Erro de Servidor'], 500);
@@ -239,8 +239,6 @@ class VendaController extends Controller
             $pago = 0;
             
             $venda = array();
-            $cliente;
-            $vendedor;
 
             foreach ($vendas as $value) {
                 $venda[] = $value->venda;

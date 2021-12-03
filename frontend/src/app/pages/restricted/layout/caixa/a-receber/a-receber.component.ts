@@ -52,7 +52,7 @@ export class AReceberComponent extends ControllerBase {
 
   ngOnInit() {
     this.loading = true;
-    this.getContas();
+    // this.getContas();
     this.getClientes();
 
     this.createForm = this.formBuilder.group({
@@ -69,22 +69,22 @@ export class AReceberComponent extends ControllerBase {
     $("#modal-create").modal('show');
   }
 
-  getContas(){
-    this.sub.sink = this.vendaService.getContas().subscribe((res: any) => {
-      console.log(res)
-      this.contas = res.vendas;
-      this.saldoReceber = res.saldo_receber;
-      this.saldoPago = res.saldo_pago;
-      this.totalRestante = res.total_restante;
-      this.number = res.numero;
-    },
-    error => {
-      console.log(error)
-      this.messageService.add({key: 'bc', severity:'error', summary: 'Erro 500', detail: error});
-      this.loading = false;
-    },
-    () => {this.loading = false});
-  }
+  // getContas(){
+  //   this.sub.sink = this.vendaService.getContas().subscribe((res: any) => {
+  //     console.log(res)
+  //     this.contas = res.vendas;
+  //     this.saldoReceber = res.saldo_receber;
+  //     this.saldoPago = res.saldo_pago;
+  //     this.totalRestante = res.total_restante;
+  //     this.number = res.numero;
+  //   },
+  //   error => {
+  //     console.log(error)
+  //     this.messageService.add({key: 'bc', severity:'error', summary: 'Erro 500', detail: error});
+  //     this.loading = false;
+  //   },
+  //   () => {this.loading = false});
+  // }
 
   getById(id: number) {
 
@@ -121,23 +121,23 @@ export class AReceberComponent extends ControllerBase {
 
     this.loadingCreate = true;
 
-    this.vendaService.updateReceber(this.dados).subscribe(
-      (res: any) => {
-        this.loading = true;
-        this.getContas();
-      },
-      error => {
-        console.log(error)
-        this.messageService.add({key: 'bc', severity:'error', summary: 'Erro 500', detail: error});
-        this.loadingCreate = false;
-      },
-      () => {
-        this.messageService.add({key: 'bc', severity:'success', summary: 'Sucesso', detail: 'Cadastrado com Sucesso!'});
-        this.loadingCreate = false;
-        this.createForm.reset();
-        $("#modal-create").modal('hide');
-      }
-    );
+    // this.vendaService.updateReceber(this.dados).subscribe(
+    //   (res: any) => {
+    //     this.loading = true;
+    //     this.getContas();
+    //   },
+    //   error => {
+    //     console.log(error)
+    //     this.messageService.add({key: 'bc', severity:'error', summary: 'Erro 500', detail: error});
+    //     this.loadingCreate = false;
+    //   },
+    //   () => {
+    //     this.messageService.add({key: 'bc', severity:'success', summary: 'Sucesso', detail: 'Cadastrado com Sucesso!'});
+    //     this.loadingCreate = false;
+    //     this.createForm.reset();
+    //     $("#modal-create").modal('hide');
+    //   }
+    // );
   }
   
   onSubmit(){
@@ -153,23 +153,23 @@ export class AReceberComponent extends ControllerBase {
       pago: this.f.pagoCreate.value
     }
 
-    this.vendaService.updateReceber(store).subscribe(
-      (res: any) => {
-        this.loading = true;
-        this.getContas();
-      },
-      error => {
-        console.log(error)
-        this.messageService.add({key: 'bc', severity:'error', summary: 'Erro 500', detail: error});
-        this.loadingId = false;
-      },
-      () => {
-        this.messageService.add({key: 'bc', severity:'success', summary: 'Sucesso', detail: 'Cadastrado com Sucesso!'});
-        this.loadingId = false;
-        this.createForm.reset();
-        $("#modal-ok").modal('hide');
-      }
-    )
+    // this.vendaService.updateReceber(store).subscribe(
+    //   (res: any) => {
+    //     this.loading = true;
+    //     this.getContas();
+    //   },
+    //   error => {
+    //     console.log(error)
+    //     this.messageService.add({key: 'bc', severity:'error', summary: 'Erro 500', detail: error});
+    //     this.loadingId = false;
+    //   },
+    //   () => {
+    //     this.messageService.add({key: 'bc', severity:'success', summary: 'Sucesso', detail: 'Cadastrado com Sucesso!'});
+    //     this.loadingId = false;
+    //     this.createForm.reset();
+    //     $("#modal-ok").modal('hide');
+    //   }
+    // )
   }
 
   subTotal(){

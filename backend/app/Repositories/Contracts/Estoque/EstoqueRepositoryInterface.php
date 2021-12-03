@@ -7,5 +7,8 @@ use Illuminate\Http\Request;
 
 interface EstoqueRepositoryInterface extends CrudRepositoryInterface
 {
-    //
+    public function index($queryParams);
+    public function getById($id);
+    public function create(Request $request);
+    public function updateEstoque($dados, $id);
 }

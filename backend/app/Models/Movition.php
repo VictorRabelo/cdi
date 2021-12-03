@@ -4,8 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-use App\Models\Venda;
-
 class Movition extends Model
 {
     protected $table = 'movitions';
@@ -25,6 +23,6 @@ class Movition extends Model
 
     public function venda()
     {
-        return $this->hasOne(Venda::class, 'id_venda', 'venda_id');
+        return $this->belongsTo(Venda::class, 'id_venda', 'venda_id');
     }
 }

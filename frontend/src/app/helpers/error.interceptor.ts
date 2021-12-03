@@ -24,11 +24,22 @@ export class ErrorInterceptor implements HttpInterceptor {
       }
       
       if(err.status == 500){
-        this.iziToast.error({
-          title: 'Error!',
-          message: err.error.detailMessage,
-          position: 'topRight'
-        });
+        
+        if(err.error.detailMessage){
+          this.iziToast.error({
+            title: 'Error!',
+            message: err.error.detailMessage,
+            position: 'topRight'
+          });
+        }
+
+        if(err.error.telefone){
+          this.iziToast.error({
+            title: 'Error!',
+            message: err.error.telefone[0],
+            position: 'topRight'
+          });
+        }
       }
 
       if ([401, 403].indexOf(err.error.codeStatus) !== -1) {

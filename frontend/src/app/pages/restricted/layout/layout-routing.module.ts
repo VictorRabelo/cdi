@@ -9,7 +9,8 @@ import { FornecedoresComponent } from './fornecedores/fornecedores.component';
 import { HomeComponent } from './home/home.component';
 import { PerfilComponent } from './perfil/perfil.component';
 import { RelatoriosComponent } from './relatorios/relatorios.component';
-import { VendaComponent } from './venda/venda.component';
+import { SaleDetalheComponent } from './sales/sale-detalhe/sale-detalhe.component';
+import { SalesComponent } from './sales/sales.component';
 
 const routes: Routes = [
   
@@ -19,7 +20,12 @@ const routes: Routes = [
 
   {path: 'perfil', component: PerfilComponent},
 
-  {path: 'vendas', component: VendaComponent},
+  {
+    path: 'vendas', children: [
+      { path: '', component: SalesComponent },
+      { path: ':id', component: SaleDetalheComponent },
+    ]
+  },
       
   {path: 'estoque', component: EstoqueComponent},
 

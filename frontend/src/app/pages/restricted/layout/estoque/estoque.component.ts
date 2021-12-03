@@ -1,22 +1,19 @@
 import { Component } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { ControllerBase } from '@app/controller/controller.base';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { HTTPStatus } from '@app/helpers/httpstatus';
-import { CategoriaService } from '@app/services/categoria.service';
 import { EstoqueService } from '@app/services/estoque.service';
-import { FornecedorService } from '@app/services/fornecedor.service';
+import { DashboardService } from '@app/services/dashboard.service';
+import { EstoqueFormComponent } from '@app/components/estoque-form/estoque-form.component';
 
 import { MessageService } from 'primeng/api';
 
 import { SubSink } from 'subsink';
 
 import 'bootstrap';
-import { EstoqueFormComponent } from '@app/components/estoque-form/estoque-form.component';
-import { DashboardService } from '@app/services/dashboard.service';
+import { NgxIzitoastService } from 'ngx-izitoast';
 declare let $: any;
 
 @Component({
@@ -32,9 +29,9 @@ export class EstoqueComponent extends ControllerBase {
   loading: Boolean = false;
   progress: Boolean = false;
 
-  estoques: any;
+  estoques: any[] = [];
 
-  status: any = 'all';
+  queryParams: any = { status: 'all'};
   term: string;
 
   enviados: number = 0;
@@ -43,12 +40,10 @@ export class EstoqueComponent extends ControllerBase {
   vendidos: number = 0;
 
   constructor(
-    private estoqueService: EstoqueService, 
-    private httpStatus: HTTPStatus, 
-    private messageService: MessageService, 
-    private sanitizer: DomSanitizer, 
+    private estoqueService: EstoqueService,
     private modalCtrl: NgbModal,
     private dashboardService: DashboardService,
+    private iziToast: NgxIzitoastService,
     ) {
     super();
   }
@@ -72,35 +67,21 @@ export class EstoqueComponent extends ControllerBase {
     modalRef.componentInstance.crud = crud;
     modalRef.result.then(res => {
       if(res.message){
-        this.messageService.add({key: 'bc', severity:'success', summary: 'Sucesso', detail: res.message});
+        this.iziToast.success({
+          title: 'Sucesso!',
+          message: res.message,
+          position: 'topRight'
+        });
       }
       this.getStart();
     })
   }
 
-  progressBar(){
-    this.httpStatus.getProgressBar().subscribe((status: boolean) => {
-        if(status) {
-          this.progress = true;
-        }
-        else {
-          this.progress = false;
-        }
-      }
-    );
-  }
-
   getAll(){
-    
-    this.progressBar();
     
     this.sub.sink = this.estoqueService.getAll().subscribe(
       (res: any) => {
-        this.estoques = res.estoque;
-        this.estoques.forEach((valor, chave) => {
-          let imgURL = 'data:image/'+ this.getExtensionFileName(valor.img) +';base64, '+ valor.path;
-          valor.path =  this.sanitizer.bypassSecurityTrustResourceUrl(imgURL);
-        })
+        this.estoques = res;
       },
       error => {
         this.loading = false;
@@ -113,23 +94,10 @@ export class EstoqueComponent extends ControllerBase {
   
   rangeStatus() {
     this.loading = true;
-    this.progressBar();
 
-    if(this.status == 0) {
-      return this.getAll();
-    }
-
-    let req = {
-      status: this.status
-    }
-
-    this.sub.sink = this.estoqueService.getEspecifico(req).subscribe(
+    this.sub.sink = this.estoqueService.getAll(this.queryParams).subscribe(
       (res: any) => {
         this.estoques = res;
-        this.estoques.forEach((valor, chave) => {
-          let imgURL = 'data:image/'+ this.getExtensionFileName(valor.img) +';base64, '+ valor.path;
-          valor.path =  this.sanitizer.bypassSecurityTrustResourceUrl(imgURL);
-        })
       },
       error => {
         this.loading = false;
@@ -186,6 +154,31 @@ export class EstoqueComponent extends ControllerBase {
       console.log(error)
       this.loading = false;
     });
+  }
+
+  delete(id){
+    this.loading = true;
+
+    this.sub.sink = this.estoqueService.delete(id).subscribe(
+      (res: any) => {
+        this.loading = false;
+        this.iziToast.success({
+          title: 'Sucesso!',
+          message: "Deletado com sucesso!",
+          position: 'topRight'
+        });
+        this.getAll();
+      },
+      error => {
+        this.iziToast.error({
+          title: 'Atenção!',
+          message: error,
+          position: 'topRight'
+        });
+        console.log(error)
+        this.loading = false;
+      }
+    );
   }
 
   ngOnDestroy(){

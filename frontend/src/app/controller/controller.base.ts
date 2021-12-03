@@ -59,4 +59,29 @@ export class ControllerBase implements OnInit, AfterContentInit, AfterViewInit, 
         const parts: string[] = img.split(/[\.]/g);
         return parts[parts.length -1];
     }
+
+    getMessage(){
+        
+        let d = new Date();
+        let hour = d.getHours();
+        
+        if(hour < 5) {
+            return "Uma Ótima Madrugada";
+        }
+        
+        if(hour < 8) {
+            return "Uma Ótimo Dia";
+        }
+    
+        
+        if(hour < 12) {
+            return "Uma Ótimo Dia";
+        }
+    
+        if(hour < 18) {
+            return "Uma Ótima Tarde";
+        } else {
+            return "Uma Ótima Noite";
+        }
+    }
 }

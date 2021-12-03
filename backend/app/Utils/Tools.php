@@ -35,15 +35,23 @@ class Tools
         return $total;
     }
 
-    public function parse_file($file, $path, $ext = "png", $file_old = "")
+    public function parse_file($file, $path, $file_old = "")
     {
-        if (!empty($file_old) && Storage::disk('public')->exists($file_old)) {
+
+        if (!empty($file_old) && Storage::disk('public')->exists($file_old)) { //deleta file old
             $this->_deletePhotoIfExists($file_old);
         }
-
+        
         $file = preg_replace('#^data:image/[^;]+;base64,#', '', $file);
+        $ext = $this->getExtensionFileName($file);
         $content = base64_decode($file);
-        $file_name = md5(uniqid(microtime(), true)) . '.' . $ext;
+
+        $file_name = md5(
+            uniqid(
+                microtime(),
+                true
+            )
+        ) .'.'. $ext;
 
         $pathSave = "{$path}/{$file_name}";
         Storage::disk('public')->put($pathSave, $content);
@@ -80,7 +88,7 @@ class Tools
     {
         return preg_replace("/[^0-9]/", "", $str);
     }
-
+    
     public function getPhoneFormattedAttribute($telefone): string
     {
         $phone = $telefone;

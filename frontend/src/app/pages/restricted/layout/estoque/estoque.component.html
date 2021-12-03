@@ -1,20 +1,18 @@
 <!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper">
-    <p-progressBar mode="indeterminate" [style]="{'height': '4px'}" *ngIf="progress"></p-progressBar>
-    <!-- Content Header (Page header) -->
+<div class="content-wrapper">    <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1 class="m-0">Estoque</h1>
                 </div>
-                <div class="col-2 ml-auto">
-                    <select class="form-control d-inline" name="status" [(ngModel)]="status" (change)="rangeStatus()">
+                <div class="col-4 col-sm-2 ml-auto">
+                    <select class="form-control d-inline" id="status" name="status" [(ngModel)]="queryParams.status" (change)="rangeStatus()">
                         <option value="all">Todos</option>
-                        <option value="ok">Em Estoque</option>
-                        <option value="pendente">Enviado</option>
-                        <option value="vendido">Vendido</option>
                         <option value="pago">Pago</option>
+                        <option value="pendente">Enviado</option>
+                        <option value="ok">Em Estoque</option>
+                        <option value="vendido">Vendido</option>
                     </select>                     
                 </div>
             </div><!-- /.row -->
@@ -26,19 +24,19 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-3 col-md-3 ml-auto">
+                <div class="col-sm-3 col-md-3 ml-auto">
                     <label class="text-danger">Em Estoque:</label>
                     <span class="pl-2 text-success">{{ estoque }}</span>
                 </div>
-                <div class="col-3 col-md-3">
+                <div class="col-sm-3 col-md-3">
                     <label class="text-danger">Enviados:</label>
                     <span class="pl-2 text-success">{{ enviados }}</span>
                 </div>
-                <div class="col-3 col-md-3">
+                <div class="col-sm-3 col-md-3">
                     <label class="text-danger">Pagos:</label>
                     <span class="pl-2 text-success">{{ pagos }}</span>
                 </div>
-                <div class="col-3 col-md-3">
+                <div class="col-sm-3 col-md-3">
                     <label class="text-danger">Vendidos:</label>
                     <span class="pl-2 text-success">{{ vendidos }}</span>
                 </div>
@@ -66,7 +64,7 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body table-responsive p-0" style="height: 100%;">
-                            <table class="table table-head-fixed text-nowrap">
+                            <table class="table table-hover text-nowrap">
                                 <thead>
                                     <tr>
                                         <th scope="col" [appSort]="estoques" data-order="desc" data-name="id_produto">#COD.</th>
@@ -111,7 +109,7 @@
                                         </td>
                                     </tr>
                                 </tbody>
-                                <tbody *ngIf="estoques == ''">
+                                <tbody *ngIf="estoques.length == 0">
                                     <tr>
                                         <td colspan="10">Não há Produtos em Estoque</td>
                                     </tr>

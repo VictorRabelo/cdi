@@ -12,6 +12,8 @@ import { ModalPessoalComponent } from './modal-pessoal/modal-pessoal.component';
 import { NgxMaskModule } from 'ngx-mask';
 import { CurrencyMaskInputMode, NgxCurrencyModule } from 'ngx-currency';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
+import { ModalProductsComponent } from './modal-products/modal-products.component';
+import { ModalProductDadosComponent } from './modal-product-dados/modal-product-dados.component';
 
 export const customCurrencyMaskConfig = {
   align: "right",
@@ -33,6 +35,8 @@ export const customCurrencyMaskConfig = {
     ClienteFormComponent,
     EstoqueFormComponent,
     ModalPessoalComponent,
+    ModalProductsComponent,
+    ModalProductDadosComponent
   ],
   imports: [
     CommonModule,
@@ -47,11 +51,15 @@ export const customCurrencyMaskConfig = {
     ClienteFormComponent,
     EstoqueFormComponent,
     ModalPessoalComponent,
+    ModalProductsComponent,
+    ModalProductDadosComponent
   ],
   entryComponents: [
     ClienteFormComponent,
     EstoqueFormComponent,
     ModalPessoalComponent,
+    ModalProductsComponent,
+    ModalProductDadosComponent
   ],
 })
 export class ComponentsModule { }

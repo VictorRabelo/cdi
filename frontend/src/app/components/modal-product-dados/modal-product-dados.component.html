@@ -1,0 +1,58 @@
+<form #form="ngForm" (ngSubmit)="submit(form)" class="card card-load mb-0" [ngClass]="{'card-load': loading}">
+
+  <div class="modal-header">
+    <h4>Adicionar Item</h4>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-sm-3 form-group">
+        <img class="img-fluid img-circle mr-2" style="cursor: pointer; border-radius: 10px; width: 100px"
+        [src]="dados.path">
+      </div>
+      
+      <div class="col-sm-9 form-group">
+        <label>Produto:</label>
+        <input type="text" readonly required class="form-control" name="name" 
+          [(ngModel)]="dados.name" #name="ngModel" />
+      </div>
+
+      <div class="col-sm-3 form-group">
+        <label>Qtd. em estoque:</label>
+        <input type="number" readonly required class="form-control" name="und" 
+          [(ngModel)]="dados.und" #und="ngModel" />
+      </div>
+
+      <div class="col-sm-3 form-group">
+        <label>Valor Total:</label>
+        <input type="text" readonly required currencyMask class="form-control" name="valor_total"
+          [(ngModel)]="dados.valor_total" #valor_total="ngModel" />
+      </div>
+
+      <div class="col-sm-3 form-group">
+        <label>*Preço:</label>
+        <input type="tel" required currencyMask class="form-control" name="preco" 
+          [(ngModel)]="dados.preco" #preco="ngModel"
+          [ngClass]="{'is-invalid': !preco.valid && (preco.touched || form.submitted)}" />
+      </div>
+      <div class="col-sm-3 form-group">
+        <label>*Qtd:</label>
+        <input type="number" required class="form-control" name="qtdProdutos" (func)="calcTotais()"
+          [(ngModel)]="dados.qtdProdutos" #qtdProdutos="ngModel"
+          [ngClass]="{'is-invalid': !qtdProdutos.valid && (qtdProdutos.touched || form.submitted)}" />
+      </div>
+    </div>
+
+  </div>
+  <div class="card-loader" *ngIf="loading"><i class="fas fa-sync-alt anim-rotate"></i></div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" [disabled]="loading" (click)="close()">Voltar</button>
+    <button type="submit" class="btn btn-success" [disabled]="loading">
+      <span>Salvar</span>
+    </button>
+  </div>
+
+</form>
