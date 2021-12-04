@@ -26,10 +26,12 @@ export class ModalProductDadosComponent implements OnInit {
   ngOnInit(): void {
 
     if (this.data) {
-      if (this.data.uuid) {
-        this.getDados(this.data.uuid);
+      if (this.data.id) {
+        this.getDados(this.data.id);
       } else {
         this.dados = this.data;
+        console.log(this.dados);
+        this.dados.preco_venda = this.data;
       }
     }
   }
@@ -45,7 +47,7 @@ export class ModalProductDadosComponent implements OnInit {
 
     if (this.data) {
 
-      if (this.data.uuid) {
+      if (this.data.id) {
         this.update();
       } else {
         this.create();
@@ -60,7 +62,8 @@ export class ModalProductDadosComponent implements OnInit {
 
     this.serviceSale.getItemById(id).subscribe(res => {
       this.dados = res;
-      this.calcTotais();
+      this.dados.preco = res.preco_venda;
+    
     }, error => {
       console.log(error)
       this.message.toastError(error.message);
@@ -71,57 +74,63 @@ export class ModalProductDadosComponent implements OnInit {
   }
 
   create() {
-    let service = this.serviceSale;
     this.loading = true;
+    
+    if(!this.verifica()){
+      this.loading = false;
+      return;
+    }
 
-    service.createItem(this.dados).subscribe(res => {
+    this.dados.preco_venda = this.dados.preco;
+    this.dados.lucro_venda = this.dados.preco - this.dados.valor_total;
+
+    this.serviceSale.createItem(this.dados).subscribe(res => {
       console.log(res);
       this.message.toastSuccess();
       this.close(res);
     }, error => {
       console.log(error)
-      this.message.toastError(error.message);
       this.loading = false;
+      this.message.toastError(error.message);
     }, () => {
       this.loading = false;
     });
   }
 
   update() {
-    let service = this.serviceSale;
     this.loading = true;
 
-    service.updateItem(this.dados.uuid, this.dados).subscribe(res => {
+    if(!this.verifica()){
+      this.loading = false;
+      return;
+    }
+
+    this.dados.preco_venda = this.dados.preco;
+    this.dados.lucro_venda = this.dados.preco - this.dados.valor_total;
+
+    this.serviceSale.updateItem(this.dados.id, this.dados).subscribe(res => {
       console.log(res);
       this.message.toastSuccess('Atualizada com sucesso!');
       this.close(res);
     }, error => {
       console.log(error)
-      this.message.toastError(error.message);
       this.loading = false;
+      this.message.toastError(error.message);
     }, () => {
       this.loading = false;
     });
   }
 
-  calcTotais(type = 0) {
-    let subtotal = parseFloat(this.dados.valor_unitario) * parseFloat(this.dados.quantidade);
-    let p_desconto = parseFloat(this.dados.p_desconto);
-    let desconto = parseFloat(this.dados.desconto);
-    let total = 0;
-
-    if (type == 0) {
-      p_desconto = (desconto / subtotal) * 100;
-      total = subtotal - desconto;
-      this.dados.p_desconto = p_desconto;
-    } else {
-      desconto = (p_desconto / 100) * subtotal;
-      total = subtotal - desconto;
-      this.dados.desconto = desconto;
+  verifica(){
+    if (this.dados.preco == 0 || this.dados.preco < 0) {
+      this.message.toastError('Valor abaixo do permitido!');
+      return false;
+    }
+    if (this.dados.qtd_venda > this.dados.und || this.dados.qtd_venda == 0) {
+      this.message.toastError('Quantidade não permitida!');
+      return false;
     }
 
-    this.dados.subtotal = subtotal;
-    this.dados.total = total;
+    return true;
   }
-
 }

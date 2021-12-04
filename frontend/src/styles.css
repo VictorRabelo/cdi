@@ -47,6 +47,11 @@ body::-webkit-scrollbar-thumb, .modal::-webkit-scrollbar-thumb {
     width: 30px;
 }
 
+.produtos{
+    height: 80px;
+    width: 80px;
+}
+
 .card-load {
     position: relative;
     overflow: hidden;

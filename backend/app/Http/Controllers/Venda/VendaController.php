@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Venda;
 
+use App\Enums\CodeStatusEnum;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -42,272 +43,58 @@ class VendaController extends Controller
             return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
         }
     }
-    
-    public function all()
+
+    public function show($id)
     {
-        try{
-            $vendas = Venda::with('produto', 'cliente', 'vendedor')->orderBy('id_venda', 'desc')->get();
-            $qtdProduto = ProdutoVenda::orderBy('venda_id', 'desc')->get();
+        try {
+            $res = $this->vendaRepository->show($id);
             
-            $lucro = 0;
-            $total = 0;
-            $pago = 0;
-            
-            $venda = [];
-            
-            foreach ($vendas as $key => $value) {
-                if($value['lucro'] == null) {
-                    unset($vendas[$key]);
-                } else {
-                    $value->name_cliente = $value->cliente->name;
-                    $value->name_vendedor = $value->vendedor->name;
-                    $lucro = $value->lucro + $lucro;
-                    $total = $value->total_final + $total;
-                    $pago = $value->pago + $pago;
-                    
-                    array_push($venda, $value);
-                }
-            }
-
-            $qtd_venda = 0;
-            foreach ($qtdProduto as $value) {
-                if($value->qtd_venda == null) {
-                    unset($vendas[$key]);
-                } else {
-                    $qtd_venda = $value->qtd_venda + $qtd_venda;
-                }
+            if (!$res) {
+                return response()->json(['message' => 'Erro de servidor'], 500);
             }
             
-            $media = $total / $qtd_venda;
-            
-            return response()->json([
-                'codeStatus' => 200,
-                'message' => 'Ok',
-                'detailMessage' => 'Listagem com sucesso',
-                'success' => true, 
-                'entity' => [
-                    'vendas' => $vendas,
-                    'venda' => $venda,
-                    'lucro' => $lucro,
-                    'total' => $total,
-                    'pago' => $pago,
-                    'qtd' => $qtd_venda,
-                    'media' => $media,
-                ]
-            ], 200);
+            return response()->json($res, 200);
 
-        }catch(ModelNotFoundException $e) {
 
-            return response()->json([
-
-                'error' => $e->getMessage(),
-                'codeStatus' => 500,
-                'message' => 'Erro de servidor',
-                'detailMessage' => $e->getMessage(),
-                'success' => false
-
-            ], 500);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
         }
     }
     
-    public function vendasDoDia()
+    public function store(Request $request)
     {
-        try{
-            date_default_timezone_set('America/Sao_Paulo');
-            $data_now = date('Y-m-d');
-            
-            $vendas = ProdutoVenda::where('created_at', 'LIKE', '%'.$data_now.'%')->orderBy('created_at', 'desc')->get()->groupBy('venda_id');
-            $count = $vendas->count();
-            
-            return response()->json([
-                'codeStatus' => 200,
-                'message' => 'Ok',
-                'detailMessage' => 'Listagem com sucesso',
-                'success' => true, 
-                'entity' => $count
-            ], 200);
+        try {
+            $dados = $request->all();
+            $res = $this->vendaRepository->create($dados);
 
-        }catch(ModelNotFoundException $e) {
+            if (!$res) {
+                return response()->json(['response' => 'Erro de Servidor'], 500);
+            }
 
-            return response()->json([
+            return response()->json(['response' => $res], 201);
 
-                'error' => $e->getMessage(),
-                'codeStatus' => 500,
-                'message' => 'Erro de servidor',
-                'detailMessage' => $e->getMessage(),
-                'success' => false
-
-            ], 500);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
         }
     }
-    
-    
-    public function vendaEspecifica(Request $request) {
-        try{
-            date_default_timezone_set('America/Sao_Paulo');
-            $data_start = date('Y-'.$request->date.'-01');
-            $data_end = date('Y-'.$request->date.'-t');
 
-            $vendas = Venda::with('produto', 'cliente', 'vendedor')->whereBetween('created_at', [$data_start, $data_end])->orderBy('id_venda', 'desc')->get();
-            $qtdProduto = ProdutoVenda::whereBetween('created_at', [$data_start, $data_end])->orderBy('venda_id', 'desc')->get();
-            
-            $count = $vendas->count();
-            
-            $lucro = 0;
-            $total = 0;
-            $pago = 0;
-            $qtd = 0;
-            
-            $venda = array();
-
-            foreach ($vendas as $value) {
-                $value->name_cliente = $value->cliente->name;
-                $value->name_vendedor = $value->vendedor->name;
-                $lucro = $value->lucro + $lucro;
-                $total = $value->total_final + $total;
-                $pago = $value->pago + $pago;
-                array_push($venda, $value);
-                
-            }
-
-            foreach ($qtdProduto as $value) {
-                $qtd = $value->qtd_venda + $qtd;
-            }
-            
-            if($qtd == 0 && $total == 0) {
-                return response()->json([
-                    'codeStatus' => 200,
-                    'message' => 'Ok',
-                    'detailMessage' => 'Listagem com sucesso',
-                    'success' => true, 
-                    'entity' => [
-                        'venda' => $venda,
-                        'lucro' => $lucro,
-                        'total' => $total,
-                        'pago' => $pago,
-                        'qtd' => $qtd,
-                        'media' => 0,
-                        'count' => $count
-                    ]
-                ], 200);
-            }
-            
-            $media = $total / $qtd;
-            return response()->json([
-                'codeStatus' => 200,
-                'message' => 'Ok',
-                'detailMessage' => 'Listagem com sucesso',
-                'success' => true, 
-                'entity' => [
-                    'vendas' => $vendas,
-                    'venda' => $venda,
-                    'lucro' => $lucro,
-                    'total' => $total,
-                    'pago' => $pago,
-                    'qtd' => $qtd,
-                    'media' => $media,
-                    'count' => $count
-                ]
-            ], 200);
-
-        }catch(ModelNotFoundException $e) {
-
-            return response()->json([
-
-                'error' => $e->getMessage(),
-                'codeStatus' => 500,
-                'message' => 'Erro de servidor',
-                'detailMessage' => $e->getMessage(),
-                'success' => false
-
-            ], 500);
-        }
-    }
-    
-    public function vendasDoMes()
+    public function update(Request $request, $id)
     {
-        try{
-            
-            date_default_timezone_set('America/Sao_Paulo');
-            $data_start = date('Y-m-01');
-            $data_end = date('Y-m-t');
+        try {
+            $dados = $request->all();
 
-            $vendas = ProdutoVenda::whereBetween('created_at', [$data_start, $data_end])->get();
-            $count = $vendas->count();
-            $lucro = 0;
-            $total = 0;
-            $pago = 0;
-            
-            $venda = array();
+            $res = $this->vendaRepository->update($dados, $id);
 
-            foreach ($vendas as $value) {
-                $venda[] = $value->venda;
-                $cliente = $value->venda->cliente;
-                $vendedor = $value->venda->vendedor;
-                $lucro = $value->venda->lucro + $lucro;
-                $total = $value->venda->total_final + $total;
-                $pago = $value->venda->pago + $pago;
-                
+            if (isset($res['code'])) {
+                return response()->json(['message' => $res['message']], $res['code']);
             }
 
-            return response()->json([
-                'codeStatus' => 200,
-                'message' => 'Ok',
-                'detailMessage' => 'Listagem com sucesso',
-                'success' => true, 
-                'entity' => [
-                    'vendas' => $vendas,
-                    'venda' => $venda,
-                    'lucro' => $lucro,
-                    'total' => $total,
-                    'pago' => $pago,
-                    'count' => $count
-                ]
-            ], 200);
-
-        }catch(ModelNotFoundException $e) {
-
-            return response()->json([
-
-                'error' => $e->getMessage(),
-                'codeStatus' => 500,
-                'message' => 'Erro de servidor',
-                'detailMessage' => $e->getMessage(),
-                'success' => false
-
-            ], 500);
-        }
-    }
-
-    public function total()
-    {
-        try{
+            return response()->json(['response' => $res], 201);
             
-            $vendas = Venda::all();
-            $count = $vendas->count();
-
-            return response()->json([
-                'codeStatus' => 200,
-                'message' => 'Ok',
-                'detailMessage' => 'Listagem com sucesso',
-                'success' => true, 
-                'entity' => $count
-            ], 200);
-
-        }catch(ModelNotFoundException $e) {
-
-            return response()->json([
-
-                'error' => $e->getMessage(),
-                'codeStatus' => 500,
-                'message' => 'Erro de servidor',
-                'detailMessage' => $e->getMessage(),
-                'success' => false
-
-            ], 500);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
         }
     }
-
     public function aReceber()
     {
         try{
@@ -355,24 +142,7 @@ class VendaController extends Controller
         }
     }
 
-    public function createReceber(Request $request)
-    {
-        try{
-            return response()->json($request);
-        } catch(ModelNotFoundException $e) {
-            return response()->json([
-
-                'error' => $e->getMessage(),
-                'codeStatus' => 500,
-                'message' => 'Erro de servidor',
-                'detailMessage' => $e->getMessage(),
-                'success' => false
-
-            ], 500);
-        }
-    }
-    
-    public function store(Request $request)
+    public function storee(Request $request)
     {
         try{
             date_default_timezone_set('America/Sao_Paulo');
@@ -460,39 +230,7 @@ class VendaController extends Controller
         }
     }
 
-    public function show($id)
-    {
-        try{
-            
-            $venda = Venda::where('id_venda', '=', $id)->join('clientes','clientes.id_cliente', '=', 'vendas.cliente_id')->select('clientes.name', 'clientes.telefone', 'vendas.*')->first();
-            $produtos = ProdutoVenda::with('produto')->where('venda_id', '=', $id)->orderBy('created_at', 'desc')->get();
-            
-            return response()->json([
-                'codeStatus' => 200,
-                'message' => 'Ok',
-                'detailMessage' => 'Listagem com sucesso',
-                'success' => true, 
-                'entity' => [
-                    'venda' => $venda,
-                    'produtos' => $produtos
-                ]
-            ], 200);
-
-        }catch(ModelNotFoundException $e) {
-
-            return response()->json([
-
-                'error' => $e->getMessage(),
-                'codeStatus' => 500,
-                'message' => 'Erro de servidor',
-                'detailMessage' => $e->getMessage(),
-                'success' => false
-
-            ], 500);
-        }
-    }
-
-    public function update(Request $request, $id)
+    public function updatee(Request $request, $id)
     {
         try {
 
@@ -662,6 +400,75 @@ class VendaController extends Controller
                 'success' => false
 
             ], 404);
+        }
+    }
+    
+    public function showItem($id)
+    {
+        try {
+            $res = $this->vendaRepository->getItemById($id);
+            
+            if (!$res) {
+                return response()->json(['message' => 'Falha ao processar o produto!'], 500);
+            }
+            
+            return response()->json($res, 200);
+
+
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
+        }
+    }
+
+    public function storeItem(Request $request)
+    {   
+        try {
+            $dados = $request->all();
+            $res = $this->vendaRepository->createItem($dados);
+
+            if (isset($res['code']) && $res['code'] == 500) {
+                return response()->json($res, 500);
+            }
+
+            return response()->json(['response' => $res], 200);
+
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
+        }
+    }
+
+    public function updateItem(Request $request, $id)
+    {
+        try {
+            $dados = $request->all();
+
+            $res = $this->vendaRepository->updateItem($dados, $id);
+
+            if (isset($res->code) && $res->code == CodeStatusEnum::ERROR_SERVER) {
+                return response()->json(['message' => $res->message], $res->code);
+            }
+
+            return response()->json(['response' => $res], 201);
+            
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
+        }
+    }
+
+    public function destroyItem($id)
+    {
+        try {
+
+            $res = $this->vendaRepository->deleteItem($id);
+
+            if (!$res) {
+                return response()->json(['response' => 'Erro de Servidor'], 500);
+            }
+
+            return response()->json(['response' => 'Deletado com sucesso'], 200);
+            
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
         }
     }
 }

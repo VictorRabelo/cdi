@@ -55,6 +55,13 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
           this.getById(this.data);
         }
       }
+      
+      if(this.module == 'users'){
+        this.title = 'Usuário';
+        if(this.data){
+          this.getById(this.data);
+        }
+      }
     }
   }
 
@@ -82,6 +89,7 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
           this.dados.id = res.id_categoria;
           this.dados.name = res.categoria;
         }
+        
       },
       error => {
         console.log(error)

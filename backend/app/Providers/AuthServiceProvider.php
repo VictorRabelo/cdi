@@ -40,7 +40,9 @@ class AuthServiceProvider extends ServiceProvider
 
         // Mandatory to define Scope
         Passport::tokensCan([
-           'admin' => 'Acessos Restitos',
+           'admin'      => 'Acessos Restitos',
+           'entregador' => 'GET/PUT/POST',
+           'vendedor'   => 'GET/PUT/POST',
         ]);
 
         Passport::setDefaultScope([

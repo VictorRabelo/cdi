@@ -3,6 +3,7 @@
 namespace App\Repositories\Eloquent;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 abstract class AbstractRepository
 {
@@ -59,6 +60,11 @@ abstract class AbstractRepository
         $date_start = date('Y-' . $month . '-01');
         $date_end = date('Y-' . $month . '-t');
         return ['inicio' => $date_start, 'fim' => $date_end];
+    }
+    
+    public function userLogado()
+    {
+        return Auth::user();
     }
 
     public function all()

@@ -86,7 +86,7 @@ export class SalesComponent implements OnInit, OnDestroy {
   createVenda() {
     this.loading = true;
     this.service.store({}).subscribe(res => {
-      this.router.navigate([`/sales/${res.id}`]);
+      this.router.navigate([`/restricted/vendas/${res.id_venda}`]);
     }, error =>{
       this.loading = false;
       this.message.toastError(error.message)
@@ -95,7 +95,7 @@ export class SalesComponent implements OnInit, OnDestroy {
   }
 
   editVenda(id) {
-    this.router.navigate([`/vendas/${id}`]);
+    this.router.navigate([`/restricted/vendas/${id}`]);
   }
 
   delete(id){

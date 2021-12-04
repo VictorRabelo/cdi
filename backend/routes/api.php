@@ -35,11 +35,11 @@ Route::group(['prefix' =>'/v1'], function() {
         Route::get('/total','Cliente\ClienteController@total')->middleware(['auth:api', 'scope:admin']);
         Route::get('/{id}','Cliente\ClienteController@show')->middleware(['auth:api', 'scope:admin']);
         
-        Route::post('/','Cliente\ClienteController@store')->middleware(['auth:api', 'scope:diretor,admin']);
+        Route::post('/','Cliente\ClienteController@store')->middleware(['auth:api', 'scope:admin']);
         
-        Route::put('/{id}','Cliente\ClienteController@update')->middleware(['auth:api', 'scope:diretor,admin']);
+        Route::put('/{id}','Cliente\ClienteController@update')->middleware(['auth:api', 'scope:admin']);
         
-        Route::delete('/{id}','Cliente\ClienteController@destroy')->middleware(['auth:api', 'scope:diretor,admin']);
+        Route::delete('/{id}','Cliente\ClienteController@destroy')->middleware(['auth:api', 'scope:admin']);
 
     });
     
@@ -48,11 +48,24 @@ Route::group(['prefix' =>'/v1'], function() {
         Route::get('/','Fornecedor\FornecedorController@index')->middleware(['auth:api', 'scope:admin']);
         Route::get('/{id}','Fornecedor\FornecedorController@show')->middleware(['auth:api', 'scope:admin']);
         
-        Route::post('/','Fornecedor\FornecedorController@store')->middleware(['auth:api', 'scope:diretor,admin']);
+        Route::post('/','Fornecedor\FornecedorController@store')->middleware(['auth:api', 'scope:admin']);
         
-        Route::put('/{id}','Fornecedor\FornecedorController@update')->middleware(['auth:api', 'scope:diretor,admin']);
+        Route::put('/{id}','Fornecedor\FornecedorController@update')->middleware(['auth:api', 'scope:admin']);
         
-        Route::delete('/{id}','Fornecedor\FornecedorController@destroy')->middleware(['auth:api', 'scope:diretor,admin']);
+        Route::delete('/{id}','Fornecedor\FornecedorController@destroy')->middleware(['auth:api', 'scope:admin']);
+
+    });
+    
+    Route::group(['prefix' =>'/users'], function() {
+        
+        Route::get('/','User\UserController@index')->middleware(['auth:api', 'scope:admin']);
+        Route::get('/{id}','User\UserController@show')->middleware(['auth:api', 'scope:admin']);
+        
+        Route::post('/','User\UserController@store')->middleware(['auth:api', 'scope:admin']);
+        
+        Route::put('/{id}','User\UserController@update')->middleware(['auth:api', 'scope:admin']);
+        
+        Route::delete('/{id}','User\UserController@destroy')->middleware(['auth:api', 'scope:admin']);
 
     });
     
@@ -61,11 +74,11 @@ Route::group(['prefix' =>'/v1'], function() {
         Route::get('/','Categoria\CategoriaController@index')->middleware(['auth:api', 'scope:admin']);
         Route::get('/{id}','Categoria\CategoriaController@show')->middleware(['auth:api', 'scope:admin']);
         
-        Route::post('/','Categoria\CategoriaController@store')->middleware(['auth:api', 'scope:diretor,admin']);
+        Route::post('/','Categoria\CategoriaController@store')->middleware(['auth:api', 'scope:admin']);
         
-        Route::put('/{id}','Categoria\CategoriaController@update')->middleware(['auth:api', 'scope:diretor,admin']);
+        Route::put('/{id}','Categoria\CategoriaController@update')->middleware(['auth:api', 'scope:admin']);
         
-        Route::delete('/{id}','Categoria\CategoriaController@destroy')->middleware(['auth:api', 'scope:diretor,admin']);
+        Route::delete('/{id}','Categoria\CategoriaController@destroy')->middleware(['auth:api', 'scope:admin']);
 
     });
     
@@ -109,9 +122,6 @@ Route::group(['prefix' =>'/v1'], function() {
     Route::group(['prefix' =>'/vendas'], function() {
         
         Route::get('/','Venda\VendaController@index')->middleware(['auth:api', 'scope:admin']);
-        Route::get('/dia','Venda\VendaController@vendasDoDia')->middleware(['auth:api', 'scope:admin']);
-        Route::get('/mes','Venda\VendaController@vendasDoMes')->middleware(['auth:api', 'scope:admin']);
-        Route::get('/total','Venda\VendaController@total')->middleware(['auth:api', 'scope:admin']);
         Route::get('/a-receber','Venda\VendaController@aReceber')->middleware(['auth:api', 'scope:admin']);
         Route::get('/{id}','Venda\VendaController@show')->middleware(['auth:api', 'scope:admin']);
         
@@ -122,6 +132,13 @@ Route::group(['prefix' =>'/v1'], function() {
         
         Route::delete('/{id}','Venda\VendaController@destroy')->middleware(['auth:api', 'scope:admin']);
 
+        Route::group(['prefix' =>'/item'], function() {
+            Route::get('/{id}','Venda\VendaController@showItem')->middleware(['auth:api', 'scope:admin']);
+            Route::post('/','Venda\VendaController@storeItem')->middleware(['auth:api', 'scope:admin']);
+            Route::put('/{id}','Venda\VendaController@updateItem')->middleware(['auth:api', 'scope:admin']);
+            Route::delete('/{id}','Venda\VendaController@destroyItem')->middleware(['auth:api', 'scope:admin']);
+
+        });
     });
     
     Route::group(['prefix' =>'/despesas'], function() {

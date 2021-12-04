@@ -16,13 +16,9 @@ import { ModalPessoalComponent } from '@app/components/modal-pessoal/modal-pesso
 })
 export class SaleDetalheComponent implements OnInit {
 
-  vendaCurrent: any = { vendedor: {}, itens: [], payments: [] };
-
-  productSearch = "";
+  vendaCurrent: any = { cliente: 'Selecione um cliente', itens: [] };
 
   loading: boolean = false;
-
-  user: any = { permissions: {} };
 
   constructor(
     private modalCtrl: NgbModal,
@@ -42,22 +38,32 @@ export class SaleDetalheComponent implements OnInit {
   getById(id) {
     this.loading = true;
     this.service.getById(id).subscribe(res => {
-      this.vendaCurrent = res;
-      let descontos = parseFloat(this.vendaCurrent.desconto) + parseFloat(this.vendaCurrent.descontos)
-      this.vendaCurrent.descontos = descontos;
-    }, error => {
-
-    }, () => {
+      this.vendaCurrent = res.dadosVenda;
+      this.vendaCurrent.itens = res.dadosProdutos;
       this.loading = false;
+    }, error => {
+      this.loading = false;
+      this.message.toastError(error.message)
+      console.log(error)
     });
   }
 
   finishSale() {
+    if(this.vendaCurrent.itens.length == 0){
+      this.message.toastError('Está sem produtos!');
+      return;
+    }
+    
+    if(!this.vendaCurrent.cliente){
+      this.message.toastError('Está faltando o cliente!');
+      return;
+    }
+
     const modalRef = this.modalCtrl.open(SaleFinishComponent, { size: 'md', backdrop: 'static' });
     modalRef.componentInstance.data = Object.assign({}, this.vendaCurrent);
     modalRef.result.then(res => {
       if (res) {
-        this.getById(this.vendaCurrent.uuid);
+        this.getById(this.vendaCurrent.id_venda);
       }
     })
   }
@@ -91,10 +97,8 @@ export class SaleDetalheComponent implements OnInit {
     modalRef.componentInstance.type = 'clientes';
     modalRef.result.then(res => {
       if (res) {
-
-        this.vendaCurrent.cliente_id = res.uuid;
-        this.vendaCurrent.cliente = res.nome;
-        this.vendaCurrent.cpf = res.cpf;
+        this.vendaCurrent.cliente_id = res.id_cliente;
+        this.vendaCurrent.cliente = res.name;
 
         this.updateSale();
       }
@@ -103,8 +107,8 @@ export class SaleDetalheComponent implements OnInit {
 
   updateSale() {
     this.loading = true;
-    this.service.update(this.vendaCurrent.uuid, this.vendaCurrent).subscribe(res => {
-      this.vendaCurrent = res.resp;
+    this.service.update(this.vendaCurrent.id_venda, this.vendaCurrent).subscribe(res => {
+      this.getById(this.vendaCurrent.id_venda);
     }, error => {
       console.log(error)
       this.message.toastError(error.message);
@@ -118,7 +122,7 @@ export class SaleDetalheComponent implements OnInit {
     const modalRef = this.modalCtrl.open(ModalProductsComponent, { size: 'xl', backdrop: 'static' });
     modalRef.componentInstance.data = this.vendaCurrent;
     modalRef.result.then(res => {
-      this.getById(this.vendaCurrent.uuid);
+      this.getById(this.vendaCurrent.id_venda);
     })
   }
 
@@ -126,15 +130,15 @@ export class SaleDetalheComponent implements OnInit {
     const modalRef = this.modalCtrl.open(ModalProductDadosComponent, { size: 'md', backdrop: 'static' });
     modalRef.componentInstance.data = Object.assign({}, item);
     modalRef.result.then(res => {
-      this.getById(this.vendaCurrent.uuid);
+      this.getById(this.vendaCurrent.id_venda);
     })
   }
 
-  deleteItemConfirm(item, i) {
+  deleteItemConfirm(item) {
     this.message.swal.fire({
       title: 'Atenção!',
       icon: 'warning',
-      html: `Deseja remover o item: ${i + 1} ?`,
+      html: `Deseja remover o item: ${item.name} ?`,
       confirmButtonText: 'Confirmar',
       cancelButtonText: 'Voltar',
       showCancelButton: true

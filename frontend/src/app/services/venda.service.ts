@@ -24,7 +24,7 @@ export class VendaService {
     }
 
     store(store: any){
-        return this.http.post<any>(`${this.baseUrl}/vendas`, store);
+        return this.http.post<any>(`${this.baseUrl}/vendas`, store).pipe(map(res =>{ return res.response }));
     }
 
     finishSale(dados: any) {
@@ -44,12 +44,12 @@ export class VendaService {
         return this.http.post<any>(`${this.baseUrl}/vendas/item`, dados);
     }
     getItemById(id) {
-        return this.http.get<any>(`${this.baseUrl}/sale/item/${id}`);
+        return this.http.get<any>(`${this.baseUrl}/vendas/item/${id}`);
     }
     updateItem(id, dados) {
-        return this.http.put<any>(`${this.baseUrl}/sale/item/${id}`, dados);
+        return this.http.put<any>(`${this.baseUrl}/vendas/item/${id}`, dados);
     }
     deleteItem(id) {
-        return this.http.delete<any>(`${this.baseUrl}/sale/item/${id}`);
+        return this.http.delete<any>(`${this.baseUrl}/vendas/item/${id}`);
     }
 }

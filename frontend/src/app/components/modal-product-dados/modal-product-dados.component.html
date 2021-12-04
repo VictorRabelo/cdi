@@ -21,7 +21,7 @@
       </div>
 
       <div class="col-sm-3 form-group">
-        <label>Qtd. em estoque:</label>
+        <label>Qtd. Estoque:</label>
         <input type="number" readonly required class="form-control" name="und" 
           [(ngModel)]="dados.und" #und="ngModel" />
       </div>
@@ -33,16 +33,16 @@
       </div>
 
       <div class="col-sm-3 form-group">
-        <label>*Preço:</label>
-        <input type="tel" required currencyMask class="form-control" name="preco" 
+        <label style="font-size: 13px;">*Preço de Venda:</label>
+        <input type="text" required currencyMask class="form-control" name="preco"
           [(ngModel)]="dados.preco" #preco="ngModel"
           [ngClass]="{'is-invalid': !preco.valid && (preco.touched || form.submitted)}" />
       </div>
       <div class="col-sm-3 form-group">
         <label>*Qtd:</label>
-        <input type="number" required class="form-control" name="qtdProdutos" (func)="calcTotais()"
-          [(ngModel)]="dados.qtdProdutos" #qtdProdutos="ngModel"
-          [ngClass]="{'is-invalid': !qtdProdutos.valid && (qtdProdutos.touched || form.submitted)}" />
+        <input type="number" required class="form-control" name="qtd_venda"
+          [(ngModel)]="dados.qtd_venda" #qtd_venda="ngModel"
+          [ngClass]="{'is-invalid': !qtd_venda.valid && (qtd_venda.touched || form.submitted)}" />
       </div>
     </div>
 

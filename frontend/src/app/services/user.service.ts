@@ -1,22 +1,36 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {environment} from '../../environments/environment';
-import { User } from '../models/user';
+import { map } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
+  baseUrl = environment.apiUrl;
+
   constructor(private http: HttpClient) { }
 
   getAll() {
-    return this.http.get<User[]>(`${environment.apiUrl}/users`);
+    return this.http.get<any>(`${this.baseUrl}/users`).pipe(map(res =>{ return res.response }));
   }
 
   getById(id: number) {
-    return this.http.get<User>(`${environment.apiUrl}/users/${id}`);
+      return this.http.get<any>(`${this.baseUrl}/users/${id}`).pipe(map(res =>{ return res.response }));
+  }
+
+  store(store: any){
+      return this.http.post<any>(`${this.baseUrl}/users`, store);
+  }
+
+  update(update: any){
+      return this.http.put<any>(`${this.baseUrl}/users/${update.id}`, update);
+  }
+
+  delete(id: number){
+      return this.http.delete<any>(`${this.baseUrl}/users/${id}`);
   }
 
   alterSenha(dados) {
-    return this.http.put<any>(`${environment.apiUrl}/alter-password`, dados);
+    return this.http.put<any>(`${this.baseUrl}/alter-password`, dados);
   }
   
 }

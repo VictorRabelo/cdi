@@ -3,14 +3,15 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { CategoriasComponent } from './categorias/categorias.component';
 import { ClientesComponent } from './clientes/clientes.component';
+import { UsersComponent } from './users/users.component';
 import { EntregasComponent } from './entregas/entregas.component';
 import { EstoqueComponent } from './estoque/estoque.component';
 import { FornecedoresComponent } from './fornecedores/fornecedores.component';
 import { HomeComponent } from './home/home.component';
 import { PerfilComponent } from './perfil/perfil.component';
 import { RelatoriosComponent } from './relatorios/relatorios.component';
-import { SaleDetalheComponent } from './sales/sale-detalhe/sale-detalhe.component';
 import { SalesComponent } from './sales/sales.component';
+import { SaleDetalheComponent } from './sales/sale-detalhe/sale-detalhe.component';
 
 const routes: Routes = [
   
@@ -32,6 +33,8 @@ const routes: Routes = [
   {path: 'entregas', component: EntregasComponent},
       
   {path: 'clientes', component: ClientesComponent},
+
+  {path: 'usuarios', component: UsersComponent},
 
   {path: 'fornecedores', component: FornecedoresComponent},
 

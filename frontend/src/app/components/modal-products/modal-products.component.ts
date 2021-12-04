@@ -14,9 +14,8 @@ export class ModalProductsComponent implements OnInit {
 
   dataSource: any = {};
 
+  filters = {status: 'ok'}
   loading: boolean = false;
-
-  filters: any = { page: 1, per_page: 50, termo: '' };
 
   @Input() data: any;
 
@@ -41,11 +40,7 @@ export class ModalProductsComponent implements OnInit {
   listing() {
     this.loading = true;
     this.service.getAll(this.filters).subscribe(res => {
-
-      if (res.paginate) {
-        this.dataSource = res.paginate.data;
-      }
-
+      this.dataSource = res;
     }, error => {
       console.log(error)
       this.message.toastError(error.message);
@@ -56,24 +51,12 @@ export class ModalProductsComponent implements OnInit {
   }
 
   openProduct(produto) {
-    console.log(produto)
-    let item: any = {
-      'produto': produto.nome,
-      'quantidade': 1,
-      'valor_custo': produto.valor_custo,
-      'valor_unitario': produto.valor_venda,
-      'p_desconto': 0,
-      'desconto': 0,
-      'total': produto.valor_venda,
-      'produto_id': produto.uuid,
-      'foto': produto.foto_capa.foto,
-    }
-
     const modalRef = this.modalCtrl.open(ModalProductDadosComponent, { size: 'md', backdrop: 'static' });
-    console.log('data', this.data);
+    modalRef.componentInstance.data = produto;
+    
     if (this.data) {
-      item.venda_id = this.data.uuid;
-      modalRef.componentInstance.data = item;
+      produto.venda_id = this.data.id_venda;
+      modalRef.componentInstance.data = produto;
     }
   }
 

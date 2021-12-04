@@ -33,11 +33,17 @@ class VendaRepository extends AbstractRepository implements VendaRepositoryInter
         $totalVendas = $this->model->select(DB::raw('sum(total_final) as total'))->get();
 
         if(isset($queryParams['date'])) {
-            $date = $this->dateFilter($queryParams['date']);
-            $dados = $this->model->with('produto', 'cliente', 'vendedor')->whereBetween('created_at', [$date['inicio'], $date['fim']])->orderBy('id_venda', 'desc')->get();
+            if($queryParams['date'] == 0){
+                $dados = $this->model->with('produto', 'cliente', 'vendedor')->orderBy('id_venda', 'desc')->get();
+            } else {
+                $date = $this->dateFilter($queryParams['date']);
+                $dados = $this->model->with('produto', 'cliente', 'vendedor')->whereBetween('created_at', [$date['inicio'], $date['fim']])->orderBy('id_venda', 'desc')->get();
+            }
+
             if (!$dados) {
                 return $this->messages->error;
             }
+
         } else {
             $date = $this->dateMonth();
             $dados = $this->model->with('produto', 'cliente', 'vendedor')->whereBetween('created_at', [$date['inicio'], $date['fim']])->orderBy('id_venda', 'desc')->get();
@@ -71,8 +77,58 @@ class VendaRepository extends AbstractRepository implements VendaRepositoryInter
             'totalVendas'  => $totalVendas[0]['total'],
             'lucro'        => $lucro,
             'pago'         => $pago,
-            'data'         => $date['inicio'],
-            'mounth'       => isset($queryParams['date'])? $queryParams['date']: date('m'),
+            'data'         => isset($date['inicio'])? $date['inicio']:date('Y-m-d'),
+            'mounth'       => isset($queryParams['date'])? $queryParams['date']:date('m'),
         ];
+    }
+
+    public function create($dados)
+    {
+        if (!$dados) {
+            $dados['vendedor_id'] = $this->userLogado()->id;
+            return $this->store($dados);
+        }
+    }
+
+    public function show($id){
+        $dadosVenda = Venda::where('id_venda', '=', $id)->leftJoin('clientes','clientes.id_cliente', '=', 'vendas.cliente_id')->select('clientes.name as cliente', 'vendas.*')->first();
+        if (!$dadosVenda) {
+            return false;
+        }
+        
+        $dadosProdutos = ProdutoVenda::with('produto')->where('venda_id', '=', $id)->orderBy('created_at', 'desc')->get();
+        if (!$dadosProdutos) {
+            return false;
+        }
+
+        return ['dadosVenda' => $dadosVenda, 'dadosProdutos' => $dadosProdutos];
+    }
+
+    public function getItemById($id){
+        
+    }
+
+    public function createItem($dados){
+        $result = ProdutoVenda::create($dados);
+        if(!$result){
+            return ['message' => 'Falha ao procesar dados!', 'code' => 500];
+        }
+
+        $dadosVenda = Venda::where('id_venda', '=', $dados['venda_id'])->first();
+        if(!$dadosVenda){
+            return ['message' => 'Falha ao procesar dados!', 'code' => 500];
+        }
+
+        $resultFinal = $dadosVenda->total_final + $result->preco_venda;
+        $dadosVenda->update(['total_final' => $resultFinal]);
+        return ['message' => 'Item cadastrado com sucesso!'];  
+    }
+
+    public function updateItem($dados, $id){
+        
+    }
+    
+    public function deleteItem($id){
+        
     }
 }

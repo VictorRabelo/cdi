@@ -38,7 +38,7 @@
                             <select required class="form-control" name="tipo"
                                 (change)="clearForm()"
                                 [(ngModel)]="dados.tipo" #tipo="ngModel"
-                                [ngClass]="{'is-invalid': !tipo.valid && (tipo.selected || form.submitted)}">
+                                [ngClass]="{'is-invalid': !tipo.valid && (tipo.touched || form.submitted)}">
                                 <option value="">--> Selecione</option>
                                 <option value="br">Brasil</option>
                                 <option value="usa">Estados Unidos</option>

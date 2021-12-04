@@ -11,20 +11,39 @@
         <div class="row">
             <div class="col-sm-12 form-group">
                 <label>*Nome</label>
-                <input type="text" required class="form-control" name="nome" [(ngModel)]="dados.name" #name="ngModel"
-                    placeholder="Nome do {{ title | titlecase }}"
-                    [ngClass]="{'is-invalid': !name.valid && (name.touched || form.submitted)}" />
+                <input type="text" required class="form-control" name="nome" 
+                  [(ngModel)]="dados.name" #name="ngModel"
+                  placeholder="Nome do {{ title | titlecase }}"
+                  [ngClass]="{'is-invalid': !name.valid && (name.touched || form.submitted)}" />
+            </div>
+            <div class="col-sm-12 form-group" *ngIf="this.module == 'users'">
+                <label>*Login</label>
+                <input type="text" required class="form-control" name="login" 
+                  [(ngModel)]="dados.login" #login="ngModel"
+                  [ngClass]="{'is-invalid': !login.valid && (login.touched || form.submitted)}" />
+            </div>
+            <div class="col-sm-12 form-group" *ngIf="this.module == 'users'">
+                <label>*Email</label>
+                <input type="email" required class="form-control" name="email" 
+                  [(ngModel)]="dados.email" #email="ngModel"
+                  [ngClass]="{'is-invalid': !email.valid && (email.touched || form.submitted)}" />
+            </div>
+            <div class="col-sm-12 form-group" *ngIf="this.module == 'users'">
+                <label>*Senha</label>
+                <input type="password" required class="form-control" name="password" 
+                  [(ngModel)]="dados.password" #password="ngModel"
+                  [ngClass]="{'is-invalid': !password.valid && (password.touched || form.submitted)}" />
             </div>
 
-            <div class="col-sm-12 form-group" *ngIf="this.module !== 'categorias'">
+            <div class="col-sm-12 form-group" *ngIf="this.module !== 'categorias' && this.module !== 'users'">
                 <label>*Telefone:</label>
                 <input type="tel" class="form-control" name="telefone" [(ngModel)]="dados.telefone" #telefone="ngModel"
-                    placeholder="(00) 00000-0000"
-                    [mask]="'(00) 0 0000-0000'"
-                    [ngClass]="{'is-invalid': !telefone.valid && (telefone.touched || form.submitted)}" />
+                  placeholder="(00) 00000-0000"
+                  [mask]="'(00) 0 0000-0000'"
+                  [ngClass]="{'is-invalid': !telefone.valid && (telefone.touched || form.submitted)}" />
             </div>
             
-            <div class="col-sm-12 form-group" *ngIf="this.module == 'categorias'">
+            <div class="col-sm-12 form-group" *ngIf="this.module == 'categorias' && this.module !== 'users'">
                 <label>*Subcategoria:</label>
                 <input type="text" class="form-control" name="subcategoria" [(ngModel)]="dados.subcategoria" #subcategoria="ngModel"
                     placeholder="Nome da Subcategoria"

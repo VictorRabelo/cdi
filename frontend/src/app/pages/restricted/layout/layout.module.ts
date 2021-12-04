@@ -37,6 +37,7 @@ import { CurrencyMaskInputMode, NgxCurrencyModule } from "ngx-currency";
 import { NgxIziToastModule } from 'ngx-izitoast';
 import { DataTablesModule } from 'angular-datatables';
 import { NgbDropdownModule, NgbModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { UsersComponent } from './users/users.component';
  
 export const customCurrencyMaskConfig = {
     align: "left",
@@ -90,12 +91,16 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     SaleFinishComponent,
     EstoqueComponent,
     ClientesComponent,
+    UsersComponent,
     RelatoriosComponent,
     FornecedoresComponent,
     CategoriasComponent,
     PerfilComponent,
     EntregasComponent,
 
+  ],
+  entryComponents: [
+    SaleFinishComponent,
   ],
   exports:[
     LayoutComponent,

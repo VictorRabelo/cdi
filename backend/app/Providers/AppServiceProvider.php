@@ -17,6 +17,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind('App\Repositories\Contracts\Categoria\CategoriaRepositoryInterface','App\Repositories\Eloquent\Categoria\CategoriaRepository');
         $this->app->bind('App\Repositories\Contracts\Cliente\ClienteRepositoryInterface','App\Repositories\Eloquent\Cliente\ClienteRepository');
+        $this->app->bind('App\Repositories\Contracts\User\UserRepositoryInterface','App\Repositories\Eloquent\User\UserRepository');
         $this->app->bind('App\Repositories\Contracts\Despesa\DespesaRepositoryInterface','App\Repositories\Eloquent\Despesa\DespesaRepository');
         $this->app->bind('App\Repositories\Contracts\Dashboard\DashboardRepositoryInterface','App\Repositories\Eloquent\Dashboard\DashboardRepository');
         $this->app->bind('App\Repositories\Contracts\Dolar\DolarRepositoryInterface','App\Repositories\Eloquent\Dolar\DolarRepository');
