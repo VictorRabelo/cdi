@@ -9,9 +9,15 @@ interface VendaRepositoryInterface extends CrudRepositoryInterface
 {
     public function index($queryParams);
 
+    public function show($id);
+    
     public function create($dados);
 
-    public function show($id);
+    public function update($dados, $id);
+
+    public function deleteVenda($id);
+
+    public function finishVenda($dados);
 
     //itens
     public function getItemById($id);

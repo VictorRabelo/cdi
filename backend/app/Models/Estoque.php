@@ -21,6 +21,15 @@ class Estoque extends Model
     protected $casts = [];
 
     public function produto() {
-        return $this->hasOne(Produto::class, 'id_produto', 'produto_id');
+        return $this->belongsTo(Produto::class, 'produto_id');
+    }
+
+    public function getIsHasUndAttribute()
+    {
+        if($this->attributes['und'] == 0){
+            return false;
+        }
+
+        return true;
     }
 }

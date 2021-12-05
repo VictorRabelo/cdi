@@ -85,11 +85,46 @@ class VendaController extends Controller
 
             $res = $this->vendaRepository->update($dados, $id);
 
-            if (isset($res['code'])) {
+            if ($res['code'] == 500) {
                 return response()->json(['message' => $res['message']], $res['code']);
             }
 
-            return response()->json(['response' => $res], 201);
+            return response()->json($res['message'], $res['code']);
+            
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
+        }
+    }
+    
+    public function destroy($id)
+    {
+        try {
+
+            $res = $this->vendaRepository->deleteVenda($id);
+
+            if ($res['code'] == 500) {
+                return response()->json(['response' => 'Erro de Servidor'], 500);
+            }
+
+            return response()->json($res, 200);
+            
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
+        }
+    }
+
+    public function finishVenda(Request $request)
+    {
+        try {
+            $dados = $request->all();
+
+            $res = $this->vendaRepository->finishVenda($dados);
+
+            if ($res['code'] == 500) {
+                return response()->json(['message' => $res['message']], $res['code']);
+            }
+
+            return response()->json($res['message'], $res['code']);
             
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
@@ -140,139 +175,6 @@ class VendaController extends Controller
 
             ], 500);
         }
-    }
-
-    public function storee(Request $request)
-    {
-        try{
-            date_default_timezone_set('America/Sao_Paulo');
-            $dt_now = date('Y-m-d');
-            $vendedor = Auth::user()->id;
-            $cliente = Cliente::where('id_cliente', $request->cliente_id)->firstOrFail();
-
-            $produtosVerify = $request->produtos;
-            $qtdProduto = count($produtosVerify);
-            
-            $restante = $request->total_final - $request->pago;
-
-            if($cliente){
-                $venda = Venda::create([
-                    'vendedor_id' => $vendedor,
-                    'cliente_id' => $cliente->id_cliente,
-                    'total_final' => $request->total_final, 
-                    'lucro' => $request->lucro,
-                    'pago' => $request->pago,
-                    'pagamento' => $request->pagamento,
-                    'status' => $request->status,
-                    'qtd_produto' => $qtdProduto,
-                    'restante' => $restante
-                ]);
-
-                $name_cliente = $venda->cliente->name;
-                $id_venda = $venda['id_venda'];
-                
-                if(!$request->prazo) {
-                    $movition = Movition::create([
-                        'venda_id' => $id_venda,
-                        'data' => $dt_now,
-                        'valor' => $request->pago,
-                        'descricao' => $name_cliente,
-                        'tipo' => 'entrada',
-                        'status' => $request->status_movition
-                    ]);
-                } else {
-                    $venda->update(['caixa' => $request->status_movition]);
-                }
-            }
-            
-            $produtos = array();
-
-            foreach ($produtosVerify as $key => $value) {
-                
-                $estoque = Estoque::where('id_estoque', $value['id_estoque'])->first();
-                $produto = $estoque->produto;
-                
-                $itemVenda = ProdutoVenda::create([
-                    'venda_id' => $venda['id_venda'],
-                    'produto_id' => $estoque['produto_id'],
-                    'qtd_venda' => $value['qtdVenda'],
-                    'lucro_venda' => $value['lucroVenda'],
-                    'preco_venda' => $value['precoVenda'],
-                ]);
-                
-                $estoque->decrement('und', $value['qtdVenda']);
-                
-                if($estoque['und'] == 0){
-                    $produto->update(['status' => 'vendido']);
-                }
-                
-            }
-            
-            
-            return response()->json([
-                'codeStatus' => 200,
-                'message' => 'Ok',
-                'detailMessage' => 'Criado com sucesso',
-                'success' => true
-            ], 200);
-
-        }catch(ModelNotFoundException $e) {
-
-            return response()->json([
-
-                'error' => $e->getMessage(),
-                'codeStatus' => 500,
-                'message' => 'Erro de servidor',
-                'detailMessage' => $e->getMessage(),
-                'success' => false
-
-            ], 500);
-        }
-    }
-
-    public function updatee(Request $request, $id)
-    {
-        try {
-
-            $venda = Venda::where('id_venda', $id)->first();
-            
-            if($venda->status == 'pendente') {
-                $venda->update([
-                    'pago' => $request->pagoUpdate,
-                    'pagamento' => $request->pagamentoUpdate,
-                    'status' => $request->statusUpdate
-                ]);
-            }
-            
-            $venda->update([
-                'pagamento' => $request->pagamentoUpdate,
-                'status' => $request->statusUpdate
-            ]);
-            
-
-            return response()->json([
-
-                'codeStatus' => 200,
-                'message' => 'Ok',
-                'detailMessage' => 'Update com sucesso',
-                'success' => true, 
-                'entity' => $venda
-
-            ],200);
-
-        } catch (ModelNotFoundException $e) {
-
-            return response()->json([
-
-                'error' => $e->getMessage(),
-                'codeStatus' => 500,
-                'message' => 'Error de servidor',
-                'detailMessage' => $e->getMessage(),
-                'success' => false
-            
-            ], 500);
-        }
-
     }
 
     public function updateReceber(Request $request, $id)
@@ -369,40 +271,8 @@ class VendaController extends Controller
         }
 
     }
-
-    public function destroy($id)
-    {
-        try {
-
-            $venda = Venda::where('id_venda', $id)->first();
-            
-            if(!empty($venda)){
-                $venda->delete();
-            }
-
-            return response()->json([
-
-                'codeStatus' => 200,
-                'message' => 'Ok',
-                'detailMessage' => 'Excluido com sucesso',
-                'success' => true,
-            ], 200);    
-
-
-        } catch (ModelNotFoundException $e) {
-
-            return response()->json([
-
-                'error' => $e->getMessage(),
-                'codeStatus' => 404,
-                'message' => 'usuario nao encontrado',
-                'detailMessage' => $e->getMessage(),
-                'success' => false
-
-            ], 404);
-        }
-    }
     
+    // Item
     public function showItem($id)
     {
         try {
@@ -448,7 +318,7 @@ class VendaController extends Controller
                 return response()->json(['message' => $res->message], $res->code);
             }
 
-            return response()->json(['response' => $res], 201);
+            return response()->json($res, 200);
             
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
@@ -465,7 +335,7 @@ class VendaController extends Controller
                 return response()->json(['response' => 'Erro de Servidor'], 500);
             }
 
-            return response()->json(['response' => 'Deletado com sucesso'], 200);
+            return response()->json($res, 200);
             
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);

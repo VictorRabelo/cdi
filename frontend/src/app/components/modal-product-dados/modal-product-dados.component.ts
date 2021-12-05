@@ -24,7 +24,6 @@ export class ModalProductDadosComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-
     if (this.data) {
       if (this.data.id) {
         this.getDados(this.data.id);
@@ -62,8 +61,7 @@ export class ModalProductDadosComponent implements OnInit {
 
     this.serviceSale.getItemById(id).subscribe(res => {
       this.dados = res;
-      this.dados.preco = res.preco_venda;
-    
+      this.configInputs(this.dados);
     }, error => {
       console.log(error)
       this.message.toastError(error.message);
@@ -109,7 +107,6 @@ export class ModalProductDadosComponent implements OnInit {
     this.dados.lucro_venda = this.dados.preco - this.dados.valor_total;
 
     this.serviceSale.updateItem(this.dados.id, this.dados).subscribe(res => {
-      console.log(res);
       this.message.toastSuccess('Atualizada com sucesso!');
       this.close(res);
     }, error => {
@@ -132,5 +129,13 @@ export class ModalProductDadosComponent implements OnInit {
     }
 
     return true;
+  }
+
+  configInputs(dados){
+    this.dados.preco = dados.preco_venda;
+    this.dados.und = dados.produto.estoque.und;
+    this.dados.path = dados.produto.path;
+    this.dados.valor_total = dados.produto.valor_total;
+    this.dados.name = dados.produto.name;
   }
 }

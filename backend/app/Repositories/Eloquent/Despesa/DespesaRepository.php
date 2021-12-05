@@ -16,12 +16,10 @@ class DespesaRepository extends AbstractRepository implements DespesaRepositoryI
      */
     protected $model = Despesa::class;
 
-    private $tools;
-
-    public function __construct(Tools $tools)
-    {
-        $this->tools = $tools;
-    }
+    /**
+     * @var Tools
+     */
+    protected $tools = Tools::class;
 
     public function index()
     {

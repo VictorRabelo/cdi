@@ -53,7 +53,7 @@ class EstoqueRepository extends AbstractRepository implements EstoqueRepositoryI
     }
 
     public function getById($id){
-        $dados = DB::table('estoques')->join('produtos', 'produtos.id_produto', '=', 'estoques.produto_id')->join('categorias', 'categorias.id_categoria', '=', 'produtos.categoria_id')->join('datas', 'datas.id_data', '=', 'produtos.data_id')->join('valores', 'valores.id_valor', '=', 'produtos.valor_id')->join('fretes', 'fretes.id_frete', '=', 'produtos.frete_id')->join('fornecedores', 'fornecedores.id_fornecedor', '=', 'produtos.fornecedor_id')->where('produto_id', $id)->first();
+        $dados = DB::table('estoques')->join('produtos', 'produtos.id_produto', '=', 'estoques.produto_id')->join('categorias', 'categorias.id_categoria', '=', 'produtos.categoria_id')->join('datas', 'datas.id_data', '=', 'produtos.data_id')->join('valores', 'valores.id_valor', '=', 'produtos.valor_id')->join('fretes', 'fretes.id_frete', '=', 'produtos.frete_id')->join('fornecedores', 'fornecedores.id_fornecedor', '=', 'produtos.fornecedor_id')->where('id_estoque', $id)->first();
         if (!$dados) {
             return false;
         }

@@ -97,25 +97,25 @@
                 <tbody *ngFor="let item of dataSource | filter:term">
                   <tr>
                     <th scope="row">{{ item.id_venda }}</th>
-                    <td>{{ item.name_cliente | titlecase }}</td>
-                    <td>{{ item.name_vendedor | titlecase }}</td>
+                    <td>{{ (!item.cliente)?'Cliente não informado':item.cliente.name | titlecase }}</td>
+                    <td>{{ item.vendedor.name | titlecase }}</td>
                     <td>{{ item.created_at }}</td>
-                    <td>{{ item.pagamento | titlecase }}</td>
-                    <td>{{ item.total_final | currency: 'R$' }}</td>
-                    <td>{{ item.pago | currency: 'R$' }}</td>
-                    <td>{{ item.lucro | currency: 'R$' }}</td>
+                    <td>{{ (!item.pagamento)?'****':item.pagamento | titlecase }}</td>
+                    <td>{{ (!item.total_final)? '****':item.total_final | currency: 'R$' }}</td>
+                    <td>{{ (!item.pago)? '****':item.pago | currency: 'R$' }}</td>
+                    <td>{{ (!item.lucro)? '****':item.lucro | currency: 'R$' }}</td>
                     <td>
                       <div class="d-flex justify-content-center">
                         <span class="badge badge-success" *ngIf="item.status === 'pago' ">Pago</span>
                         <span class="badge badge-warning" *ngIf="item.status === 'pendente' ">Pendente</span>
-                        <span class="badge badge-danger" *ngIf="item.status === 'cancelada' ">Cancelada</span>
+                        <span class="badge badge-primary" *ngIf="!item.status">Aberta</span>
                       </div>
                     </td>
                     <td>
                       <button class="btn btn-warning btn-sm mx-2" title="Editar" (click)="editVenda(item.id_venda)">
                         <i class="nav-icon fas fa-edit"></i>
                       </button>
-                      <button class="btn btn-danger btn-sm" title="Excluir" (click)="delete(item.id_venda)">
+                      <button class="btn btn-danger btn-sm" title="Excluir" (click)="deleteConfirm(item.id_venda)">
                         <i class="fas fa-trash"></i>
                       </button>
                     </td>

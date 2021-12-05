@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MessageService } from '@app/services/message.service';
 import { VendaService } from '@app/services/venda.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { SubSink } from 'subsink';
 
 @Component({
@@ -31,6 +31,7 @@ export class SalesComponent implements OnInit, OnDestroy {
     private router: Router,
     private service: VendaService,
     private message: MessageService,
+    private spinner: NgxSpinnerService,
   ) { }
 
   ngOnInit(): void {
@@ -38,14 +39,12 @@ export class SalesComponent implements OnInit, OnDestroy {
   }
 
   getStart(){
+    this.loading = true;
     this.getAll();
   }
 
   getAll() {
-    this.loading = true;
-
     this.sub.sink = this.service.getAll(this.filters).subscribe(res => {
-  
       this.dataSource = res.vendas;
       this.totalVendas = res.totalVendas;
       this.totalMensal = res.totalMensal;
@@ -98,14 +97,36 @@ export class SalesComponent implements OnInit, OnDestroy {
     this.router.navigate([`/restricted/vendas/${id}`]);
   }
 
+  deleteConfirm(item) {
+    this.message.swal.fire({
+      title: 'Atenção!',
+      icon: 'warning',
+      html: `Deseja excluir essa venda ?`,
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Voltar',
+      showCancelButton: true
+    }).then(res => {
+      if (res.isConfirmed) {
+        this.delete(item);
+      }
+    })
+  }
+
   delete(id){
     this.loading = true;
+    this.spinner.show();
+
     this.service.delete(id).subscribe(res => {
+      if (res.message) {
+        this.message.toastSuccess(res.message)
+      }
       this.getAll();
     },error =>{
       this.loading = false;
       this.message.toastError(error.message)
       console.log(error)
+    }, () => {
+      this.spinner.hide();
     });
   }
   

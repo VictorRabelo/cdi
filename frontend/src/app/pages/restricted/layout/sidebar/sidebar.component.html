@@ -92,7 +92,7 @@
             </p>
           </a>
         </li>
-        <li (click)="toggleCaixa(caix, caixa)" class="nav-item" #caix>
+        <li (click)="toggleSideBar(caixa)" class="nav-item" #caixa>
           <a class="nav-link">
             <i class="nav-icon fas fa-cash-register"></i>
             <p>
@@ -100,7 +100,7 @@
               <i class="right fas fa-angle-left"></i>
             </p>
           </a>
-          <ul class="nav nav-treeview" #caixa>
+          <ul class="nav nav-treeview">
             <li class="nav-item">
               <a [routerLink]="['/restricted/caixa/a-pagar']" routerLinkActive="link-active" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
@@ -133,7 +133,7 @@
             </li>
           </ul>
         </li>
-        <li (click)="toggleMove(mov, move)" class="nav-item" #mov>
+        <li (click)="toggleSideBar(movition)" class="nav-item" #movition>
           <a class="nav-link">
             <i class="nav-icon fas fa-search-dollar" style="color: #c2c7d0;"></i>
             <p>
@@ -141,7 +141,7 @@
               <i class="right fas fa-angle-left"></i>
             </p>
           </a>
-          <ul class="nav nav-treeview" #move>
+          <ul class="nav nav-treeview">
             <li class="nav-item">
               <a [routerLink]="['/restricted/movimentacao/historico']" routerLinkActive="link-active" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>

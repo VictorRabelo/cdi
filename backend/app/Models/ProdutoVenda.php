@@ -29,14 +29,9 @@ class ProdutoVenda extends Model
         'created_at' => 'date:d-m-Y',
     ];
 
-    public function venda()
-    {
-        return $this->hasOne(Venda::class, 'id_venda', 'venda_id');
-    }
-
     public function produto()
     {
-        return $this->hasMany(Produto::class, 'id_produto', 'produto_id');
+        return $this->belongsTo(Produto::class, 'produto_id', 'id_produto');
     }
 
 }

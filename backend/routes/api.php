@@ -125,7 +125,8 @@ Route::group(['prefix' =>'/v1'], function() {
         Route::get('/a-receber','Venda\VendaController@aReceber')->middleware(['auth:api', 'scope:admin']);
         Route::get('/{id}','Venda\VendaController@show')->middleware(['auth:api', 'scope:admin']);
         
-        Route::post('/','Venda\VendaController@store')->middleware(['auth:api', 'scope:admin']);
+        Route::post('/','Venda\VendaController@store')->middleware(['auth:api', 'scope:admin']);   
+        Route::post('/finish','Venda\VendaController@finishVenda')->middleware(['auth:api', 'scope:admin']);
         
         Route::put('/{id}','Venda\VendaController@update')->middleware(['auth:api', 'scope:admin']);
         Route::put('/{id}/receber','Venda\VendaController@updateReceber')->middleware(['auth:api', 'scope:admin']);

@@ -1,7 +1,7 @@
 <form #form="ngForm" (ngSubmit)="submit(form)" class="card card-load mb-0" [ngClass]="{'card-load': loading}">
 
   <div class="modal-header">
-    <h4>Adicionar Item</h4>
+    <h4>{{ data.crud? data.crud:'Adicionar' | titlecase }} Item</h4>
     <button type="button" class="close" aria-label="Close" (click)="close()">
       <span aria-hidden="true">&times;</span>
     </button>

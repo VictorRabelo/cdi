@@ -41,14 +41,19 @@ class Venda extends Model
         return $this->hasOne(Cliente::class, 'id_cliente', 'cliente_id');
     }
 
-    public function vendedor()
-    {
-        return $this->hasOne(User::class, 'id', 'vendedor_id' );
+    public function vendedor() {
+
+        return $this->hasOne(User::class, 'id', 'vendedor_id');
     }
 
     public function produto()
     {
         return $this->belongsTo(ProdutoVenda::class, 'id_venda', 'venda_id')->orderBy('created_at', 'desc');
+    }
+
+    public function vendaItens()
+    {
+        return $this->hasMany(ProdutoVenda::class, 'venda_id');
     }
 
     public function produtos()

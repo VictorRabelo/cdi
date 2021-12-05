@@ -10,15 +10,15 @@ body, html{
     scroll-behavior: smooth;
 }
 
-body::-webkit-scrollbar, .modal::-webkit-scrollbar {
+body::-webkit-scrollbar, .modal::-webkit-scrollbar, .table-responsive::-webkit-scrollbar {
     width: 8px;               /* width of the entire scrollbar */
 }
 
-body::-webkit-scrollbar-track, .modal::-webkit-scrollbar-track {
+body::-webkit-scrollbar-track, .modal::-webkit-scrollbar-track, .table-responsive::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.5);        /* color of the tracking area */
 }
   
-body::-webkit-scrollbar-thumb, .modal::-webkit-scrollbar-thumb {
+body::-webkit-scrollbar-thumb, .modal::-webkit-scrollbar-thumb, .table-responsive::-webkit-scrollbar-thumb {
     background: rgba(0, 0, 0, 0.5);      /* color of the scroll thumb */
     border-radius: 20px;  /* creates padding around scroll thumb */
 }
