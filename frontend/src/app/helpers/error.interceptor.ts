@@ -4,62 +4,47 @@ import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-import { AuthenticationService } from '../services/authentication.service';
 import { NgxIzitoastService } from "ngx-izitoast";
+import { AuthService } from '@app/services/auth.service';
+import { MessageService } from '@app/services/message.service';
+import { Store } from '@ngrx/store';
+import { Logout } from '@app/core/actions/auth.action';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-  constructor(public iziToast: NgxIzitoastService, private authenticationService: AuthenticationService, private router: Router) { }
+  constructor(
+    public message: MessageService, 
+    public store: Store<any>, 
+    private authService: AuthService, 
+    private router: Router
+  ) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    return next.handle(request).pipe(catchError(err => {
-      
-      if(err.status == 401){
-        this.router.navigate(['/']);
-        this.iziToast.error({
-          title: 'Atenção!',
-          message: 'Usuário não autenticado',
-          position: 'topRight'
-        });
+    return next.handle(request).pipe(catchError(error => {
+      if (error.status == 0) {
+        this.message.alertNet();
+      }
+
+      if(error.status == 401){
+        this.message.toastError('Usuário não autenticado');
+
+        this.store.dispatch(new Logout());
       }
       
-      if(err.status == 500){
+      if(error.status == 500){
         
-        if(err.error.detailMessage){
-          this.iziToast.error({
-            title: 'Error!',
-            message: err.error.detailMessage,
-            position: 'topRight'
-          });
+        if(error.error.detailMessage){
+          this.message.toastError(error.error.detailMessage);
         }
 
-        if(err.error.telefone){
-          this.iziToast.error({
-            title: 'Error!',
-            message: err.error.telefone[0],
-            position: 'topRight'
-          });
+        if(error.error.telefone){
+          this.message.toastError(error.error.telefone[0]);
         }
       }
 
-      if ([401, 403].indexOf(err.error.codeStatus) !== -1) {
-
-        this.iziToast.error({
-          title: 'Atenção!',
-          message: err.error.detailMessage,
-          position: 'topRight'
-        });
-
-        if ([401].indexOf(err.error.codeStatus) !== -1) {
-          location.reload(true);
-        }
-
-        this.authenticationService.logout();
-        
-      }
-
-      const error = err.error.detailMessage || err.error.codeStatus;
-      return throwError(error);
+      const err = error.error.message || error.error.code;
+      
+      return throwError(err);
     }));
   }
 }

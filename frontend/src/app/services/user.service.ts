@@ -22,7 +22,7 @@ export class UserService {
   }
 
   update(update: any){
-      return this.http.put<any>(`${this.baseUrl}/users/${update.id}`, update);
+      return this.http.put<any>(`${this.baseUrl}/users/${update.id}`, update).pipe(map(res =>{ return res.response }));
   }
 
   delete(id: number){

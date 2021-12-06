@@ -32,7 +32,9 @@ class AuthRepository
     public function logout(Request $request)
     {
         $token = $request->user()->token()->revoke();
-
+        if(!$token){
+            return false;
+        }
         return true;
     }
 
@@ -45,6 +47,7 @@ class AuthRepository
         }
         
         $user->role;
+        $user->token = $user->token()->accessToken;
 
         return $user;
     }

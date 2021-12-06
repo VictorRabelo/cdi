@@ -3,9 +3,6 @@ import { Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 
 import { ControllerBase } from 'src/app/controller/controller.base';
-
-
-import { AuthenticationService } from '@app/services/authentication.service';
 import { DashboardService } from '@app/services/dashboard.service';
 
 import { SubSink } from 'subsink';

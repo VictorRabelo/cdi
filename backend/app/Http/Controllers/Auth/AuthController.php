@@ -33,9 +33,12 @@ class AuthController extends Controller
     {
         $res = $this->authRepository->logout($request);
 
+        if (!$res) {
+            return response()->json(['message' => 'Falha ao deslogar!'], 500);
+        }
         return response()->json(['message' => 'Deslogado com sucesso'], 200);
     }
-    
+
     public function me()
     {
         $res = $this->authRepository->me();

@@ -36,4 +36,18 @@ export class MessageService {
       position: 'topRight'
     });
   }
+
+  public alertNet() {
+    this.swal.fire({
+      icon: 'error',
+      title: 'Falha na conexão',
+      html: 'Parece que você está sem internet, verifique a conexão!',
+      allowOutsideClick: false,
+    }).then(resp => {
+      if (resp.value) {
+        location.reload();
+      }
+    });
+  }
+
 }

@@ -6,9 +6,12 @@ import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { MessageService } from 'primeng/api';
 
-import { AuthenticationService } from '@app/services/authentication.service';
 import { ControllerBase } from '@app/controller/controller.base';
 import { NgxIzitoastService } from 'ngx-izitoast';
+import { Store } from '@ngrx/store';
+import { Login } from '@app/core/actions/auth.action';
+import { AuthService } from '@app/services/auth.service';
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'app-signin',
@@ -34,7 +37,8 @@ export class SigninComponent extends ControllerBase {
     private messageService: MessageService,
     private router: Router, 
     private snap: ActivatedRoute,
-    private service: AuthenticationService
+    private service: AuthService,
+    public store: Store<any>
   ) {
     super();
 
@@ -70,22 +74,26 @@ export class SigninComponent extends ControllerBase {
     
     this.loading = true;
     
-    this.service.logar(this.dados.login, this.dados.password)
+    this.service.login(this.dados.login, this.dados.password)
       .pipe(first())
       .subscribe(
-        data => {
-          this.messageService.add({key: 'bc', severity:'success', summary: `Bem - Vindo ${data.name}`, detail: this.getMessage()});
+        res => {
+          this.store.dispatch(new Login({ token: res.token }));
+          localStorage.setItem(environment.tema, res.tema);
+          this.messageService.add({key: 'bc', severity:'success', summary: `Bem - Vindo ${res.name}`, detail: this.getMessage()});
           this.loading = false;
           this.loadingOk = true;
+
         },
         error => {
           this.messageService.add({key: 'bc', severity:'error', summary: 'Atenção', detail: error});
           this.loading = false;
+          this.loadingOk = false;
         },
         () => {
           setTimeout(() => { 
             this.router.navigate(['/restricted']); 
-          }, 2000);
+          }, 1500);
         }
       );
   }

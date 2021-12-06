@@ -14,7 +14,7 @@ import * as $ from 'jquery';
 })
 export class LayoutComponent extends ControllerBase {
 
-  constructor(private title: Title, private vendaService: VendaService) { 
+  constructor(private title: Title) { 
     super();
   }
 

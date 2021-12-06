@@ -32,7 +32,7 @@ class AuthServiceProvider extends ServiceProvider
         
         });
 
-        Passport::tokensExpireIn(now()->addDays(30));
+        Passport::tokensExpireIn(now()->addMinute(30));
 
         Passport::refreshTokensExpireIn(now()->addDays(30));
     
@@ -48,7 +48,6 @@ class AuthServiceProvider extends ServiceProvider
         Passport::setDefaultScope([
             'admin',
         ]);
-
         
     }   
 }

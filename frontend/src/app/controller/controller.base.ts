@@ -1,24 +1,27 @@
-import { OnInit, AfterContentInit, AfterViewInit, OnDestroy, OnChanges } from '@angular/core';
+import { OnInit, AfterContentInit, AfterViewInit, OnDestroy, OnChanges, Injectable } from '@angular/core';
 
-import { User } from '@app/models/user';
 import { Role } from '@app/models/role';
 
 declare let setEvents: any;
 declare let $: any;
 
 import 'bootstrap';
-import { AuthenticationService } from '@app/services/authentication.service';
+import { select, Store } from '@ngrx/store';
+import { currentUser } from '@app/core/selectors/auth.selector';
 
+@Injectable({providedIn: "root"})
 export class ControllerBase implements OnInit, AfterContentInit, AfterViewInit, OnDestroy, OnChanges {
-    
-    public authenticationService: AuthenticationService;
-    
-    public currentUser: User;
-    
+    public currentUser: any = {};
+    public store: Store<any>;
+
     constructor() {}
 
     ngOnInit() {
-        this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
+        this.store.pipe(select(currentUser)).subscribe(res => {
+            if (res) {
+              this.currentUser = res;
+            }
+        });
     }
 
     ngOnChanges(){

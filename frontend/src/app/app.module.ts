@@ -39,6 +39,12 @@ import { NgbButtonsModule, NgbDropdownModule, NgbModule, NgbTabsetModule, NgbToo
 import { ComponentsModule } from './components/components.module';
 import { MatStepperModule, MatTabsModule } from '@angular/material';
 
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { reducers, metaReducers } from './core/reducers';
+import { AuthEffects } from './core/effects/auth.effect';
+import { authReducer } from './core/reducers/auth.reducers';
+
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
 @NgModule({
@@ -63,14 +69,27 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     ProgressSpinnerModule,
     Ng2SearchPipeModule,
     NgxSpinnerModule,
+    
     MatTabsModule,
     MatStepperModule,
+    
     NgbModule,
     NgbDropdownModule,
     NgbTooltipModule,
     NgbButtonsModule,
     NgbTabsetModule,
-    NgxMaskModule.forRoot()
+
+    NgxMaskModule.forRoot(),
+    
+    StoreModule.forRoot(reducers, { 
+      metaReducers, 
+      runtimeChecks: {
+        strictStateImmutability: true,
+        strictActionImmutability: true
+      }
+    }),
+    StoreModule.forFeature('auth', authReducer),
+    EffectsModule.forRoot([AuthEffects]),
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

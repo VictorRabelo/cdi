@@ -1,8 +1,15 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthenticationService } from '@app/services/authentication.service';
+import { ControllerBase } from '@app/controller/controller.base';
+import { Logout } from '@app/core/actions/auth.action';
+import { AuthService } from '@app/services/auth.service';
+import { MessageService } from '@app/services/message.service';
+import { UserService } from '@app/services/user.service';
+import { environment } from '@env/environment';
+import { select, Store } from '@ngrx/store';
+import { currentUser } from '@app/core/selectors/auth.selector';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { MessageService } from 'primeng/api';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 declare let $: any;
 
@@ -10,33 +17,54 @@ declare let $: any;
   selector: 'app-nav-top',
   templateUrl: './nav-top.component.html',
   styleUrls: ['./nav-top.component.css'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({opacity: 0}),
+          animate('600ms', style({opacity: 1}))
+        ])
+      ]
+    )
+  ],
   providers: [ MessageService ]
 })
-export class NavTopComponent implements OnInit {
+export class NavTopComponent extends ControllerBase {
 
-  screenHeight: any
-  screenWidth: any
-  background: any;
+  screenHeight: any;
+  screenWidth: any;
+
+  navDarkMode: boolean;
+  body = document.getElementsByTagName('body')[0];
+
+  user: any = {};
 
   constructor(
     private router: Router, 
-    private authenticationService: AuthenticationService,
     private spinner: NgxSpinnerService,
-    private messageService: MessageService,
-
-  ) { }
+    private message: MessageService,
+    private service: UserService,
+    public store: Store<any>
+  ) { 
+    super();
+    this.store.pipe(select(currentUser)).subscribe(res => {
+      if (res) {
+        this.user = res
+      }
+    })
+  }
 
   ngOnInit() {
-    let body = document.getElementsByTagName('body')[0];
-    this.background = JSON.parse(localStorage.getItem('background'));
+    const tema = localStorage.getItem(environment.tema);
     
-    if(!this.background) {
-      this.background = {dark: true, color: 'black', class: 'dark-mode'}
-      localStorage.setItem('background', JSON.stringify(this.background));
+    if(tema == 'light') {
+      this.body.classList.remove("dark-mode");
+      this.navDarkMode = false;
     }
 
-    if(this.background.class == null) {
-      body.classList.remove("dark-mode");
+    if(tema == 'dark') {
+      this.body.classList.add("dark-mode");
+      this.navDarkMode = true;
     }
 
     $("#menu-toggle").click(function(e) {
@@ -55,35 +83,57 @@ export class NavTopComponent implements OnInit {
   }
 
   logout() {
-    this.spinner.show();
-    
-    this.authenticationService.logout().subscribe(
-      (res: any) => {
-        this.spinner.hide();
-
-        localStorage.removeItem('currentUser')
-        this.router.navigate(['/signin']);
-      },error => {
-        this.messageService.add({key: 'bc', severity:'error', summary: 'Atenção', detail: error});
+    this.message.swal.fire({
+      title: 'Atenção!',
+      icon: 'warning',
+      html: 'Deseja realmente sair ?',
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Voltar',
+      showCancelButton: true
+    }).then(res => {
+      if (res.isConfirmed) {
+        this.store.dispatch(new Logout());
       }
-    );
+    });
   }
 
   backgroundColor(){
-    let body = document.getElementsByTagName('body')[0];
-    
-    if(this.background.dark) {
-      this.background.color = 'white';
-      this.background.dark = false;
-      this.background.class = null;
-      body.classList.remove("dark-mode");
-      localStorage.setItem('background', JSON.stringify(this.background));
+    if(this.navDarkMode) {
+      this.body.classList.remove("dark-mode");
+      this.navDarkMode = false;
     } else {
-      this.background.color = 'black';
-      this.background.dark = true;
-      this.background.class = 'dark-mode';
-      body.classList.add("dark-mode");
-      localStorage.setItem('background', JSON.stringify(this.background));
+      this.body.classList.add("dark-mode");
+      this.navDarkMode = true;
     }
+
+    this.atualizaTema();
+  }
+
+  atualizaTema(){
+    let tema: string;
+    if (!this.user) {
+      return;
+    }
+
+    if(this.navDarkMode) {
+      localStorage.setItem(environment.tema, 'dark');
+      tema = 'dark';
+    } 
+    
+    if (!this.navDarkMode) {
+      localStorage.setItem(environment.tema, 'light');
+      tema = 'light';
+    }
+
+    let request = {
+      id: this.user.id,
+      tema: tema
+    }
+
+    this.service.update(request).subscribe(res => {
+      this.message.toastSuccess('Tema atualizado com sucesso!')
+    },error => {
+      console.log(error)
+    });
   }
 }

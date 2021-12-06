@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-
-import { AuthenticationService } from '../services/authentication.service';
+import { ControllerBase } from '@app/controller/controller.base';
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
-  constructor(private router: Router, private authenticationService: AuthenticationService) {}
+  constructor(private router: Router, private controllerBase: ControllerBase) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    const currentUser = this.authenticationService.currentUserValue;
+    const currentUser = this.controllerBase.currentUser;
     if (currentUser) {
-        if (route.data.roles && route.data.roles.indexOf(currentUser.role) === -1) {
+        if (route.data.role && route.data.role.indexOf(currentUser.role) === -1) {
             this.router.navigate(['/']);
             return false;
         }
@@ -19,6 +18,7 @@ export class AuthGuard implements CanActivate {
     }
 
     this.router.navigate(['/signin'], { queryParams: { returnUrl: state.url, error: 'Não autorizado' }});
+    
     return false;
   }
 }
