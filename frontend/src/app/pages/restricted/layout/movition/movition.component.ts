@@ -30,6 +30,8 @@ export class MovitionComponent implements OnInit {
   
   type: string;
 
+  term: string;
+
   constructor(
     private router: Router,
     private modalCtrl: NgbModal,
