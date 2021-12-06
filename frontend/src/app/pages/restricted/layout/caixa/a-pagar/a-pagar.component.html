@@ -25,20 +25,18 @@
         <div class="container-fluid">
             <div class="row text-right">
                 <div class="col-4 col-md-3 ml-auto">
-                    <label class="text-danger">Saldo:</label>
+                    <label class="text-danger">Saldo a pagar:</label>
                     <span class="pl-2">{{ saldo | currency: 'R$' }}</span>
                 </div>
             </div>
             <div class="row">
                 <div class="col-12">
-                    <div class="card">
+                    <div class="card" [ngClass]="{'card-load': loading}">
                         <div class="card-header">
                             <div class="card-title">
-                                
                                 <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-create">
                                     <i class="fas fa-plus" title="Nova Conta"></i>
                                 </button>
-                                <span><img *ngIf="loading" class="spin d-inline ml-3" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" /></span>
                             </div>
                             <div class="card-tools">
                                 <div class="input-group input-group-sm" style="width: 200px;">
@@ -54,7 +52,7 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body table-responsive p-0" style="height: 100%;">
-                            <table class="table table-head-fixed text-nowrap">
+                            <table class="table table-hover text-nowrap">
                                 <thead>
                                     <tr>
                                         <th scope="col">Data</th>
@@ -75,14 +73,15 @@
                                         </td>
                                     </tr>
                                 </tbody>
-                                <tbody *ngIf=" despesas == '' ">
-                                    <tr>
+                                <tbody *ngIf=" despesas.length == 0 ">
+                                    <tr class="text-center">
                                         <td colspan="4">Não há Contas a Pagar no momento</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                         <!-- /.card-body -->
+                        <div class="card-loader" *ngIf="loading"><i class="fas fa-sync-alt anim-rotate"></i></div>
                     </div>
                   <!-- /.card -->
                 </div>
@@ -102,25 +101,25 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form [formGroup]="createForm" (ngSubmit)="onSubmit()" no-validate>
+                <form #form="ngForm" (ngSubmit)="onSubmit(form)" (keydown.enter)="$event.preventDefault()">
                     <div class="modal-body">
                         <div class="card-body">
                             <div class="form-row">
                                 <div class="form-group col-12">
-                                    <label for="data" class="fieldset">*Data:</label>
-                                    <input type="date" class="form-control" id="data" name="data" formControlName="data" required>
+                                    <label for="data" class="fieldset">Data:</label>
+                                    <input type="date" class="form-control" id="data" name="data" ngModel>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-12">
                                     <label for="valor" class="fieldset">*Valor:</label>
-                                    <input type="text" class="form-control" name="valor" currencyMask formControlName="valor" required>
+                                    <input type="text" class="form-control" name="valor" currencyMask ngModel required>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-12">
                                     <label for="valor" class="fieldset">*Descrição:</label>
-                                    <input type="text" class="form-control" name="descricao" formControlName="descricao" placeholder="Descrição" required>
+                                    <input type="text" class="form-control" name="descricao" ngModel placeholder="Descrição" required>
                                 </div>
                             </div>
                         </div>

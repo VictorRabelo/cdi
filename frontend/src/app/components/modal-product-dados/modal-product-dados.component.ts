@@ -29,7 +29,6 @@ export class ModalProductDadosComponent implements OnInit {
         this.getDados(this.data.id);
       } else {
         this.dados = this.data;
-        console.log(this.dados);
         this.dados.preco_venda = this.data;
       }
     }
@@ -83,7 +82,6 @@ export class ModalProductDadosComponent implements OnInit {
     this.dados.lucro_venda = this.dados.preco - this.dados.valor_total;
 
     this.serviceSale.createItem(this.dados).subscribe(res => {
-      console.log(res);
       this.message.toastSuccess();
       this.close(res);
     }, error => {

@@ -16,6 +16,14 @@ class DolarRepository extends AbstractRepository implements DolarRepositoryInter
 
     public function index()
     {
-        return $this->model->orderBy('created_at', 'desc')->get();
+        $dados = $this->model->orderBy('created_at', 'desc')->get();
+        if (!$dados) {
+            return ['message' => 'Falha ao processar caixa do dolar!', 'code' => 500];
+        }
+        
+        $media = 0;
+        $saldo = 0;
+        
+        return ['dados' => $dados, 'media' => $media, 'saldo' => $saldo];
     }
 }

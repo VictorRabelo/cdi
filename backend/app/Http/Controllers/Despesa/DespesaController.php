@@ -32,7 +32,7 @@ class DespesaController extends Controller
                 return response()->json(['message' => 'Erro de servidor!',], 500);
             }
 
-            return response()->json(['response' => $res], 200);
+            return response()->json($res, 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor!',], 500);
         }

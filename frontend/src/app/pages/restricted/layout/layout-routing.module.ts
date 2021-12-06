@@ -12,6 +12,7 @@ import { PerfilComponent } from './perfil/perfil.component';
 import { RelatoriosComponent } from './relatorios/relatorios.component';
 import { SalesComponent } from './sales/sales.component';
 import { SaleDetalheComponent } from './sales/sale-detalhe/sale-detalhe.component';
+import { MovitionComponent } from './movition/movition.component';
 
 const routes: Routes = [
   
@@ -42,8 +43,14 @@ const routes: Routes = [
       
   {path: 'categorias', component: CategoriasComponent},
 
-  {path: 'movimentacao', loadChildren: () => import('./movition/movition.module').then(m => m.MovitionModule) },
-  
+  {
+    path: 'movimentacao', children: [
+      { path: 'geral', component: MovitionComponent },
+      { path: 'eletronico', component: MovitionComponent },
+      { path: 'historico', component: MovitionComponent },
+    ]
+  },
+
   {path: 'cotacao-perfume', loadChildren: () => import('./cotacao-perfume/cotacao-perfume.module').then(m => m.CotacaoPerfumeModule) },
   
   {path: 'caixa', loadChildren: () => import('./caixa/caixa.module').then(m => m.CaixaModule) },

@@ -39,18 +39,12 @@
             </div>
             <div class="row">
                 <div class="col-12">
-                    <div class="card">
+                    <div class="card" [ngClass]="{'card-load': loading}">
                         <div class="card-header">
                             <div class="card-title">
-                                <button type="button" class="btn btn-primary btn-sm" (click)="create()">
+                                <button type="button" class="btn btn-primary btn-sm" (click)="add()">
                                     <i class="fas fa-plus" title="Nova Venda"></i>
                                 </button>
-                                <span><img *ngIf="loading" class="spin d-inline ml-3"
-                                        src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" /></span>
-                                <span>
-                                    <div *ngIf="loadingOk" class="spinner-border ml-2 text-danger spinner-border-sm"
-                                        role="status"><span class="sr-only">Loading...</span></div>
-                                </span>
                             </div>
                             <div class="card-tools">
                                 <div class="input-group input-group-sm" style="width: 200px;">
@@ -58,16 +52,16 @@
                                         placeholder="Pesquisar...">
 
                                     <div class="input-group-append">
-                                        <button type="submit" class="btn btn-default">
+                                        <div class="input-group-text">
                                             <i class="fas fa-search"></i>
-                                        </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body table-responsive p-0" style="height: 100%;">
-                            <table class="table table-head-fixed text-nowrap">
+                            <table class="table table-hover text-nowrap">
                                 <thead>
                                     <tr>
                                         <th scope="col">Nome</th>
@@ -79,174 +73,32 @@
                                     </tr>
                                 </thead>
 
-                                <tbody *ngFor="let conta of contas | filter:term">
+                                <tbody *ngFor="let item of dataSource | filter:term">
                                     <tr>
-                                        <td>{{ conta.cliente.name }}</td>
-                                        <td>{{ conta.cliente.telefone | mask: '(00) 00000-0000' }}</td>
-                                        <td>{{ conta.total_final | currency: 'R$' }}</td>
-                                        <td>{{ conta.pago | currency: 'R$' }}</td>
-                                        <td>{{ conta.restante | currency: 'R$' }}</td>
+                                        <td>{{ item.nameCliente }}</td>
+                                        <td>{{ item.telefoneCliente | mask: '(00) 00000-0000' }}</td>
+                                        <td>{{ item.total_final | currency: 'R$' }}</td>
+                                        <td>{{ item.pago | currency: 'R$' }}</td>
+                                        <td>{{ item.restante | currency: 'R$' }}</td>
                                         <td>
-                                            <button class="btn btn-success btn-sm" title="Ok"
-                                                (click)="ok(conta.id_venda)">
+                                            <button class="btn btn-success btn-sm" title="Ok" (click)="openConta(item)">
                                                 <i class="nav-icon fas fa-check"></i>
                                             </button>
                                         </td>
                                     </tr>
                                 </tbody>
-                                <tbody *ngIf="number == 0 ">
-                                    <tr>
-                                        <td colspan="4">Não há Contas a receber no momento</td>
+                                <tbody *ngIf="dataSource.length == 0 ">
+                                    <tr class="text-center">
+                                        <td colspan="6">Não há Contas a receber no momento</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                         <!-- /.card-body -->
+                        <div class="card-loader" *ngIf="loading"><i class="fas fa-sync-alt anim-rotate"></i></div>
                     </div>
-                    <!-- /.card -->
                 </div>
             </div>
         </div>
     </section>
-
-    <!--Modals-->
-    <!--Modals-->
-
-    <div class="modal fade" id="modal-ok">
-        <!--Modals Create-->
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Conta a Receber</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form [formGroup]="createForm" (ngSubmit)="onSubmit()" no-validate>
-                    <div class="modal-body">
-                        <div class="card-body">
-                            <div class="form-row">
-                                <div class="form-group col-12">
-                                    <label class="fieldset mr-2">Nome:</label>
-                                    <span>{{ cont.name }}</span>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-12">
-                                    <label class="fieldset mr-2">Telefone:</label>
-                                    <span>{{ cont.telefone | mask: '(00) 00000-0000' }}</span>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-12">
-                                    <label class="fieldset mr-2">Total Final:</label>
-                                    <span>{{ cont.total_final | currency: 'R$' }}</span>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-12">
-                                    <label class="fieldset mr-2">Pago:</label>
-                                    <span>{{ cont.pago | currency: 'R$' }}</span>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-12">
-                                    <label class="fieldset mr-2">Restante:</label>
-                                    <span>{{ cont.restante | currency: 'R$' }}</span>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-12">
-                                    <label class="fieldset mr-2">Pagar:</label>
-                                    <input type="text" class="form-control" name="pagoCreate" currencyMask
-                                        formControlName="pagoCreate" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">
-                                <p class="d-inline" *ngIf="!loadingId">Atualizar</p>
-                                <img *ngIf="loadingId" class="spin d-inline"
-                                    src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <!-- /Modals Create -->
-    </div>
-
-    <div class="modal fade" id="modal-create">
-        <!--Modals Create-->
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Conta a Receber</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form #form="ngForm" (ngSubmit)="submit(form)" (keydown.enter)="$event.preventDefault()" no-validate>
-                    <div class="modal-body">
-                        <div class="card-body">
-                            <div class="form-row">
-                                <div class="form-group col-12">
-                                    <label for="cliente_id" class="fieldset mr-2">Cliente:</label>
-                                    <select required class="form-control" name="cliente_id"
-                                        [(ngModel)]="dados.cliente_id" #cliente_id="ngModel"
-                                        [ngClass]="{'is-invalid': !cliente_id.valid && (cliente_id.touched || form.submitted)}">
-                                        <option selected>Selecione um cliente</option>
-                                        <option *ngFor="let item of cli" [value]="item.id_cliente">{{ item.name
-                                            |
-                                            titlecase }} - {{ item.telefone | mask: '(00) 00000-0000'}}</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-6">
-                                    <label for="total_final" class="fieldset mr-2">Total Final:</label>
-                                    <input type="text" class="form-control" currencyMask name="total_final"
-                                        [(ngModel)]="dados.total_final" #total_final="ngModel">
-                                </div>
-                                <div class="form-group col-6">
-                                    <label for="pago" class="fieldset">Pago:</label>
-                                    <input type="text" class="form-control" name="pago" currencyMask
-                                        [(ngModel)]="dados.pago" #pago="ngModel" (blur)="subTotal()">
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-6">
-                                    <label for="restante" class="fieldset">Restante:</label>
-                                    <input type="text" class="form-control" name="restante" currencyMask
-                                        [(ngModel)]="dados.restante" #restante="ngModel">
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-12">
-                                    <label for="caixa" class="fieldset">Caixa:</label>
-                                    <select required class="form-control" name="caixa"
-                                        [(ngModel)]="dados.caixa" #caixa="ngModel">
-                                        <option selected>Selecione um caixa</option>
-                                        <option value="geral">Geral</option>
-                                        <option value="eletronico">Eletronico</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">
-                                <p class="d-inline" *ngIf="!loadingCreate">Criar</p>
-                                <img *ngIf="loadingCreate" class="spin d-inline"
-                                    src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <!-- /Modals Create -->
-    </div>
-
-    <p-toast position="bottom-center" key="bc"></p-toast>
 </div>

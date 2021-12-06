@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 
 import { ControllerBase } from '@app/controller/controller.base';
 import { DespesaService } from '@app/services/despesa.service';
@@ -18,21 +18,17 @@ export class APagarComponent extends ControllerBase {
 
   private sub = new SubSink();
 
-  createForm: FormGroup;
-
   loading: Boolean = false;
   loadingCreate: Boolean = false;
-  loadingDelete: Boolean = false;
 
   term: string;
-  despesas: string = '';
+  despesas: any[] = [];
 
   saldo: number = 0;
   
   constructor(
     private messageService: MessageService, 
-    private despesaService: DespesaService, 
-    private formBuilder: FormBuilder
+    private despesaService: DespesaService
   ) { 
     super();
   }
@@ -40,19 +36,13 @@ export class APagarComponent extends ControllerBase {
   ngOnInit() {
     this.loading = true;
     this.getAll();
-
-    this.createForm = this.formBuilder.group({
-      data: ['', Validators.required],
-      valor: ['', Validators.required],
-      descricao: ['', Validators.required]
-    });
   }
  
   getAll(){
     this.sub.sink = this.despesaService.getAll().subscribe(
       (res: any) => {
         this.loading = false;
-        this.despesas = res.despesas;
+        this.despesas = res.response;
         this.saldo = res.saldo;
         
       },error => {
@@ -61,24 +51,17 @@ export class APagarComponent extends ControllerBase {
         this.loading = false;
       })
   }
-  
-  get f() { return this.createForm.controls; }
 
-  onSubmit(){
+  onSubmit(form: NgForm){
     
     this.loadingCreate = true;
 
-    if (this.createForm.invalid) {
+    if (!form.valid) {
+      this.loadingCreate = false;
       return;
     }
 
-    const store = {
-      data: this.f.data.value,
-      valor: this.f.valor.value,
-      descricao: this.f.descricao.value
-    }
-
-    this.despesaService.store(store).subscribe(
+    this.despesaService.store(form.value).subscribe(
       (res: any) => {
         this.loading = true;
         this.getAll();
@@ -91,14 +74,14 @@ export class APagarComponent extends ControllerBase {
       () => {
         this.messageService.add({key: 'bc', severity:'success', summary: 'Sucesso', detail: 'Cadastrado com Sucesso!'});
         this.loadingCreate = false;
-        this.createForm.reset();
+        form.reset();
       }
     )
   }
 
   delete(id){
     
-    this.loadingDelete = true;
+    this.loading = true;
 
     this.despesaService.delete(id).subscribe(
       (res: any) => {
@@ -108,7 +91,7 @@ export class APagarComponent extends ControllerBase {
       error => console.log(error),
       () => {
         this.messageService.add({key: 'bc', severity:'success', summary: 'Sucesso', detail: 'Excluido com Sucesso!'});
-        this.loadingDelete = false;
+        this.loading = false;
       }
     );
   }

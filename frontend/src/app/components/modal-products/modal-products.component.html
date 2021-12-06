@@ -45,6 +45,11 @@
               </td>
             </tr>
           </tbody>
+          <tbody *ngIf="dataSource.length == 0 ">
+            <tr class="text-center">
+                <td colspan="6">Não há produtos em estoque!</td>
+            </tr>
+          </tbody>
         </table>
       </div>
       <div class="card-loader" *ngIf="loading"><i class="fas fa-sync-alt anim-rotate"></i></div>

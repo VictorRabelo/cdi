@@ -8,12 +8,14 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { ClienteFormComponent } from './cliente-form/cliente-form.component';
 import { EstoqueFormComponent } from './estoque-form/estoque-form.component';
 import { ModalPessoalComponent } from './modal-pessoal/modal-pessoal.component';
+import { ModalProductsComponent } from './modal-products/modal-products.component';
+import { ModalProductDadosComponent } from './modal-product-dados/modal-product-dados.component';
+import { ModalDebitarComponent } from './modal-debitar/modal-debitar.component';
 
 import { NgxMaskModule } from 'ngx-mask';
 import { CurrencyMaskInputMode, NgxCurrencyModule } from 'ngx-currency';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
-import { ModalProductsComponent } from './modal-products/modal-products.component';
-import { ModalProductDadosComponent } from './modal-product-dados/modal-product-dados.component';
+import { ModalMovitionComponent } from './modal-movition/modal-movition.component';
 
 export const customCurrencyMaskConfig = {
   align: "right",
@@ -36,7 +38,9 @@ export const customCurrencyMaskConfig = {
     EstoqueFormComponent,
     ModalPessoalComponent,
     ModalProductsComponent,
-    ModalProductDadosComponent
+    ModalProductDadosComponent,
+    ModalDebitarComponent,
+    ModalMovitionComponent
   ],
   imports: [
     CommonModule,
@@ -52,14 +56,18 @@ export const customCurrencyMaskConfig = {
     EstoqueFormComponent,
     ModalPessoalComponent,
     ModalProductsComponent,
-    ModalProductDadosComponent
+    ModalProductDadosComponent,
+    ModalDebitarComponent,
+    ModalMovitionComponent
   ],
   entryComponents: [
     ClienteFormComponent,
     EstoqueFormComponent,
     ModalPessoalComponent,
     ModalProductsComponent,
-    ModalProductDadosComponent
+    ModalProductDadosComponent,
+    ModalDebitarComponent,
+    ModalMovitionComponent
   ],
 })
 export class ComponentsModule { }

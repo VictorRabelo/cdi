@@ -1,183 +1,146 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { ControllerBase } from '@app/controller/controller.base';
-import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
-
 import { VendaService } from '@app/services/venda.service';
-import { ClienteService } from '@app/services/cliente.service';
-import { MessageService } from 'primeng/api';
 
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { MessageService } from '@app/services/message.service';
+
+import { NgxSpinnerService } from 'ngx-spinner';
 import { SubSink } from 'subsink';
 
 declare let $: any;
 import 'bootstrap';
+import { ModalDebitarComponent } from '@app/components/modal-debitar/modal-debitar.component';
 
 @Component({
   selector: 'app-a-receber',
   templateUrl: './a-receber.component.html',
-  styleUrls: ['./a-receber.component.css'],
-  providers: [ MessageService ]
+  styleUrls: ['./a-receber.component.css']
 })
 export class AReceberComponent extends ControllerBase {
 
   private sub = new SubSink();
 
-  dados: any = {areceber: true, restante: 0.00, total_final: 0.00, pago: 0.00};
-  cli: any = [];
+  dataSource: any[] = [];
 
-  createForm: FormGroup;
+  loading: boolean = false;
 
-  term: string;
-
-  loading: Boolean = false;
-  loadingOk: Boolean = false;
-  loadingCreate: Boolean = false;
-  loadingId: Boolean = false;
-
-  contas: any[] = [];
-  cont: any = {};
-  number: number;
+  filters: any = { aReceber: true };
 
   saldoReceber: number = 0;
   saldoPago: number = 0;
   totalRestante: number = 0;
+  
+  term: string;
 
   constructor(
-    private messageService: MessageService,
-    private vendaService: VendaService,
-    private clienteService: ClienteService,
-    private formBuilder: FormBuilder
+    private modalCtrl: NgbModal,
+    private router: Router,
+    private service: VendaService,
+    private message: MessageService,
+    private spinner: NgxSpinnerService,
   ) { 
     super();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.getStart();
+  }
+
+  getStart(){
     this.loading = true;
-    // this.getContas();
-    this.getClientes();
+    this.getAll();
+  }
 
-    this.createForm = this.formBuilder.group({
-      pagoCreate: ['', Validators.required]
+  getAll() {
+    this.sub.sink = this.service.getAll(this.filters).subscribe(res => {
+      this.dataSource = res.dadosReceber;
+      this.saldoReceber = res.saldoReceber;
+      this.saldoPago = res.saldoPago;
+      this.totalRestante = res.totalRestante;
+
+    },error =>{
+      
+      this.loading = false;
+      this.message.toastError(error.message);
+      console.log(error);
+
+    },()=> {
+      this.loading = false;
     });
   }
 
-  ok(id: number){
-    this.getById(id);
-    $("#modal-ok").modal('show');
+  add() {
+    this.message.swal.fire({
+      title: 'Iniciar nova venda?',
+      icon: 'question',
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Voltar',
+      showCancelButton: true
+    }).then(res => {
+      if (res.isConfirmed) {
+        this.createVenda();
+      }
+    })
   }
-  
-  create(){
-    $("#modal-create").modal('show');
-  }
 
-  // getContas(){
-  //   this.sub.sink = this.vendaService.getContas().subscribe((res: any) => {
-  //     console.log(res)
-  //     this.contas = res.vendas;
-  //     this.saldoReceber = res.saldo_receber;
-  //     this.saldoPago = res.saldo_pago;
-  //     this.totalRestante = res.total_restante;
-  //     this.number = res.numero;
-  //   },
-  //   error => {
-  //     console.log(error)
-  //     this.messageService.add({key: 'bc', severity:'error', summary: 'Erro 500', detail: error});
-  //     this.loading = false;
-  //   },
-  //   () => {this.loading = false});
-  // }
-
-  getById(id: number) {
-
-    this.loadingId = true;
-    this.sub.sink = this.vendaService.getById(id).subscribe((res: any) => {
-      console.log(res)
-      this.cont = res.venda;
-    },
-    error => {
+  createVenda() {
+    this.loading = true;
+    this.service.store({}).subscribe(res => {
+      this.router.navigate([`/restricted/vendas/${res.id_venda}`]);
+    }, error =>{
+      this.loading = false;
+      this.message.toastError(error.message)
       console.log(error)
-      this.messageService.add({key: 'bc', severity:'error', summary: 'Erro 500', detail: error});
-      this.loadingId = false;
-    },
-    () => {this.loadingId = false});
+    })
   }
 
-  getClientes(){
-    this.sub.sink = this.clienteService.getAll().subscribe((res: any) => {
-      this.cli = res;
-    },
-    error => {
+  openConta(item) {
+    item.cliente = item.nameCliente;
+
+    const modalRef = this.modalCtrl.open(ModalDebitarComponent, { size: 'sm', backdrop: 'static' });
+    modalRef.componentInstance.data = item;
+    modalRef.result.then(res => {
+      this.getAll();
+    })
+  }
+
+  deleteConfirm(item) {
+    this.message.swal.fire({
+      title: 'Atenção!',
+      icon: 'warning',
+      html: `Deseja excluir essa venda ?`,
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Voltar',
+      showCancelButton: true
+    }).then(res => {
+      if (res.isConfirmed) {
+        this.delete(item);
+      }
+    })
+  }
+
+  delete(id){
+    this.loading = true;
+    this.spinner.show();
+
+    this.service.delete(id).subscribe(res => {
+      if (res.message) {
+        this.message.toastSuccess(res.message)
+      }
+      this.getAll();
+    },error =>{
+      this.loading = false;
+      this.message.toastError(error.message)
       console.log(error)
-      this.messageService.add({key: 'bc', severity:'error', summary: 'Erro 500', detail: error});
+    }, () => {
+      this.spinner.hide();
     });
   }
-
-  get f() { return this.createForm.controls; }
-
-  submit(form: NgForm){
-    
-    if (!form.valid) {
-      return false;
-    }
-
-    this.loadingCreate = true;
-
-    // this.vendaService.updateReceber(this.dados).subscribe(
-    //   (res: any) => {
-    //     this.loading = true;
-    //     this.getContas();
-    //   },
-    //   error => {
-    //     console.log(error)
-    //     this.messageService.add({key: 'bc', severity:'error', summary: 'Erro 500', detail: error});
-    //     this.loadingCreate = false;
-    //   },
-    //   () => {
-    //     this.messageService.add({key: 'bc', severity:'success', summary: 'Sucesso', detail: 'Cadastrado com Sucesso!'});
-    //     this.loadingCreate = false;
-    //     this.createForm.reset();
-    //     $("#modal-create").modal('hide');
-    //   }
-    // );
-  }
   
-  onSubmit(){
-    
-    this.loadingId = true;
-
-    if (this.createForm.invalid) {
-      return;
-    }
-
-    const store = {
-      id: this.cont.id_venda,
-      pago: this.f.pagoCreate.value
-    }
-
-    // this.vendaService.updateReceber(store).subscribe(
-    //   (res: any) => {
-    //     this.loading = true;
-    //     this.getContas();
-    //   },
-    //   error => {
-    //     console.log(error)
-    //     this.messageService.add({key: 'bc', severity:'error', summary: 'Erro 500', detail: error});
-    //     this.loadingId = false;
-    //   },
-    //   () => {
-    //     this.messageService.add({key: 'bc', severity:'success', summary: 'Sucesso', detail: 'Cadastrado com Sucesso!'});
-    //     this.loadingId = false;
-    //     this.createForm.reset();
-    //     $("#modal-ok").modal('hide');
-    //   }
-    // )
-  }
-
-  subTotal(){
-    this.dados.restante = this.dados.total_final - this.dados.pago;
-  }
-
   ngOnDestroy() {
     this.sub.unsubscribe();
   }
-  
+
 }

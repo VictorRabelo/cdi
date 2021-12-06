@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
-import { NgForm, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 import { ControllerBase } from '@app/controller/controller.base';
-import { MessageService } from 'primeng/api';
 import { DolarService } from '@app/services/dolar.service';
+import { MessageService } from '@app/services/message.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 import { SubSink } from 'subsink';
 
@@ -16,22 +18,22 @@ export class CaixaDolarComponent extends ControllerBase {
 
   private sub = new SubSink();
   
-  dados: any = { montante: 0.00, valor_dolar: 0.00, valor_pago: 0.00 };
+  dados: any[] = [];
   
-  createForm: FormGroup;
-
   loading: Boolean = false;
-  loadingCreate: Boolean = false;
-  loadingDelete: Boolean = false;
   
   term: string;
-  dolars: any[] = [];
 
   saldo: number = 0;
   media: number = 0;
   valor_dolar: number = 0;
 
-  constructor(private messageService: MessageService, private dolarService: DolarService, private formBuilder: FormBuilder) { 
+  constructor(
+    private modalCtrl: NgbModal,
+    private spinner: NgxSpinnerService,
+    private messageService: MessageService, 
+    private dolarService: DolarService
+  ) { 
     super();
   }
 
@@ -44,64 +46,38 @@ export class CaixaDolarComponent extends ControllerBase {
     this.sub.sink = this.dolarService.getAll().subscribe(
       (res: any) => {
         this.loading = false;
-        this.dolars = res.dolars
+        this.dados = res.dados
         this.media = res.media
         this.saldo = res.saldo
       },
       error => {
         console.log(error)
-        this.messageService.add({key: 'bc', severity:'error', summary: 'Erro 500', detail: error});
+        this.messageService.toastError();
         this.loading = false;
       })
   }
 
-  get f() { return this.createForm.controls; }
-
-  onSubmit(form: NgForm){
+  create() {
     
-    this.loadingCreate = true;
-    
-    if (!form.valid) {
-      return false;
-    }
-
-    this.dolarService.store(this.dados).subscribe(
-      (res: any) => {
-        this.loading = true;
-        this.getAll();
-      },
-      error => {
-        console.log(error)
-        this.messageService.add({key: 'bc', severity:'error', summary: 'Erro 500', detail: error});
-        this.loadingCreate = false;
-      },
-      () => {
-        this.messageService.add({key: 'bc', severity:'success', summary: 'Sucesso', detail: 'Cadastrado com Sucesso!'});
-        this.loadingCreate = false;
-        form.reset()
-      }
-    )
   }
 
   delete(id){
     
-    this.loadingDelete = true;
+    this.loading = true;
+    this.spinner.show();
 
     this.dolarService.delete(id).subscribe(
       (res: any) => {
+        this.spinner.hide();
         this.loading = true;
         this.getAll();
       },
       error => console.log(error),
       () => {
-        this.messageService.add({key: 'bc', severity:'success', summary: 'Sucesso', detail: 'Excluido com Sucesso!'});
-        this.loadingDelete = false;
+        this.messageService.toastSuccess('Excluido com Sucesso!');
+        this.loading = false;
       }
     );
-  }
-
-  soma(){
-    this.dados.valor_pago = this.dados.montante * this.dados.valor_dolar;
   }
 
   ngOnDestroy() {

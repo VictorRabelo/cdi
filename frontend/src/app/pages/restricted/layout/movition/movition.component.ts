@@ -1,40 +1,46 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+
+import { ModalMovitionComponent } from '@app/components/modal-movition/modal-movition.component';
+
 import { MessageService } from '@app/services/message.service';
-import { VendaService } from '@app/services/venda.service';
+import { MovitionService } from '@app/services/movition.service';
+
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerService } from 'ngx-spinner';
+
 import { SubSink } from 'subsink';
 
 @Component({
-  selector: 'app-sales',
-  templateUrl: './sales.component.html',
-  styleUrls: ['./sales.component.css']
+  selector: 'app-movition',
+  templateUrl: './movition.component.html',
+  styleUrls: ['./movition.component.css']
 })
-export class SalesComponent implements OnInit, OnDestroy {
+export class MovitionComponent implements OnInit {
   private sub = new SubSink();
   public today: number = Date.now();
 
   dataSource: any[] = [];
-
+  
   loading: boolean = false;
 
   filters: any = { date: '' };
 
-  totalVendas: number = 0;
-  totalMensal: number = 0;
-  recebido: number = 0;
-  lucro: number = 0;
+  saldo: number = 0;
   
-  term: string;
+  type: string;
 
   constructor(
     private router: Router,
-    private service: VendaService,
+    private modalCtrl: NgbModal,
+    private service: MovitionService,
     private message: MessageService,
     private spinner: NgxSpinnerService,
   ) { }
 
   ngOnInit(): void {
+    this.type = this.router.url.split("/")[3];
+    this.filters.type = this.type
     this.getStart();
   }
 
@@ -45,13 +51,8 @@ export class SalesComponent implements OnInit, OnDestroy {
 
   getAll() {
     this.sub.sink = this.service.getAll(this.filters).subscribe(res => {
-      this.dataSource = res.vendas;
-      this.totalVendas = res.totalVendas;
-      this.totalMensal = res.totalMensal;
-      this.recebido = res.pago;
-      this.lucro = res.lucro;
-      this.today = res.data;
-      this.filters.date = res.mounth;
+      this.dataSource = res.dados;
+      this.saldo = res.saldo;
 
     },error =>{
       
@@ -64,40 +65,23 @@ export class SalesComponent implements OnInit, OnDestroy {
     });
   }
 
-  add() {
-    this.message.swal.fire({
-      title: 'Iniciar nova venda?',
-      icon: 'question',
-      confirmButtonText: 'Confirmar',
-      cancelButtonText: 'Voltar',
-      showCancelButton: true
-    }).then(res => {
-      if (res.isConfirmed) {
-        this.createVenda();
+  create() {
+    const modalRef = this.modalCtrl.open(ModalMovitionComponent, { size: 'sm', backdrop: 'static' });
+    if (this.type !== 'historico') {
+      modalRef.componentInstance.type = this.type;
+    }
+    modalRef.result.then(res => {
+      if(res){
+        this.getAll();
       }
     })
-  }
-
-  createVenda() {
-    this.loading = true;
-    this.service.store({}).subscribe(res => {
-      this.router.navigate([`/restricted/vendas/${res.id_venda}`]);
-    }, error =>{
-      this.loading = false;
-      this.message.toastError(error.message)
-      console.log(error)
-    })
-  }
-
-  editVenda(id) {
-    this.router.navigate([`/restricted/vendas/${id}`]);
   }
 
   deleteConfirm(item) {
     this.message.swal.fire({
       title: 'Atenção!',
       icon: 'warning',
-      html: `Deseja excluir essa venda ?`,
+      html: `Deseja excluir essa movimentação ?`,
       confirmButtonText: 'Confirmar',
       cancelButtonText: 'Voltar',
       showCancelButton: true

@@ -1,18 +1,33 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ProdutoService } from '@app/services/produto.service';
+import { ActivatedRoute } from '@angular/router';
+import { animate, style, transition, trigger } from '@angular/animations';
+
 import { VendaService } from '@app/services/venda.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { MessageService } from '@app/services/message.service';
+
 import { SaleFinishComponent } from './sale-finish/sale-finish.component';
 import { ModalProductsComponent } from '@app/components/modal-products/modal-products.component';
 import { ModalProductDadosComponent } from '@app/components/modal-product-dados/modal-product-dados.component';
 import { ModalPessoalComponent } from '@app/components/modal-pessoal/modal-pessoal.component';
+import { ModalDebitarComponent } from '@app/components/modal-debitar/modal-debitar.component';
+
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { MessageService } from '@app/services/message.service';
+
 
 @Component({
   selector: 'app-sale-detalhe',
   templateUrl: './sale-detalhe.component.html',
-  styleUrls: ['./sale-detalhe.component.css']
+  styleUrls: ['./sale-detalhe.component.css'],
+  animations: [
+    trigger(
+      'enterAnimation', [
+        transition(':enter', [
+          style({transform: 'translateY(50%)', opacity: 0}),
+          animate('500ms', style({transform: 'translateY(0)', opacity: 1}))
+        ])
+      ]
+    )
+  ],
 })
 export class SaleDetalheComponent implements OnInit {
 
@@ -23,8 +38,6 @@ export class SaleDetalheComponent implements OnInit {
   constructor(
     private modalCtrl: NgbModal,
     private activeRoute: ActivatedRoute,
-    private router: Router,
-    private productService: ProdutoService,
     private service: VendaService,
     private message: MessageService,
   ) { }
@@ -86,19 +99,6 @@ export class SaleDetalheComponent implements OnInit {
     })
   }
 
-  openPessoal() {
-    const modalRef = this.modalCtrl.open(ModalPessoalComponent, { size: 'lg', backdrop: 'static' });
-    modalRef.componentInstance.type = 'clientes';
-    modalRef.result.then(res => {
-      if (res) {
-        this.vendaCurrent.cliente_id = res.id_cliente;
-        this.vendaCurrent.cliente = res.name;
-
-        this.updateSale();
-      }
-    })
-  }
-
   updateSale() {
     this.loading = true;
     this.service.update(this.vendaCurrent.id_venda, this.vendaCurrent).subscribe(res => {
@@ -111,6 +111,19 @@ export class SaleDetalheComponent implements OnInit {
     }, () => {
       this.loading = false;
     });
+  }
+
+  openPessoal() {
+    const modalRef = this.modalCtrl.open(ModalPessoalComponent, { size: 'lg', backdrop: 'static' });
+    modalRef.componentInstance.type = 'clientes';
+    modalRef.result.then(res => {
+      if (res) {
+        this.vendaCurrent.cliente_id = res.id_cliente;
+        this.vendaCurrent.cliente = res.name;
+
+        this.updateSale();
+      }
+    })
   }
 
   openProducts() {
@@ -129,43 +142,12 @@ export class SaleDetalheComponent implements OnInit {
     })
   }
 
-  calcRestante() {
-    const debitar = (this.vendaCurrent.debitar)?this.vendaCurrent.debitar:0.00;
-    this.vendaCurrent.restante -= debitar;
-    this.vendaCurrent.pago += debitar;
-  }
-
-  configCalc(){
-    const debitar = (this.vendaCurrent.debitar)?this.vendaCurrent.debitar:0.00;
-    this.vendaCurrent.restante += debitar;
-    this.vendaCurrent.pago -= debitar;
-  }
-
-  debitar(){
-    this.loading = true;
-
-    if(this.vendaCurrent.restante == 0){
-      this.vendaCurrent.status = 'pago';
-    }
-
-    const dados = {
-      debitar: true,
-      creditar: this.vendaCurrent.debitar,
-      restante: this.vendaCurrent.restante,
-      pago: this.vendaCurrent.pago,
-      cliente: this.vendaCurrent.cliente,
-      caixa: this.vendaCurrent.caixa,
-    }
-
-    this.service.update(this.vendaCurrent.id_venda, this.vendaCurrent).subscribe(res => {
+  openDebitar(){
+    const modalRef = this.modalCtrl.open(ModalDebitarComponent, { size: 'sm', backdrop: 'static' });
+    modalRef.componentInstance.data = this.vendaCurrent;
+    modalRef.result.then(res => {
       this.getById(this.vendaCurrent.id_venda);
-    }, error => {
-      console.log(error)
-      this.message.toastError(error.message);
-      this.loading = false;
-    }, () => {
-      this.loading = false;
-    });
+    })
   }
 
   deleteItemConfirm(item) {

@@ -33,7 +33,7 @@ export class NavTopComponent extends ControllerBase {
 
   screenHeight: any;
   screenWidth: any;
-
+  
   navDarkMode: boolean;
   body = document.getElementsByTagName('body')[0];
 

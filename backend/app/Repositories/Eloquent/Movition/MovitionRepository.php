@@ -19,7 +19,30 @@ class MovitionRepository extends AbstractRepository implements MovitionRepositor
      */
     protected $tools = Tools::class;
 
-    public function index()
+    public function index($queryParams)
+    {
+
+        if (isset($queryParams['type'])) {
+            if ($queryParams['type'] == 'geral') {
+                $query = $this->geral();
+            }
+            
+            if ($queryParams['type'] == 'eletronico') {
+                $query = $this->eletronico();
+            }
+            
+            if ($queryParams['type'] == 'historico') {
+                $query = $this->historico();
+            }
+
+            return $query;
+        }
+
+        if (isset($queryParams['date'])) {
+        }
+    }
+
+    private function historico()
     {
         $dados = $this->model->orderBy('data', 'desc')->orderBy('id_movition', 'desc')->get();
 
@@ -28,40 +51,36 @@ class MovitionRepository extends AbstractRepository implements MovitionRepositor
         }
 
         return [
-            'movition' => $dados,
-            'numero' => $dados->count(),
-            'total' => $this->tools->calcularEntradaSaida($dados)
+            'dados' => $dados,
+            'saldo' => $this->tools->calcularEntradaSaida($dados)
         ];
     }
-
-    public function filtrarMes($dados)
+    
+    private function geral()
     {
-        $date = $this->dateFilter($dados['date']);
-        $dados = $this->model->whereBetween('data', [$date['inicio'], $date['fim']])->orderBy('data', 'desc')->orderBy('id_movition', 'desc')->get();
+        $dados = $this->model->where('data', 'LIKE', '%' . $this->dateNow() . '%')->where('status', 'geral')->orderBy('data', 'desc')->orderBy('id_movition', 'desc')->get();
 
         if (!$dados) {
             return ['message' => 'Falha ao procesar dados!', 'code' => 500];
         }
 
         return [
-            'movition' => $dados,
-            'numero' => $dados->count(),
-            'total' => $this->tools->calcularEntradaSaida($dados)
+            'dados' => $dados,
+            'saldo' => $this->tools->calcularEntradaSaida($dados)
         ];
     }
-
-    public function geral()
+    
+    private function eletronico()
     {
-        $dados = $this->model->with(['venda'])->where('data', 'LIKE', '%' . $this->dateNow() . '%')->where('status', 'geral')->orderBy('data', 'desc')->orderBy('id_movition', 'desc')->get();
+        $dados = $this->model->where('data', 'LIKE', '%'.$this->dateNow().'%')->where('status', 'eletronico')->orderBy('data', 'desc')->orderBy('id_movition', 'desc')->get();
 
         if (!$dados) {
             return ['message' => 'Falha ao procesar dados!', 'code' => 500];
         }
 
         return [
-            'movition' => $dados,
-            'numero' => $dados->count(),
-            'total' => $this->tools->calcularEntradaSaida($dados)
+            'dados' => $dados,
+            'saldo' => $this->tools->calcularEntradaSaida($dados)
         ];
     }
 
@@ -72,7 +91,7 @@ class MovitionRepository extends AbstractRepository implements MovitionRepositor
             'valor' => $dados['valor'],
             'descricao' => $dados['descricao'],
             'tipo' => $dados['tipo'],
-            'status' => $dados['status_movition']
+            'status' => $dados['status']
         ];
 
         $res = $this->store($save);

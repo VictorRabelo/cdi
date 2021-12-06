@@ -5,14 +5,14 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Caixa Dolar</h1>
+                    <h1 class="m-0">Movimentação / {{ type | titlecase }}</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <!--  
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Dashboard v1</li>
-                        -->
+                        
+                        <li class="breadcrumb-item"><a [routerLink]="['/restricted/home']"><i class="fas fa-home"></i></a></li>
+                        <li class="breadcrumb-item active">{{ type | titlecase }}</li>
+
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -25,21 +25,17 @@
         <div class="container-fluid">
             <div class="row text-right">
                 <div class="col-4 col-md-3 ml-auto">
-                    <label class="text-danger">Média:</label>
-                    <span class="pl-2">{{ media | currency: 'R$' }}</span>
-                </div>
-                <div class="col-4 col-md-3">
                     <label class="text-danger">Saldo:</label>
-                    <span class="pl-2">{{ saldo | currency: '$' }}</span>
+                    <span class="pl-2">{{ saldo | currency: 'R$' }}</span>
                 </div>
             </div>
             <div class="row">
                 <div class="col-12">
                     <div class="card" [ngClass]="{'card-load': loading}">
                         <div class="card-header">
-                            <div class="card-title">                                
+                            <div class="card-title">
                                 <button type="button" class="btn btn-primary btn-sm" (click)="create()">
-                                    <i class="fas fa-plus" title="Criar"></i>
+                                    <i class="fas fa-plus" title="Nova Movimentação"></i>
                                 </button>
                             </div>
                             <div class="card-tools">
@@ -48,7 +44,7 @@
                 
                                     <div class="input-group-append">
                                         <div class="input-group-text">
-                                            <i class="fas fa-search"></i>
+                                          <i class="fas fa-search"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -60,43 +56,44 @@
                                 <thead>
                                     <tr>
                                         <th scope="col">Data</th>
-                                        <th scope="col">Valor do Dolar</th>
-                                        <th scope="col">Preço do Dolar</th>
-                                        <th scope="col">Valor Pago</th>
+                                        <th scope="col">Valor</th>
                                         <th scope="col">Descrição</th>
-                                        <th scope="col">D/C</th>
+                                        <th scope="col" *ngIf="type == 'historico'">Tipo</th>
+                                        <th scope="col">Status</th>
                                         <th scope="col">Ação</th>
                                     </tr>
                                 </thead>
-                                <tbody *ngFor="let item of dados | filter:term">
+                                <tbody *ngFor="let item of dataSource | filter:term">
                                     <tr>
-                                        <td>{{ item.created_at }}</td>
-                                        <td *ngIf="item.status === 'saida'" >{{- item.montante | currency: '$' }}</td>
-                                        <td *ngIf="item.status === 'entrada'" >{{ item.montante | currency: '$' }}</td>
-                                        <td>{{ item.valor_dolar | currency: 'R$' }}</td>
-                                        <td>{{ item.valor_pago | currency: 'R$' }}</td>
+                                        <td>{{ item.data }}</td>
+                                        <td>{{ item.valor | currency: 'R$' }}</td>
                                         <td>{{ item.descricao }}</td>
-                                        <td>
+                                        <td *ngIf="type == 'historico'">
                                             <div class="d-flex justify-content-center">
-                                                <span class="badge badge-danger" *ngIf="item.status === 'saida' ">D</span>
-                                                <span class="badge badge-primary" *ngIf="item.status === 'entrada' ">C</span>
+                                                <span class="badge badge-info" *ngIf="item.status === 'eletronico' ">Eletrônico</span>
+                                                <span class="badge badge-warning" *ngIf="item.status === 'geral' ">Geral</span>
                                             </div>
                                         </td>
                                         <td>
-                                            <button class="btn btn-danger btn-sm" title="Excluir" (click)="delete(item.id_dolar)">
+                                            <div class="d-flex justify-content-center">
+                                                <span class="badge badge-danger" *ngIf="item.tipo === 'saida' ">Saída</span>
+                                                <span class="badge badge-success" *ngIf="item.tipo === 'entrada' ">Entrada</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger btn-sm" title="Excluir" (click)="deleteConfirm(item.id_movition)">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </td>
                                     </tr>
                                 </tbody>
-                                <tbody *ngIf="dados.length == 0 ">
+                                <tbody *ngIf="dataSource.length == 0 ">
                                     <tr class="text-center">
-                                        <td colspan="7">Não há nada no Caixa Dolar no momento</td>
+                                        <td [attr.colspan]="type == 'historico'? 6:5">Não há movimentações no momento</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <!-- /.card-body -->
                         <div class="card-loader" *ngIf="loading"><i class="fas fa-sync-alt anim-rotate"></i></div>
                     </div>
                 </div>

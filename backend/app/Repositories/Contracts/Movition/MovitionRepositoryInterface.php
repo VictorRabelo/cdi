@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 
 interface MovitionRepositoryInterface extends CrudRepositoryInterface
 {
-    public function index();
-    public function geral();
-    public function filtrarMes($dados);
+    public function index($queryParams);
     public function create($dados);
 }

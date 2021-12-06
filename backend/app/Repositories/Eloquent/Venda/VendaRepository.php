@@ -33,6 +33,10 @@ class VendaRepository extends AbstractRepository implements VendaRepositoryInter
 
     public function index($queryParams)
     {
+        if (isset($queryParams['aReceber'])) {
+            return $this->aReceber();
+        }
+
         $totalVendas = $this->model->select(DB::raw('sum(total_final) as total'))->get();
 
         if(isset($queryParams['date'])) {
@@ -112,6 +116,10 @@ class VendaRepository extends AbstractRepository implements VendaRepositoryInter
         $dadosVenda = Venda::where('id_venda', '=', $id)->leftJoin('clientes','clientes.id_cliente', '=', 'vendas.cliente_id')->select('clientes.name as cliente', 'vendas.*')->first();
         if (!$dadosVenda) {
             return ['message' => 'Venda não encontrada!', 'code' => 404];
+        }
+
+        if(($dados['restante'] == 0 || $dados['restante'] < 0) && $dados['restante'] !== null) {
+            $dados['status'] = 'pago';
         }
 
         $dadosVenda->fill($dados);
@@ -277,12 +285,42 @@ class VendaRepository extends AbstractRepository implements VendaRepositoryInter
         return ['message' => 'Item deletado com sucesso!'];
     }
 
+    private function aReceber() {
+
+        $dados = $this->model->with('produto', 'cliente', 'vendedor')->where('status', 'pendente')->orderBy('id_venda', 'desc')->get();
+        if (!$dados) {
+            return $this->messages->error;
+        }
+
+        $restante = 0;
+        $pago = 0;
+        $totalFinal = 0;
+
+        $dataSource = [];
+        foreach ($dados as $item) {
+            $item->nameCliente = $item->cliente->name;
+            $item->telefoneCliente = $item->cliente->telefone;
+            $restante += $item->restante;
+            $pago += $item->pago;
+            $totalFinal += $item->total_final;
+
+            array_push($dataSource, $item);
+        }
+        
+        return [
+            'dadosReceber'  => $dataSource,
+            'saldoReceber'  => $totalFinal,
+            'saldoPago'     => $pago,
+            'totalRestante' => $restante,
+        ];
+    }
+
     private function debitar($dados, $id)
     {
         $dateNow = $this->dateNow();
 
         $movition = Movition::create([
-            'venda_id' => $dados['id_venda'],
+            'venda_id' => $id,
             'data' => $dateNow,
             'valor' => $dados['debitar'],
             'descricao' => $dados['cliente'],

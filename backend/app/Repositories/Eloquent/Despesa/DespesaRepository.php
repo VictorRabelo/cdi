@@ -50,8 +50,8 @@ class DespesaRepository extends AbstractRepository implements DespesaRepositoryI
 
     public function create($dados)
     {
-        if (!isset($dados['data'])) {
-            $dados['data'] = $this->data_now;
+        if (!$dados['data']) {
+            $dados['data'] = $this->dateNow();
         }
 
         $res = Despesa::create($dados);

@@ -13,9 +13,15 @@ export class VendaService {
 
     getAll(queryParams: any = {}) {
         let params
+        
         if(queryParams.date){
             params = new HttpParams().set('date', queryParams.date);
         }
+        
+        if(queryParams.aReceber){
+            params = new HttpParams().set('aReceber', queryParams.aReceber);
+        }
+
         return this.http.get<any>(`${this.baseUrl}/vendas`, { params: params }).pipe(map(res =>{ return res.response }));
     }
 

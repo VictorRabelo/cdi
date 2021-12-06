@@ -25,11 +25,11 @@ class DolarController extends Controller
 
             $res = $this->dolarRepository->index();
 
-            if (!$res) {
-                return response()->json(['response' => 'Erro de Servidor'], 500);
+            if (isset($res['code'])) {
+                return response()->json($res['message'], $res['code']);
             }
 
-            return response()->json(['response' => $res, 'count' => $res->count()], 200);
+            return response()->json($res, 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
         }

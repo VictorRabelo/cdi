@@ -17,7 +17,7 @@
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" (click)="backgroundColor()" aria-label="Tema">
+        <a class="nav-link" (click)="backgroundColor()" [attr.aria-label]="navDarkMode? 'Light':'Dark'">
           <i class="fas fa-moon" *ngIf="!navDarkMode" [@enterAnimation]></i>
           <i class="fas fa-sun" *ngIf="navDarkMode" [@enterAnimation]></i>
         </a>

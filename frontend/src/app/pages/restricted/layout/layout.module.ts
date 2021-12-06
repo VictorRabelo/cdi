@@ -38,6 +38,7 @@ import { NgxIziToastModule } from 'ngx-izitoast';
 import { DataTablesModule } from 'angular-datatables';
 import { NgbDropdownModule, NgbModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { UsersComponent } from './users/users.component';
+import { MovitionComponent } from './movition/movition.component';
  
 export const customCurrencyMaskConfig = {
     align: "left",
@@ -97,6 +98,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     CategoriasComponent,
     PerfilComponent,
     EntregasComponent,
+    MovitionComponent,
 
   ],
   entryComponents: [

@@ -12,7 +12,7 @@ import { ModalProductDadosComponent } from '../modal-product-dados/modal-product
 })
 export class ModalProductsComponent implements OnInit {
 
-  dataSource: any = {};
+  dataSource: any[] = [];
 
   filters = {status: 'ok'}
   loading: boolean = false;

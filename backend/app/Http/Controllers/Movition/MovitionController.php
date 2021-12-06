@@ -25,49 +25,17 @@ class MovitionController extends Controller
         $this->codeStatus = $codeStatus;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         try {
-
-            $res = $this->movitionRepository->index();
+            $queryParams = $request->all();
+            $res = $this->movitionRepository->index($queryParams);
 
             if (isset($res->code) && $res->code == $this->codeStatus::ERROR_SERVER) {
                 return response()->json(['message' => $res->message], $res->code);
             }
 
-            return response()->json(['response' => $res], 200);
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
-        }
-    }
-
-    public function especifico(Request $request)
-    {
-        try {
-            $dados = $request->all();
-
-            $res = $this->movitionRepository->filtrarMes($dados);
-
-            if (isset($res->code) && $res->code == $this->codeStatus::ERROR_SERVER) {
-                return response()->json(['message' => $res->message], $res->code);
-            }
-
-            return response()->json(['response' => $res], 200);
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
-        }
-    }
-
-    public function geral()
-    {
-        try {
-            $res = $this->movitionRepository->geral();
-
-            if (isset($res->code) && $res->code == $this->codeStatus::ERROR_SERVER) {
-                return response()->json(['message' => $res->message], $res->code);
-            }
-
-            return response()->json(['response' => $res], 200);
+            return response()->json($res, 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
         }
@@ -85,23 +53,6 @@ class MovitionController extends Controller
             }
 
             return response()->json(['response' => 'Cadastro efetuado com sucesso!'], 201);
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
-        }
-    }
-
-    public function update(Request $request, $id)
-    {
-        try {
-            $dados = $request->all();
-
-            $res = $this->movitionRepository->update($dados, $id);
-
-            if (isset($res->code) && $res->code == CodeStatusEnum::ERROR_SERVER) {
-                return response()->json(['message' => $res->message], $res->code);
-            }
-
-            return response()->json(['response' => $res], 201);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
         }

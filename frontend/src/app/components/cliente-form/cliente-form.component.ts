@@ -1,8 +1,7 @@
-import { Fornecedor } from './../../models/fornecedor';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { CrudService } from '@app/services/crud.service';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SubSink } from 'subsink';
 
 @Component({

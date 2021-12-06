@@ -12,11 +12,11 @@ export class DolarService {
     constructor(private http: HttpClient) { }
 
     getAll() {
-        return this.http.get<any>(`${environment.apiUrl}/dolars`).pipe(map(res =>{ return res.entity }));
+        return this.http.get<any>(`${environment.apiUrl}/dolars`);
     }
 
     getById(id: number) {
-        return this.http.get<any>(`${environment.apiUrl}/dolars/${id}`).pipe(map(res =>{ return res.entity }));
+        return this.http.get<any>(`${environment.apiUrl}/dolars/${id}`);
     }
 
     store(store: any){

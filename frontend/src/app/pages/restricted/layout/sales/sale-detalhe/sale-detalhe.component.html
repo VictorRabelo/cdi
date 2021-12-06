@@ -46,27 +46,14 @@
           <input type="tel" readonly currencyMask class="form-control" [(ngModel)]="vendaCurrent.total_final">
         </div>
         
-        <div class="col-sm-2 ml-auto form-group">
-          <h5>{{ vendaCurrent.id_venda }}#{{ vendaCurrent.created_at }}</h5>
-        </div>
-      </div>
-      <div class="row" *ngIf="vendaCurrent.status == 'pendente'">
-        <div class="col-sm-2 form-group">
-          <label>Restante:</label>
-          <input type="text" currencyMask readonly class="form-control" name="restante" [(ngModel)]="vendaCurrent.restante" #restante="ngModel">
-        </div>
-        <div class="col-sm-2 form-group">
-          <label>Debitar:</label>
-          <input type="text" currencyMask class="form-control" name="debitar" [(ngModel)]="vendaCurrent.debitar" (focus)="configCalc()" (blur)="calcRestante()">
-        </div>
-        <div class="col-sm-2 form-group">
-          <label>Valor Recebido:</label>
-            <input type="text" currencyMask readonly class="form-control" name="pago" [(ngModel)]="vendaCurrent.pago" (blur)="calcRestante()">
-        </div>
-        <div class="col-sm-2 form-group">
-          <button class="btn btn-primary btn-debitar" (click)="debitar()">
+        <div class="col-sm-2 form-group" *ngIf="vendaCurrent.status == 'pendente'">
+          <button class="btn btn-primary btn-debitar" (click)="openDebitar()">
             <i class="fas fa-money-bill"></i> Debitar
           </button>
+        </div>
+
+        <div class="col-sm-2 ml-auto form-group">
+          <h5>{{ vendaCurrent.id_venda }}#{{ vendaCurrent.created_at }}</h5>
         </div>
       </div>
       <div class="row" *ngIf="!vendaCurrent.status">
@@ -110,7 +97,7 @@
           </tbody>
           <tbody *ngIf="vendaCurrent.itens.length == 0">
             <tr class="text-center">
-              <td colspan="6">Não há itens no momento</td>
+              <td colspan="7">Não há itens no momento</td>
             </tr>
           </tbody>
         </table>

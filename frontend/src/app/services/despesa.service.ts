@@ -12,7 +12,7 @@ export class DespesaService {
     constructor(private http: HttpClient) { }
 
     getAll() {
-        return this.http.get<any>(`${environment.apiUrl}/despesas`).pipe(map(res =>{ return res.entity }));
+        return this.http.get<any>(`${environment.apiUrl}/despesas`);
     }
     
     getMovimentacao() {
