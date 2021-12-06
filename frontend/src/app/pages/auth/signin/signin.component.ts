@@ -64,12 +64,19 @@ export class SigninComponent extends ControllerBase {
       });
     }
 
+    let lembraLogin = localStorage.getItem('lembrarLogin');
+    
+    this.dados.login = lembraLogin? lembraLogin:null;
   }
   
   onSubmit(form: NgForm) {
 
     if (!form.valid) {
       return false;
+    }
+
+    if(this.dados.lembrarLogin) {
+      localStorage.setItem('lembrarLogin', this.dados.login);
     }
     
     this.loading = true;

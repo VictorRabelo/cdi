@@ -3,13 +3,11 @@
 namespace App\Repositories\Eloquent\Dashboard;
 
 use App\Models\Produto;
-use App\Models\ProdutoRepository;
 use App\Models\Venda;
-use App\Models\Estoque;
 use App\Models\Cliente;
-use App\Models\ProdutoVenda;
 use App\Repositories\Eloquent\AbstractRepository;
 use App\Repositories\Contracts\Dashboard\DashboardRepositoryInterface;
+use Illuminate\Support\Facades\DB;
 
 class DashboardRepository extends AbstractRepository implements DashboardRepositoryInterface
 {
@@ -77,7 +75,7 @@ class DashboardRepository extends AbstractRepository implements DashboardReposit
 
     public function getProdutosEnviados()
     {
-        $dados = Produto::where('status', 'pendente')->get();
+        $dados = DB::table('estoques')->join('produtos', 'produtos.id_produto', '=', 'estoques.produto_id')->where('status', 'pendente')->get();
         
         $this->verifica($dados);
 
@@ -88,7 +86,7 @@ class DashboardRepository extends AbstractRepository implements DashboardReposit
 
     public function getProdutosPagos()
     {
-        $dados = Produto::where('status', 'pago')->get();
+        $dados = DB::table('estoques')->join('produtos', 'produtos.id_produto', '=', 'estoques.produto_id')->where('status', 'pago')->get();
         
         $this->verifica($dados);
 
@@ -99,7 +97,7 @@ class DashboardRepository extends AbstractRepository implements DashboardReposit
 
     public function getProdutosEstoque()
     {
-        $dados = Produto::where('status', 'ok')->get();
+        $dados = DB::table('estoques')->join('produtos', 'produtos.id_produto', '=', 'estoques.produto_id')->where('status', 'ok')->get();
         
         $this->verifica($dados);
 
@@ -110,7 +108,7 @@ class DashboardRepository extends AbstractRepository implements DashboardReposit
 
     public function getProdutosVendidos()
     {
-        $dados = Produto::where('status', 'vendido')->get();
+        $dados = DB::table('estoques')->join('produtos', 'produtos.id_produto', '=', 'estoques.produto_id')->where('status', 'vendido')->get();
         
         $this->verifica($dados);
 

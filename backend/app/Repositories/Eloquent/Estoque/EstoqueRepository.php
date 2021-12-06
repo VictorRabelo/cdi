@@ -33,11 +33,11 @@ class EstoqueRepository extends AbstractRepository implements EstoqueRepositoryI
     public function index($queryParams){
 
         if(!isset($queryParams['status']) || $queryParams['status'] == 'all'){
-            $dados = DB::table('estoques')->join('produtos', 'produtos.id_produto', '=', 'estoques.produto_id')->join('categorias', 'categorias.id_categoria', '=', 'produtos.categoria_id')->join('datas', 'datas.id_data', '=', 'produtos.data_id')->join('valores', 'valores.id_valor', '=', 'produtos.valor_id')->join('fretes', 'fretes.id_frete', '=', 'produtos.frete_id')->join('fornecedores', 'fornecedores.id_fornecedor', '=', 'produtos.fornecedor_id')->orderBy('status', 'asc')->orderBy('name', 'asc')->get();
+            $dados = DB::table('estoques')->join('produtos', 'produtos.id_produto', '=', 'estoques.produto_id')->leftJoin('categorias', 'categorias.id_categoria', '=', 'produtos.categoria_id')->join('datas', 'datas.id_data', '=', 'produtos.data_id')->join('valores', 'valores.id_valor', '=', 'produtos.valor_id')->join('fretes', 'fretes.id_frete', '=', 'produtos.frete_id')->leftJoin('fornecedores', 'fornecedores.id_fornecedor', '=', 'produtos.fornecedor_id')->orderBy('status', 'asc')->orderBy('name', 'asc')->get();
         }
 
         if (isset($queryParams['status']) && $queryParams['status'] !== 'all') {
-            $dados = DB::table('estoques')->join('produtos', 'produtos.id_produto', '=', 'estoques.produto_id')->join('categorias', 'categorias.id_categoria', '=', 'produtos.categoria_id')->join('datas', 'datas.id_data', '=', 'produtos.data_id')->join('valores', 'valores.id_valor', '=', 'produtos.valor_id')->join('fretes', 'fretes.id_frete', '=', 'produtos.frete_id')->join('fornecedores', 'fornecedores.id_fornecedor', '=', 'produtos.fornecedor_id')->where('status', $queryParams['status'])->orderBy('name', 'asc')->get();
+            $dados = DB::table('estoques')->join('produtos', 'produtos.id_produto', '=', 'estoques.produto_id')->leftJoin('categorias', 'categorias.id_categoria', '=', 'produtos.categoria_id')->join('datas', 'datas.id_data', '=', 'produtos.data_id')->join('valores', 'valores.id_valor', '=', 'produtos.valor_id')->join('fretes', 'fretes.id_frete', '=', 'produtos.frete_id')->leftJoin('fornecedores', 'fornecedores.id_fornecedor', '=', 'produtos.fornecedor_id')->where('status', $queryParams['status'])->orderBy('name', 'asc')->get();
         }
 
         if (!$dados) {
@@ -53,7 +53,7 @@ class EstoqueRepository extends AbstractRepository implements EstoqueRepositoryI
     }
 
     public function getById($id){
-        $dados = DB::table('estoques')->join('produtos', 'produtos.id_produto', '=', 'estoques.produto_id')->join('categorias', 'categorias.id_categoria', '=', 'produtos.categoria_id')->join('datas', 'datas.id_data', '=', 'produtos.data_id')->join('valores', 'valores.id_valor', '=', 'produtos.valor_id')->join('fretes', 'fretes.id_frete', '=', 'produtos.frete_id')->join('fornecedores', 'fornecedores.id_fornecedor', '=', 'produtos.fornecedor_id')->where('id_estoque', $id)->first();
+        $dados = DB::table('estoques')->join('produtos', 'produtos.id_produto', '=', 'estoques.produto_id')->leftJoin('categorias', 'categorias.id_categoria', '=', 'produtos.categoria_id')->join('datas', 'datas.id_data', '=', 'produtos.data_id')->join('valores', 'valores.id_valor', '=', 'produtos.valor_id')->join('fretes', 'fretes.id_frete', '=', 'produtos.frete_id')->leftJoin('fornecedores', 'fornecedores.id_fornecedor', '=', 'produtos.fornecedor_id')->where('id_estoque', $id)->first();
         if (!$dados) {
             return false;
         }
@@ -190,7 +190,8 @@ class EstoqueRepository extends AbstractRepository implements EstoqueRepositoryI
     }
     
     public function updateEstoque($dados, $id) {
-        $query = DB::table('estoques')->join('produtos', 'produtos.id_produto', '=', 'estoques.produto_id')->join('categorias', 'categorias.id_categoria', '=', 'produtos.categoria_id')->join('datas', 'datas.id_data', '=', 'produtos.data_id')->join('valores', 'valores.id_valor', '=', 'produtos.valor_id')->join('fretes', 'fretes.id_frete', '=', 'produtos.frete_id')->join('fornecedores', 'fornecedores.id_fornecedor', '=', 'produtos.fornecedor_id')->where('produto_id', $id)->first();
+        $query = DB::table('estoques')->join('produtos', 'produtos.id_produto', '=', 'estoques.produto_id')->leftJoin('categorias', 'categorias.id_categoria', '=', 'produtos.categoria_id')->join('datas', 'datas.id_data', '=', 'produtos.data_id')->join('valores', 'valores.id_valor', '=', 'produtos.valor_id')->join('fretes', 'fretes.id_frete', '=', 'produtos.frete_id')->leftJoin('fornecedores', 'fornecedores.id_fornecedor', '=', 'produtos.fornecedor_id')->where('produto_id', $id)->first();
+
         if (!$query) {
             return false;
         }
@@ -210,19 +211,15 @@ class EstoqueRepository extends AbstractRepository implements EstoqueRepositoryI
         if (!$estoque->save()) {
             return ['message' => 'Falha ao atualizar dados!', 'code' => 500];
         }
-
-        $produto = Produto::findOrFail($id);
+        
+        $produto = Produto::findOrFail($query->produto_id);
         if (empty($produto)) {
             return false;
         }
-
+        
         $produto->fill($dados);
         if (!$produto->save()) {
             return ['message' => 'Falha ao atualizar dados!', 'code' => 500];
-        }
-
-        if($estoque->und > 0) {
-            $produto->update(['status' => 'ok']);        
         }
 
         $data = $produto->data()->first();

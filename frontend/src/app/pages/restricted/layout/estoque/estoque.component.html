@@ -89,8 +89,8 @@
                                         <td>{{ estoque.name }}</td>
                                         <td>{{ estoque.valor_total | currency: 'R$' }}</td>
                                         <td>{{ estoque.preco | currency: 'R$' }}</td>
-                                        <td>{{ estoque.categoria }}</td>
-                                        <td>{{ estoque.fornecedor }}</td>
+                                        <td>{{ (estoque.categoria)? estoque.categoria:'Categoria excluída' }}</td>
+                                        <td>{{ (estoque.fornecedor)? estoque.fornecedor:'Fornecedor excluído' }}</td>
                                         <td>
                                             <div class="d-flex justify-content-center">
                                                 <span class="badge badge-success" *ngIf="estoque.status === 'ok' ">Em Estoque</span>

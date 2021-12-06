@@ -34,7 +34,6 @@ class Produto extends Model
         'valor_total', 
         'tipo', 
         'status',
-
     ];
 
     protected $hidden = [];

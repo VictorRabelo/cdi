@@ -15,6 +15,7 @@ class AddColumDolars extends Migration
     {
         Schema::table('dolars', function (Blueprint $table) {
             $table->float('valor_dolar', 8, 2);
+            $table->float('montante', 8, 2);
         });
     }
 

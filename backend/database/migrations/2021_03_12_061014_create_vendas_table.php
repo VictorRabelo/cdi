@@ -16,14 +16,14 @@ class CreateVendasTable extends Migration
         Schema::create('vendas', function (Blueprint $table) {
             $table->id('id_venda');
             $table->foreignId('vendedor_id');
-            $table->foreignId('cliente_id');
-            $table->float('total_final', 8, 2);
-            $table->float('lucro', 8, 2);
-            $table->float('pago', 8, 2);
-            $table->float('restante', 8, 2);
+            $table->foreignId('cliente_id')->nullable();
+            $table->float('total_final', 8, 2)->nullable();
+            $table->float('lucro', 8, 2)->nullable();
+            $table->float('pago', 8, 2)->nullable();
+            $table->float('restante', 8, 2)->nullable();
             $table->integer('qtd_produto')->nullable();
-            $table->enum('pagamento', ['dinheiro','debito','credito']);
-            $table->enum('status', ['pago','pendente']);
+            $table->string('pagamento', ['dinheiro','debito','credito', 'pix'])->nullable();
+            $table->enum('status', ['pago','pendente'])->nullable();
         });
     }
 
