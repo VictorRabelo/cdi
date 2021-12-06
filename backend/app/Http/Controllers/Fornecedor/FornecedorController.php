@@ -22,7 +22,7 @@ class FornecedorController extends Controller
     {
         try {
 
-            $res = $this->fornecedorRepository->all();
+            $res = $this->fornecedorRepository->index();
 
             if (!$res) {
                 return response()->json(['response' => 'Erro de Servidor'], 500);

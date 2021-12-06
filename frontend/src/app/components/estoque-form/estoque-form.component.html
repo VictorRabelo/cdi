@@ -200,12 +200,12 @@
                                 <input type="date" class="form-control" id="data_pedido" name="data_pedido"
                                     [(ngModel)]="dados.data_pedido" #data_pedido="ngModel">
                             </div>
-                            <div class="form-group col-sm-3">
+                            <div class="form-group col-sm-3" *ngIf="dados.tipo == 'usa'">
                                 <label for="data_miami" class="fieldset">Entregue MIAMI:</label>
                                 <input type="date" class="form-control" id="data_miami" name="data_miami"
                                     [(ngModel)]="dados.data_miami" #data_miami="ngModel">
                             </div>
-                            <div class="form-group col-sm-3">
+                            <div class="form-group col-sm-3" *ngIf="dados.tipo == 'usa' || dados.tipo == 'py'">
                                 <label for="data_pjc" class="fieldset">Entregue PJC:</label>
                                 <input type="date" class="form-control" id="data_pjc" name="data_pjc"
                                     [(ngModel)]="dados.data_pjc" #data_pjc="ngModel">

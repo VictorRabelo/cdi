@@ -21,7 +21,7 @@ class CategoriaController extends Controller
     {
         try {
 
-            $res = $this->categoriaRepository->all();
+            $res = $this->categoriaRepository->index();
 
             if (!$res) {
                 return response()->json(['response' => 'Erro de Servidor'], 500);

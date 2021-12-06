@@ -22,7 +22,7 @@ class EstoqueRepository extends AbstractRepository implements EstoqueRepositoryI
 {
     /**
      * @var Estoque
-     */
+    */
     protected $model = Estoque::class;
 
     /**
@@ -195,7 +195,11 @@ class EstoqueRepository extends AbstractRepository implements EstoqueRepositoryI
             return false;
         }
         
-        $dados['path'] = $this->tools->parse_file($dados['file'], $query->categoria, $query->path);
+        if (isset($dados['file'])) {
+            $dados['path'] = $this->tools->parse_file($dados['file'], $query->categoria, $query->path);
+        } else {
+            unset($dados['path']);
+        }
         
         $estoque = Estoque::findOrFail($id);
         if (empty($estoque)) {
@@ -244,4 +248,17 @@ class EstoqueRepository extends AbstractRepository implements EstoqueRepositoryI
         return ['message' => 'Sucesso ao atualizar dados!', 'code' => 200];
     }
 
+    public function deleteEstoque($id) {
+        $dados = $this->model->findOrFail($id);
+
+        if (empty($dados)) {
+            return false;
+        }
+
+        $dados->produto()->first()->delete();
+
+        $dados->delete();
+
+        return true;
+    }
 }

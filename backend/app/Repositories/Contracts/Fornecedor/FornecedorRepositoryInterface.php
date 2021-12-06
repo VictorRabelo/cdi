@@ -7,5 +7,5 @@ use Illuminate\Http\Request;
 
 interface FornecedorRepositoryInterface extends CrudRepositoryInterface
 {
-    //
+    public function index();
 }

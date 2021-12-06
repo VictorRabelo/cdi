@@ -11,4 +11,5 @@ interface EstoqueRepositoryInterface extends CrudRepositoryInterface
     public function getById($id);
     public function create(Request $request);
     public function updateEstoque($dados, $id);
+    public function deleteEstoque($id);
 }

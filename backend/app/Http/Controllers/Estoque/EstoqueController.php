@@ -91,7 +91,7 @@ class EstoqueController extends Controller
     {
         try {
 
-            $res = $this->estoqueRepository->delete($id);
+            $res = $this->estoqueRepository->deleteEstoque($id);
 
             if (!$res) {
                 return response()->json(['response' => 'Erro de Servidor'], 500);
