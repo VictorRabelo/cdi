@@ -201,7 +201,9 @@ class VendaRepository extends AbstractRepository implements VendaRepositoryInter
             return false;
         }
         
-        $dados->produto = $dados->produto()->first();
+        $produto = $dados->produto()->first();
+        $dados->produto = $produto;
+        $dados->produto->estoque = $produto->estoque()->first();
         
         return $dados;
     }

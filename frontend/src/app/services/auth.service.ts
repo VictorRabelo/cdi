@@ -30,4 +30,5 @@ export class AuthService {
   getUserByToken(queryParams: any = {}): Promise<any> {
     return this.http.get(`${this.baseUrl}/oauth/me`, { params: queryParams }).toPromise();
   }
+  
 }

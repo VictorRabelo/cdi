@@ -11,7 +11,7 @@
     <div class="row">
 
       <div class="col-sm-12 form-group">
-        <label>*Nome</label>
+        <label>{{ crud == 'alterar'? '':'*' }}Nome</label>
         <input type="text" required class="form-control" name="nome" 
           [(ngModel)]="dados.name" #name="ngModel"
           placeholder="Nome do {{ title | titlecase }}"
@@ -19,28 +19,38 @@
       </div>
       
       <div class="col-sm-12 form-group" *ngIf="this.module == 'users'">
-        <label>*Login</label>
+        <label>{{ crud == 'alterar'? '':'*' }}Login</label>
         <input type="text" required class="form-control" name="login" 
           [(ngModel)]="dados.login" #login="ngModel"
           [ngClass]="{'is-invalid': !login.valid && (login.touched || form.submitted)}" />
       </div>
       
       <div class="col-sm-12 form-group" *ngIf="this.module == 'users'">
-        <label>*Email</label>
+        <label>{{ crud == 'alterar'? '':'*' }}Email</label>
         <input type="email" required class="form-control" name="email" 
           [(ngModel)]="dados.email" #email="ngModel"
           [ngClass]="{'is-invalid': !email.valid && (email.touched || form.submitted)}" />
       </div>
       
       <div class="col-sm-12 form-group" *ngIf="this.module == 'users'">
-        <label>*Senha</label>
-        <input type="password" required class="form-control" name="password" 
-          [(ngModel)]="dados.password" #password="ngModel"
-          [ngClass]="{'is-invalid': !password.valid && (password.touched || form.submitted)}" />
+        <label>{{ crud == 'alterar'? '':'*' }}Senha</label>
+        <input type="password" [required]="crud !== 'alterar'? true:false" class="form-control" name="password" 
+        [(ngModel)]="dados.password" #password="ngModel"
+        [ngClass]="{'is-invalid': !password.valid && (password.touched || form.submitted)}" />
+      </div>
+      
+      <div class="col-sm-12 form-group" *ngIf="this.module == 'users'">
+        <label for="role">{{ crud == 'alterar'? '':'*' }}Função:</label>
+        <select required class="form-control" name="role" [(ngModel)]="dados.role" #role="ngModel"
+            [ngClass]="{'is-invalid': !role.valid && (role.touched || form.submitted)}">
+                <option value="entregador">Entregador</option>
+                <option value="vendedor">Vendedor</option>
+                <option value="admin">Admin</option>
+        </select>
       </div>
 
       <div class="col-sm-12 form-group" *ngIf="(this.module !== 'categorias' && this.module !== 'users')">
-        <label>*Telefone:</label>
+        <label>{{ crud == 'alterar'? '':'*' }}Telefone:</label>
         <input type="tel" class="form-control" name="telefone" [(ngModel)]="dados.telefone" #telefone="ngModel"
           placeholder="(00) 00000-0000"
           [mask]="'(00) 0 0000-0000'"
@@ -48,7 +58,7 @@
       </div>
             
       <div class="col-sm-12 form-group" *ngIf="this.module == 'categorias'">
-          <label>*Subcategoria:</label>
+          <label>{{ crud == 'alterar'? '':'*' }}Subcategoria:</label>
           <input type="text" class="form-control" name="subcategoria" [(ngModel)]="dados.subcategoria" #subcategoria="ngModel"
               placeholder="Nome da Subcategoria"
               [ngClass]="{'is-invalid': !subcategoria.valid && (subcategoria.touched || form.submitted)}" />

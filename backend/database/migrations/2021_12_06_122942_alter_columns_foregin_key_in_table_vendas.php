@@ -17,6 +17,9 @@ class AlterColumnsForeginKeyInTableVendas extends Migration
             $table->dropForeign(['vendedor_id']);
             $table->dropForeign(['cliente_id']);
             
+            $table->foreignId('vendedor_id')->nullable()->change();
+            $table->foreignId('cliente_id')->nullable()->change();
+
             $table->foreign('vendedor_id')->references('id')->on('users')->onDelete('SET NULL')->onUpdate('cascade')->change()->nullable();
             $table->foreign('cliente_id')->references('id_cliente')->on('clientes')->onDelete('SET NULL')->onUpdate('cascade')->change()->nullable();
         });

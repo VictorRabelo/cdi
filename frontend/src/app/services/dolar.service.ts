@@ -23,8 +23,8 @@ export class DolarService {
         return this.http.post<any>(`${environment.apiUrl}/dolars`, store);
     }
 
-    update(update: any){
-        return this.http.put<any>(`${environment.apiUrl}/dolars/${update.id}`, update);
+    update(id: number, update: any) {
+        return this.http.put<any>(`${environment.apiUrl}/dolars/${id}`, update);
     }
 
     delete(id: number){

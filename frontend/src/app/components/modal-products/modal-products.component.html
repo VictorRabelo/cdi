@@ -32,7 +32,7 @@
             <tr>
               <th scope="row">#{{ item.id_produto }}</th>
               <td>
-                <img [src]="item.path" class="produtos" alt="Produto" />
+                <async-image url="{{ item.path }}"></async-image>
               </td>
               <td>{{ item.name }}</td>
               <td>{{ item.und }}</td>

@@ -51,8 +51,6 @@ const routes: Routes = [
     ]
   },
 
-  {path: 'cotacao-perfume', loadChildren: () => import('./cotacao-perfume/cotacao-perfume.module').then(m => m.CotacaoPerfumeModule) },
-  
   {path: 'caixa', loadChildren: () => import('./caixa/caixa.module').then(m => m.CaixaModule) },
   
 ];

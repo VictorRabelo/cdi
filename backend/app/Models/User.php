@@ -12,10 +12,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use  SoftDeletes, HasApiTokens, Notifiable;
+    use SoftDeletes, HasApiTokens, Notifiable;
 
     protected $table = 'users';
     protected $primaryKey = 'id';
+    
     /**
      * The attributes that are mass assignable.
      *
@@ -25,9 +26,8 @@ class User extends Authenticatable
         'name',
         'login',
         'email',
-        'tema',
         'password',
-        'telefone',
+        'tema',
     ];
 
     /**
@@ -36,7 +36,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-         'password', 'remember_token',
+        'password', 'remember_token',
     ];
 
     /**

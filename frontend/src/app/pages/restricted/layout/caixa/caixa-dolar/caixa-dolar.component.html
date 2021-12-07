@@ -38,7 +38,7 @@
                     <div class="card" [ngClass]="{'card-load': loading}">
                         <div class="card-header">
                             <div class="card-title">                                
-                                <button type="button" class="btn btn-primary btn-sm" (click)="create()">
+                                <button type="button" class="btn btn-primary btn-sm" (click)="openForm('cadastrar')">
                                     <i class="fas fa-plus" title="Criar"></i>
                                 </button>
                             </div>
@@ -60,7 +60,7 @@
                                 <thead>
                                     <tr>
                                         <th scope="col">Data</th>
-                                        <th scope="col">Valor do Dolar</th>
+                                        <th scope="col">Valor em Dolar</th>
                                         <th scope="col">Preço do Dolar</th>
                                         <th scope="col">Valor Pago</th>
                                         <th scope="col">Descrição</th>
@@ -73,8 +73,8 @@
                                         <td>{{ item.created_at }}</td>
                                         <td *ngIf="item.status === 'saida'" >{{- item.montante | currency: '$' }}</td>
                                         <td *ngIf="item.status === 'entrada'" >{{ item.montante | currency: '$' }}</td>
-                                        <td>{{ item.valor_dolar | currency: 'R$' }}</td>
-                                        <td>{{ item.valor_pago | currency: 'R$' }}</td>
+                                        <td>{{ (!item.valor_dolar)? '****':item.valor_dolar  | currency: 'R$' }}</td>
+                                        <td>{{ (item.valor_pago == 0)? '****':item.valor_pago | currency: 'R$' }}</td>
                                         <td>{{ item.descricao }}</td>
                                         <td>
                                             <div class="d-flex justify-content-center">
@@ -83,7 +83,10 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <button class="btn btn-danger btn-sm" title="Excluir" (click)="delete(item.id_dolar)">
+                                            <button class="btn btn-warning btn-sm mr-1" title="Excluir" (click)="openForm('alterar', item)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-danger btn-sm ml-1" title="Excluir" (click)="delete(item.id_dolar)">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </td>

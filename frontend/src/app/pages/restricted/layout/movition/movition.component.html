@@ -69,16 +69,12 @@
                                         <td>{{ item.valor | currency: 'R$' }}</td>
                                         <td>{{ item.descricao }}</td>
                                         <td *ngIf="type == 'historico'">
-                                            <div class="d-flex justify-content-center">
-                                                <span class="badge badge-info" *ngIf="item.status === 'eletronico' ">Eletrônico</span>
-                                                <span class="badge badge-warning" *ngIf="item.status === 'geral' ">Geral</span>
-                                            </div>
+                                            <span class="badge badge-info" *ngIf="item.status === 'eletronico' ">Eletrônico</span>
+                                            <span class="badge badge-warning" *ngIf="item.status === 'geral' ">Geral</span>
                                         </td>
                                         <td>
-                                            <div class="d-flex justify-content-center">
-                                                <span class="badge badge-danger" *ngIf="item.tipo === 'saida' ">Saída</span>
-                                                <span class="badge badge-success" *ngIf="item.tipo === 'entrada' ">Entrada</span>
-                                            </div>
+                                            <span class="badge badge-danger" *ngIf="item.tipo === 'saida' ">Saída</span>
+                                            <span class="badge badge-success" *ngIf="item.tipo === 'entrada' ">Entrada</span>
                                         </td>
                                         <td>
                                             <button type="button" class="btn btn-danger btn-sm" title="Excluir" (click)="deleteConfirm(item.id_movition)">

@@ -37,7 +37,7 @@ export class VendaService {
         return this.http.post<any>(`${this.baseUrl}/vendas/finish`, dados);
     }
 
-    update(id: number, update: any){
+    update(id: number, update: any) {
         return this.http.put<any>(`${this.baseUrl}/vendas/${id}`, update);
     }
 

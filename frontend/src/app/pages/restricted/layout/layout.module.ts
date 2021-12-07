@@ -39,6 +39,7 @@ import { DataTablesModule } from 'angular-datatables';
 import { NgbDropdownModule, NgbModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { UsersComponent } from './users/users.component';
 import { MovitionComponent } from './movition/movition.component';
+import { UtilModule } from '@app/util/util.module';
  
 export const customCurrencyMaskConfig = {
     align: "left",
@@ -64,6 +65,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     ReactiveFormsModule,
     FormsModule,
     ComponentsModule,
+    UtilModule,
     ToastModule,
     ProgressSpinnerModule,
     ProgressBarModule,

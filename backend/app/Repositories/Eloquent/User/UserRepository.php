@@ -29,16 +29,49 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
     public function create($dados)
     {
         $dados['password'] = Hash::make($dados['password']);
-        
-        $dados = $this->store($dados);
-        
-        if ($dados) {
-            $role = new Role(['role' => 'user']);
-            $dados->role()->save($role);
+
+        $user = $this->store($dados);
+
+        if ($user) {
+            $role = new Role(['role' => $dados['role']]);
+            $user->role()->save($role);
             
-            return $this->messages->update;
+            return true;
         }
 
         return false;
+    }
+
+    
+    public function updateUser($dados, $id){
+        $resp = $this->model->findOrFail($id);
+
+        if (empty($resp)) {
+            return false;
+        }
+
+        if (isset($dados['password'])) {
+            $dados['password'] = Hash::make($dados['password']);
+        }
+        
+        $resp->fill($dados);
+
+        if (!$resp->save()) {
+            return ['message' => 'Falha ao atualizar dados!', 'code' => 500];
+        }
+
+        return $resp;
+    }
+
+    public function getById($id)
+    {
+        $dados = $this->show($id);
+        if (!$dados) {
+            return false;
+        }
+
+        $dados->role = $dados->role()->first();
+
+        return $dados;
     }
 }

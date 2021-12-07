@@ -80,7 +80,7 @@
               <td>{{ item.produto.id_produto }}</td>
               <td>{{item.qtd_venda | number}}</td>
               <td>
-                <img [src]="item.produto.path" class="produtos" alt="Produto" />
+                <async-image url="{{ item.produto.path }}"></async-image>
               </td>
               <td>{{ item.produto.name | titlecase }}</td>
               <td class="text-right">{{ item.preco_venda | currency:'R$' }}</td>

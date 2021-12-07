@@ -9,5 +9,9 @@ interface UserRepositoryInterface extends CrudRepositoryInterface
 {
     public function index();
 
+    public function getById($id);
+
     public function create($dados);
+    
+    public function updateUser($dados, $id);
 }

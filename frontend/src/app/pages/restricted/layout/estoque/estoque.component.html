@@ -83,7 +83,7 @@
                                     <tr>
                                         <th scope="row">#{{ estoque.id_produto }}</th>
                                         <td>
-                                            <img [src]="estoque.path" class="produtos" alt="Produto">
+                                            <async-image url="{{ estoque.path }}"></async-image>
                                         </td>
                                         <td>{{ estoque.und }}</td>
                                         <td>{{ estoque.name }}</td>

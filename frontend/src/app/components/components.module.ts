@@ -16,6 +16,8 @@ import { NgxMaskModule } from 'ngx-mask';
 import { CurrencyMaskInputMode, NgxCurrencyModule } from 'ngx-currency';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { ModalMovitionComponent } from './modal-movition/modal-movition.component';
+import { UtilModule } from '@app/util/util.module';
+import { ModalDolarFormComponent } from './modal-dolar-form/modal-dolar-form.component';
 
 export const customCurrencyMaskConfig = {
   align: "right",
@@ -40,11 +42,13 @@ export const customCurrencyMaskConfig = {
     ModalProductsComponent,
     ModalProductDadosComponent,
     ModalDebitarComponent,
-    ModalMovitionComponent
+    ModalMovitionComponent,
+    ModalDolarFormComponent
   ],
   imports: [
     CommonModule,
     FormsModule,
+    UtilModule,
     MatTabsModule,
     Ng2SearchPipeModule,
     MatStepperModule,
@@ -58,7 +62,8 @@ export const customCurrencyMaskConfig = {
     ModalProductsComponent,
     ModalProductDadosComponent,
     ModalDebitarComponent,
-    ModalMovitionComponent
+    ModalMovitionComponent,
+    ModalDolarFormComponent,
   ],
   entryComponents: [
     ClienteFormComponent,
@@ -67,7 +72,8 @@ export const customCurrencyMaskConfig = {
     ModalProductsComponent,
     ModalProductDadosComponent,
     ModalDebitarComponent,
-    ModalMovitionComponent
+    ModalMovitionComponent,
+    ModalDolarFormComponent,
   ],
 })
 export class ComponentsModule { }

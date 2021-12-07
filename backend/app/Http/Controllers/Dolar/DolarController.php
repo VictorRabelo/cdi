@@ -26,7 +26,7 @@ class DolarController extends Controller
             $res = $this->dolarRepository->index();
 
             if (isset($res['code'])) {
-                return response()->json($res['message'], $res['code']);
+                return response()->json($res, $res['code']);
             }
 
             return response()->json($res, 200);
@@ -57,7 +57,6 @@ class DolarController extends Controller
     {
         try {
             $dados = $request->all();
-
             $res = $this->dolarRepository->store($dados);
 
             if (empty($res)) {

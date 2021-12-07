@@ -1,0 +1,52 @@
+<form #form="ngForm" (ngSubmit)="submit(form)" (keydown.enter)="$event.preventDefault()" class="card card-load mb-0">
+  <div class="modal-header">
+    <h4>Movimentar Dolar</h4>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+    
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-12 form-group">
+        <label for="status">{{ crud == 'alterar'? '':'*' }}Status:</label>
+        <select required class="form-control" name="status" [(ngModel)]="dados.status" #status="ngModel"
+          [ngClass]="{'is-invalid': !status.valid && (status.touched || form.submitted)}">
+          
+          <option value="entrada">Entrada</option>
+          <option value="saida">Saida</option>
+
+        </select>
+      </div>
+
+      <div class="col-12 form-group">
+        <label>Montante:</label>
+        <input type="text" currencyMask [options]="{ prefix: '$ '}" class="form-control" name="montante" [(ngModel)]="dados.montante" (keyup)="calcRestante()">
+      </div>
+      
+      <div class="col-12 form-group" *ngIf="dados.status !== 'saida'" [@enterAnimation]>
+        <label>Valor em Dolar:</label>
+        <input type="text" currencyMask class="form-control" name="valor_dolar" [(ngModel)]="dados.valor_dolar" (keyup)="calcRestante()">
+      </div>
+      
+      <div class="col-12 form-group" *ngIf="dados.status !== 'saida'" [@enterAnimation]>
+        <label>Valor Pago:</label>
+        <input type="text" currencyMask readonly class="form-control" name="valor_pago" [(ngModel)]="dados.valor_pago">
+      </div>
+      
+      <div class="col-12 form-group">
+        <label>Descrição:</label>
+        <input type="text" class="form-control" name="descricao" [(ngModel)]="dados.descricao">
+      </div>
+
+    </div>
+  </div>
+  <div class="modal-footer">
+  
+    <button type="button" class="btn btn-secondary" (click)="close()">Voltar</button>
+    <button type="submit" class="btn btn-success" [disabled]="loading">
+      <i class="fas fa-money-bill"></i> Salvar
+    </button>
+  </div>
+  <div class="card-loader" *ngIf="loading"><i class="fas fa-sync-alt anim-rotate"></i></div>
+</form>

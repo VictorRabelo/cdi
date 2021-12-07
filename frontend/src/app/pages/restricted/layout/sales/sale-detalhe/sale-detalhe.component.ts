@@ -52,7 +52,11 @@ export class SaleDetalheComponent implements OnInit {
     this.loading = true;
     this.service.getById(id).subscribe(res => {
       this.vendaCurrent = res.dadosVenda;
+      
+      this.verificaDados(this.vendaCurrent);
+      
       this.vendaCurrent.itens = res.dadosProdutos;
+      
       this.loading = false;
     }, error => {
       this.loading = false;
@@ -178,5 +182,10 @@ export class SaleDetalheComponent implements OnInit {
       this.loading = false;
     });
   }
-
+  
+  private verificaDados(res) {
+    if(res.cliente == null) {
+      this.vendaCurrent.cliente = 'Cliente não informado';
+    }
+  }
 }

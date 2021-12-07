@@ -40,6 +40,18 @@ export class ErrorInterceptor implements HttpInterceptor {
         if(error.error.telefone){
           this.message.toastError(error.error.telefone[0]);
         }
+        
+        if(error.error.email){
+          this.message.toastError(error.error.email[0]);
+        }
+        
+        if(error.error.login){
+          this.message.toastError(error.error.login[0]);
+        }
+        
+        if(error.error.password){
+          this.message.toastError(error.error.password[0]);
+        }
       }
 
       const err = error.error.message || error.error.code;

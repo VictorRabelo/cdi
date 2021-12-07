@@ -84,6 +84,10 @@ export class ClienteFormComponent implements OnInit, OnDestroy {
           this.dados.id = res.id_cliente;
         }
         
+        if(this.module == 'users'){
+          this.dados.role = res.role.role;
+        }
+        
         if(this.module == 'categorias'){
           this.dados.id = res.id_categoria;
           this.dados.name = res.categoria;

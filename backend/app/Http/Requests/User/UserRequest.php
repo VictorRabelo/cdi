@@ -27,18 +27,20 @@ class UserRequest extends FormRequest
     {
         return [
             'name' => 'required|string|min:3|max:255',
-            'email' => 'required|min:5|max:255|unique:Users,email',
-            'login' => 'required|min:3|max:11',
-            'password' => 'required|min:10|max:11'
+            'email' => 'required|min:5|max:255|unique:users,email',
+            'login' => 'required|min:3|max:11|unique:users,login',
+            'password' => 'required|min:4|max:10',
+            'role' => 'required',
         ];
     }
 
     public function attributes()
     {
         return [
-            'name' => 'Nome',
-            'email' => 'Email',
-            'login' => 'Login',
+            'name'     => 'Nome',
+            'role'     => 'Função',
+            'email'    => 'Email',
+            'login'    => 'Login',
             'password' => 'Senha',
         ];
     }
@@ -46,12 +48,24 @@ class UserRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.min' => ':attribute muito pequeno.',
-            'name.max' => ':attribute muito grande.',
-            'name.required' => 'Necessita de um :attribute.',
-            'telefone.unique' => 'Número de :attribute já cadastrado!.',
-            'telefone.min' => 'Número de :attribute inválido!',
-            'telefone.max' => 'Número de :attribute inválido!',
+            'name.min'     => ':attribute muito pequeno.',
+            'email.min'    => ':attribute muito pequeno.',
+            'login.min'    => ':attribute muito pequeno.',
+            'password.min' => ':attribute muito pequena, necessário ao menos 4 caracteres.',
+
+            'name.max'     => ':attribute muito grande.',
+            'email.max'    => ':attribute muito grande.',
+            'login.max'    => ':attribute muito grande.',
+            'password.max' => ':attribute muito grande, máximo 10 caracteres.',
+
+            'name.required'     => 'Está faltando o :attribute.',
+            'role.required'     => 'Está faltando a :attribute.',
+            'email.required'    => 'Está faltando o :attribute.',
+            'login.required'    => 'Está faltando o :attribute.',
+            'password.required' => 'Está faltando a :attribute.',
+
+            'email.unique' => 'O :attribute já está cadastrado!.',
+            'login.unique' => 'O :attribute já está cadastrado!.',
         ];
     }
     

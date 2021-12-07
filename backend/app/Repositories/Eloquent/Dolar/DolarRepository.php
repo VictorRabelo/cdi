@@ -17,12 +17,33 @@ class DolarRepository extends AbstractRepository implements DolarRepositoryInter
     public function index()
     {
         $dados = $this->model->orderBy('created_at', 'desc')->get();
-        if (!$dados) {
-            return ['message' => 'Falha ao processar caixa do dolar!', 'code' => 500];
+         
+        if ($dados == []) {
+            return ['message' => 'Não há registros no momento!', 'dados' => $dados,'code' => 500];
         }
+
+        $count = 0;
+        $entrada = 0;
+        $saida = 0;
+        $calcMedia = 0;
         
-        $media = 0;
-        $saldo = 0;
+        foreach ($dados as $item) {
+            if ($item->status == 'entrada') {
+                $entrada += $item->montante;
+            }
+            
+            if ($item->status == 'saida') {
+                $saida += $item->montante;
+            }
+
+            if ($item->valor_dolar && $item->status == 'entrada') {
+                $calcMedia += $item->valor_dolar;
+                $count++;
+            }
+        }
+
+        $media = $calcMedia / $count;
+        $saldo = $entrada - $saida;
         
         return ['dados' => $dados, 'media' => $media, 'saldo' => $saldo];
     }

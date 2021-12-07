@@ -39,7 +39,7 @@ class UserController extends Controller
     {
         try {
 
-            $res = $this->userRepository->show($id);
+            $res = $this->userRepository->getById($id);
 
             if (empty($res)) {
                 return response()->json(['response' => 'Erro de Servidor'], 500);
@@ -74,7 +74,7 @@ class UserController extends Controller
         try {
             $dados = $request->all();
 
-            $res = $this->userRepository->update($dados, $id);
+            $res = $this->userRepository->updateUser($dados, $id);
 
             if (isset($res->code) && $res->code == CodeStatusEnum::ERROR_SERVER) {
                 return response()->json(['message' => $res->message], $res->code);

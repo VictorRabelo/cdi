@@ -44,6 +44,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { reducers, metaReducers } from './core/reducers';
 import { AuthEffects } from './core/effects/auth.effect';
 import { authReducer } from './core/reducers/auth.reducers';
+import { UtilModule } from './util/util.module';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
@@ -54,16 +55,19 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     NotFoundComponent
   ],
   imports: [
+    HttpClientModule,
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
-    ComponentsModule,
     FormsModule,
     ReactiveFormsModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
+    
+    ComponentsModule,
+    UtilModule,
+    LayoutModule,
+    
     NgxIziToastModule,
     ToastModule,
-    LayoutModule,
     RippleModule,
     FileUploadModule,
     ProgressSpinnerModule,

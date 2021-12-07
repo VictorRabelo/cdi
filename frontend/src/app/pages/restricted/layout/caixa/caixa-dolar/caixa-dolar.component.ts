@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { ModalDolarFormComponent } from '@app/components/modal-dolar-form/modal-dolar-form.component';
 import { ControllerBase } from '@app/controller/controller.base';
 import { DolarService } from '@app/services/dolar.service';
 import { MessageService } from '@app/services/message.service';
@@ -32,18 +33,22 @@ export class CaixaDolarComponent extends ControllerBase {
     private modalCtrl: NgbModal,
     private spinner: NgxSpinnerService,
     private messageService: MessageService, 
-    private dolarService: DolarService
+    private service: DolarService
   ) { 
     super();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.getStart();
+  }
+
+  getStart(): void {
     this.loading = true;
     this.getAll();
   }
 
   getAll(){
-    this.sub.sink = this.dolarService.getAll().subscribe(
+    this.sub.sink = this.service.getAll().subscribe(
       (res: any) => {
         this.loading = false;
         this.dados = res.dados
@@ -51,14 +56,21 @@ export class CaixaDolarComponent extends ControllerBase {
         this.saldo = res.saldo
       },
       error => {
-        console.log(error)
-        this.messageService.toastError();
+        this.messageService.toastError(error);
         this.loading = false;
       })
   }
 
-  create() {
-    
+  openForm(crud, item = undefined) {
+    const modalRef = this.modalCtrl.open(ModalDolarFormComponent, { size: 'sm', backdrop: 'static' });
+    modalRef.componentInstance.data = item;
+    modalRef.componentInstance.crud = crud;
+    modalRef.result.then(res => {
+      if(res.message){
+        this.messageService.toastSuccess(res.message);
+      }
+      this.getAll();
+    })
   }
 
   delete(id){
@@ -66,7 +78,7 @@ export class CaixaDolarComponent extends ControllerBase {
     this.loading = true;
     this.spinner.show();
 
-    this.dolarService.delete(id).subscribe(
+    this.service.delete(id).subscribe(
       (res: any) => {
         this.spinner.hide();
         this.loading = true;
