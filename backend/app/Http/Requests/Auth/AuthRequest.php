@@ -43,8 +43,9 @@ class AuthRequest extends FormRequest
     {
         return [
             'login.required' => 'Necessita de um :attribute',
-            'login.min' => 'Minimo 3 caracteres',
             'password.required' => 'Necessita de uma :attribute',
+            
+            'login.min' => 'Minimo 3 caracteres',
             'password.min' => 'Minimo 3 caracteres',
         ];
     }

@@ -10,6 +10,7 @@ interface DashboardRepositoryInterface
     public function getTotalClientes();
     public function getProdutosEnviados();
     public function getProdutosPagos();
+    public function getProdutosCadastrados();
     public function getProdutosEstoque();
     public function getProdutosVendidos();
     public function getContasReceber();

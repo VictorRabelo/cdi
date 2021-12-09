@@ -23,7 +23,7 @@ class AuthController extends Controller
         $res = $this->authRepository->logar($credentials);
 
         if (!$res) {
-            return response()->json(['message' => 'Usuario ou senha invalido!'], 403);
+            return response()->json(['message' => 'Usuário ou senha invalido!'], 403);
         }
 
         return response()->json($res, 200);

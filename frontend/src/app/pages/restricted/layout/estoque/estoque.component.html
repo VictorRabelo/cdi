@@ -24,21 +24,25 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-sm-3 col-md-3 ml-auto">
+                <div class="col-sm-2 col-md-2">
                     <label class="text-danger">Em Estoque:</label>
                     <span class="pl-2 text-success">{{ estoque }}</span>
                 </div>
-                <div class="col-sm-3 col-md-3">
+                <div class="col-sm-2 col-md-2 mx-2">
                     <label class="text-danger">Enviados:</label>
                     <span class="pl-2 text-success">{{ enviados }}</span>
                 </div>
-                <div class="col-sm-3 col-md-3">
+                <div class="col-sm-2 col-md-2 mx-2">
                     <label class="text-danger">Pagos:</label>
                     <span class="pl-2 text-success">{{ pagos }}</span>
                 </div>
-                <div class="col-sm-3 col-md-3">
+                <div class="col-sm-2 col-md-2 mx-2">
                     <label class="text-danger">Vendidos:</label>
                     <span class="pl-2 text-success">{{ vendidos }}</span>
+                </div>
+                <div class="col-sm-2 col-md-2">
+                    <label class="text-danger">Total em Estoque:</label>
+                    <span class="pl-2 text-success">{{ totalEstoque }}</span>
                 </div>
             </div>
             <div class="row">
@@ -51,7 +55,7 @@
                                 </button>
                             </div>
                             <div class="card-tools">
-                                <div class="input-group input-group-sm" style="width: 200px;">
+                                <div class="input-group input-group-sm inputSearch">
                                     <input type="text" name="table_search" class="form-control float-right" [(ngModel)]="term" placeholder="Pesquisar...">
                 
                                     <div class="input-group-append">

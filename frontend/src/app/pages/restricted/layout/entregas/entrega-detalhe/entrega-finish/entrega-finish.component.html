@@ -1,0 +1,81 @@
+<div class="modal-content">
+  <div class="card mb-0" [ngClass]="{'card-load': loading}">
+    <div class="modal-header">
+      <h4 *ngIf="type == 'finish'">Finalizar Venda</h4>
+      <button type="button" class="close" aria-label="Close" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label>Total:</label>
+            <input type="text" currencyMask readonly class="form-control" name="total_final" [(ngModel)]="dados.total_final">
+          </div>
+          <div class="form-group">
+            <label>Lucro:</label>
+            <input type="text" currencyMask readonly class="form-control" name="lucro" [(ngModel)]="dados.lucro">
+          </div>
+          <div class="form-group" *ngIf="type == 'finish'">
+            <label>Pagar:</label>
+            <input type="text" currencyMask class="form-control" name="debitar" [(ngModel)]="dados.debitar" (focus)="configCalc()" (blur)="calcRestante()">
+          </div>
+          <div class="form-group">
+            <label>Restante:</label>
+            <input type="text" currencyMask readonly class="form-control" name="restante" [(ngModel)]="dados.restante" #restante="ngModel">
+          </div>
+          <div class="form-group">
+            <label>Valor Recebido:</label>
+            <input type="text" currencyMask readonly class="form-control" name="pago" [(ngModel)]="dados.pago">
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label>{{ (type == 'finish')? '*':'' }}Formas de Pagamento:</label>
+            <select class="form-control" name="pagamento" [(ngModel)]="dados.pagamento" #pagamento="ngModel"
+              [ngClass]="{'is-invalid': !validVenda}" [disabled]="type == 'detail'">
+              <option value="">Selecione uma forma</option>
+              <option value="pix">PIX</option>
+              <option value="dinheiro">Dinheiro</option>
+              <option value="debito">Cartão de Débito</option>
+              <option value="credito">Cartão de Crédito</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>{{(type == 'finish')? '*':''}}Status:</label>
+              <select class="form-control" required name="status" [(ngModel)]="dados.status" #status="ngModel"
+                [ngClass]="{'is-invalid': !validVenda}" [disabled]="type == 'detail'">
+                <option value="">Selecione a situação</option>
+                <option value="pendente">Pendente</option>
+                <option value="pago">Pago</option>
+              </select>
+          </div>
+          <div class="form-group">
+            <label>{{ (type == 'finish')? '*':'' }}Tipo de Caixa:</label>
+            <select class="form-control" required name="caixa" [(ngModel)]="dados.caixa" #caixa="ngModel"
+                [ngClass]="{'is-invalid': !validVenda}" [disabled]="type == 'detail'">
+              <option value="">Selecione um caixa</option>
+              <option value="geral">Geral</option>
+              <option value="eletronico">Eletrônico</option>
+            </select>
+          </div>
+          <div class="form-group" *ngIf="type == 'finish' && dados.status != 'pago'">
+            <label for="prazo" class="fieldset">A prazo?:</label>                            
+            <input class="form-check-input ml-3" type="checkbox" id="prazo" name="prazo" [(ngModel)]="dados.prazo">
+          </div>
+        </div>
+      </div>
+      <div class="card-loader" *ngIf="loading"><i class="fas fa-sync-alt anim-rotate"></i></div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" [disabled]="loading" (click)="close()">Voltar</button>
+    <button type="button" class="btn btn-success" [disabled]="loading" (click)="finish()" *ngIf="type == 'finish'">
+      <div class="spinner-border text-success" role="status" *ngIf="loading">
+        <span class="sr-only">Loading...</span>
+      </div>
+      <span *ngIf="!loading">Salvar</span>
+    </button>
+  </div>
+</div>

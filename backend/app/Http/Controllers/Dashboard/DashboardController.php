@@ -23,10 +23,6 @@ class DashboardController extends Controller
 
             $res = $this->dashboardRepository->getVendasDia();
 
-            if (isset($res['code']) && $res['code'] == 500) {
-                return response()->json(['error' => 'Erro de Servidor'], 500);
-            }
-
             return response()->json($res, 200);
 
         } catch (ModelNotFoundException $e) {
@@ -39,10 +35,6 @@ class DashboardController extends Controller
         try {
 
             $res = $this->dashboardRepository->getVendasMes();
-
-            if (isset($res['code']) && $res['code'] == 500) {
-                return response()->json(['error' => 'Erro de Servidor'], 500);
-            }
 
             return response()->json($res, 200);
 
@@ -57,10 +49,6 @@ class DashboardController extends Controller
 
             $res = $this->dashboardRepository->getVendasTotal();
 
-            if (isset($res['code']) && $res['code'] == 500) {
-                return response()->json(['error' => 'Erro de Servidor'], 500);
-            }
-
             return response()->json($res, 200);
 
         } catch (ModelNotFoundException $e) {
@@ -72,10 +60,6 @@ class DashboardController extends Controller
     {
         try {
             $res = $this->dashboardRepository->getProdutosEnviados();
-
-            if (!$res) {
-                return response()->json(['error' => 'Erro de Servidor'], 500);
-            }
 
             return response()->json($res, 200);
 
@@ -89,9 +73,17 @@ class DashboardController extends Controller
         try {
             $res = $this->dashboardRepository->getProdutosPagos();
 
-            if (!$res) {
-                return response()->json(['error' => 'Erro de Servidor'], 500);
-            }
+            return response()->json($res, 200);
+            
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
+        }
+    }
+    
+    public function getProdutosCadastrados()
+    {
+        try {
+            $res = $this->dashboardRepository->getProdutosCadastrados();
 
             return response()->json($res, 200);
             
@@ -106,10 +98,6 @@ class DashboardController extends Controller
 
             $res = $this->dashboardRepository->getProdutosEstoque();
 
-            if (!$res) {
-                return response()->json(['error' => 'Erro de Servidor'], 500);
-            }
-
             return response()->json($res, 200);
             
         } catch (ModelNotFoundException $e) {
@@ -122,10 +110,6 @@ class DashboardController extends Controller
         try {
 
             $res = $this->dashboardRepository->getProdutosVendidos();
-
-            if (!$res) {
-                return response()->json(['error' => 'Erro de Servidor'], 500);
-            }
 
             return response()->json($res, 200);
             
@@ -140,10 +124,6 @@ class DashboardController extends Controller
 
             $res = $this->dashboardRepository->getContasReceber();
 
-            if (!$res) {
-                return response()->json(['error' => 'Erro de Servidor'], 500);
-            }
-
             return response()->json($res, 200);
             
         } catch (ModelNotFoundException $e) {
@@ -156,10 +136,6 @@ class DashboardController extends Controller
         try {
 
             $res = $this->dashboardRepository->getTotalClientes();
-
-            if (!$res) {
-                return response()->json(['error' => 'Erro de Servidor'], 500);
-            }
 
             return response()->json($res, 200);
             

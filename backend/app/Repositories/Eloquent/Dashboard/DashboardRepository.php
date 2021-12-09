@@ -30,8 +30,6 @@ class DashboardRepository extends AbstractRepository implements DashboardReposit
     {
         $dados = Venda::where('created_at', 'LIKE', '%'.$this->dateNow().'%')->get();
         
-        $this->verifica($dados);
-        
         $count = $dados->count();
         
         return $count;
@@ -44,8 +42,6 @@ class DashboardRepository extends AbstractRepository implements DashboardReposit
         $date = $this->dateMonth();
         $dados = Venda::whereBetween('created_at', [$date['inicio'], $date['fim']])->get();
         
-        $this->verifica($dados);
-        
         $count = $dados->count();
         
         return $count;
@@ -54,8 +50,6 @@ class DashboardRepository extends AbstractRepository implements DashboardReposit
     public function getVendasTotal()
     {
         $dados = Venda::all();
-        
-        $this->verifica($dados);
         
         $count = $dados->count();
 
@@ -66,8 +60,6 @@ class DashboardRepository extends AbstractRepository implements DashboardReposit
     {
         $dados = Cliente::all();
         
-        $this->verifica($dados);
-
         $count = $dados->count();
 
         return $count;
@@ -77,8 +69,6 @@ class DashboardRepository extends AbstractRepository implements DashboardReposit
     {
         $dados = DB::table('estoques')->join('produtos', 'produtos.id_produto', '=', 'estoques.produto_id')->where('status', 'pendente')->get();
         
-        $this->verifica($dados);
-
         $count = $dados->count();
 
         return $count;
@@ -88,8 +78,6 @@ class DashboardRepository extends AbstractRepository implements DashboardReposit
     {
         $dados = DB::table('estoques')->join('produtos', 'produtos.id_produto', '=', 'estoques.produto_id')->where('status', 'pago')->get();
         
-        $this->verifica($dados);
-
         $count = $dados->count();
 
         return $count;
@@ -99,8 +87,15 @@ class DashboardRepository extends AbstractRepository implements DashboardReposit
     {
         $dados = DB::table('estoques')->join('produtos', 'produtos.id_produto', '=', 'estoques.produto_id')->where('status', 'ok')->get();
         
-        $this->verifica($dados);
+        $count = $dados->count();
 
+        return $count;
+    }
+    
+    public function getProdutosCadastrados()
+    {
+        $dados = DB::table('estoques')->join('produtos', 'produtos.id_produto', '=', 'estoques.produto_id')->get();
+        
         $count = $dados->count();
 
         return $count;
@@ -110,8 +105,6 @@ class DashboardRepository extends AbstractRepository implements DashboardReposit
     {
         $dados = DB::table('estoques')->join('produtos', 'produtos.id_produto', '=', 'estoques.produto_id')->where('status', 'vendido')->get();
         
-        $this->verifica($dados);
-
         $count = $dados->count();
 
         return $count;
@@ -121,8 +114,6 @@ class DashboardRepository extends AbstractRepository implements DashboardReposit
     {
         $dados = Venda::where('status', 'pendente')->get();
         
-        $this->verifica($dados);
-
         $count = $dados->count();
 
         return $count;

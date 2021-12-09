@@ -1,0 +1,43 @@
+<form #form="ngForm" (ngSubmit)="submit(form)" (keydown.enter)="$event.preventDefault()" class="card card-load mb-0">
+  <div class="modal-header">
+    <h4>Debitar</h4>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+    
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-12 form-group">
+        <label>Total Final:</label>
+        <input type="text" currencyMask readonly class="form-control" name="total" [(ngModel)]="dados.total_final">
+      </div>
+      
+      <div class="col-12 form-group">
+        <label>Valor Recebido:</label>
+          <input type="text" currencyMask readonly class="form-control" name="pago" [(ngModel)]="dados.pago">
+      </div>
+
+      <div class="col-12 form-group">
+        <label>Restante:</label>
+        <input type="text" currencyMask readonly class="form-control" name="restante" [(ngModel)]="dados.restante">
+      </div>
+
+      <div class="col-12 form-group">
+        <label>Debitar:</label>
+        <input type="text" currencyMask class="form-control" name="debitar"
+          [(ngModel)]="dados.debitar" #debitar="ngModel"
+          (focus)="configCalc()" (blur)="calcRestante()"
+          [ngClass]="{'is-invalid': !debitar.valid && (debitar.touched || form.submitted)}">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+  
+    <button type="button" class="btn btn-secondary" (click)="close()">Voltar</button>
+    <button type="submit" class="btn btn-success" [disabled]="loading">
+      <i class="fas fa-money-bill"></i> Debitar!
+    </button>
+  </div>
+  <div class="card-loader" *ngIf="loading"><i class="fas fa-sync-alt anim-rotate"></i></div>
+</form>

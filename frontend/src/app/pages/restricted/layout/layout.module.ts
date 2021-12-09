@@ -40,6 +40,8 @@ import { NgbDropdownModule, NgbModule, NgbPaginationModule } from '@ng-bootstrap
 import { UsersComponent } from './users/users.component';
 import { MovitionComponent } from './movition/movition.component';
 import { UtilModule } from '@app/util/util.module';
+import { EntregaFinishComponent } from './entregas/entrega-detalhe/entrega-finish/entrega-finish.component';
+import { EntregaDetalheComponent } from './entregas/entrega-detalhe/entrega-detalhe.component';
  
 export const customCurrencyMaskConfig = {
     align: "left",
@@ -100,6 +102,8 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     CategoriasComponent,
     PerfilComponent,
     EntregasComponent,
+    EntregaDetalheComponent,
+    EntregaFinishComponent,
     MovitionComponent,
 
   ],

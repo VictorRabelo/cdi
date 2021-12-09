@@ -28,6 +28,10 @@ export class DashboardService {
         return this.http.get<any>(`${environment.apiUrl}/dashboard/produtos-enviados`);
     }
     
+    getProdutosCadastrados() {
+        return this.http.get<any>(`${environment.apiUrl}/dashboard/produtos-cadastrados`);
+    }
+    
     getProdutosPagos() {
         return this.http.get<any>(`${environment.apiUrl}/dashboard/produtos-pagos`);
     }

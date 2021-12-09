@@ -52,6 +52,10 @@ body::-webkit-scrollbar-thumb, .modal::-webkit-scrollbar-thumb, .table-responsiv
     width: 80px;
 }
 
+.inputSearch {
+    width: 200px;
+}
+
 .card-load {
     position: relative;
     overflow: hidden;
@@ -90,5 +94,18 @@ input[type="number"]::-webkit-inner-spin-button {
         transform: rotate(360deg);
     }
 }
+
+@media (max-width: 480px){
+    .inputSearch {
+        width: 142px !important;
+    }
+    .card-header>.card-tools .input-group, .card-header>.card-tools .nav, 
+    .card-header>.card-tools .pagination {
+        margin-bottom: 0 !important;
+        margin-top: -2.3rem !important;
+    }
+
+}
+
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

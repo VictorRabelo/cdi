@@ -26,6 +26,7 @@ export class HomeComponent extends ControllerBase {
   public estoque: number = 0;
   public vendidos: number = 0;
   public contasReceber: number = 0;
+  public produtosCadastrados: number = 0;
 
   public loadingVendasMes: Boolean = false;
   public loadingVendasDia: Boolean = false;
@@ -36,6 +37,7 @@ export class HomeComponent extends ControllerBase {
   public loadingProdutosEstoque: Boolean = false;
   public loadingProdutosVendidos: Boolean = false;
   public loadingContasReceber: Boolean = false;
+  public loadingProdutosCadastrados: Boolean = false;
 
   public frasesDoDia: any = [
     'Ótimo Trabalho!',
@@ -70,6 +72,7 @@ export class HomeComponent extends ControllerBase {
     this.getProdutosPagos();
     this.getProdutosEstoque();
     this.getProdutosVendidos();
+    this.getProdutosCadastrados();
     this.getContasReceber();
   }
 
@@ -131,6 +134,19 @@ export class HomeComponent extends ControllerBase {
     this.sub.sink = this.dashboardService.getProdutosEnviados().subscribe((res: any) => {
       this.loadingProdutosEnviados = false;
       this.enviados = res;
+    },
+    error => {
+      console.log(error)
+      this.loadingProdutosEnviados = false;
+    });
+  }
+ 
+  getProdutosCadastrados(){
+    this.loadingProdutosCadastrados = true;
+
+    this.sub.sink = this.dashboardService.getProdutosCadastrados().subscribe((res: any) => {
+      this.loadingProdutosCadastrados = false;
+      this.produtosCadastrados = res;
     },
     error => {
       console.log(error)

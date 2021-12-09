@@ -17,15 +17,12 @@ class DolarRepository extends AbstractRepository implements DolarRepositoryInter
     public function index()
     {
         $dados = $this->model->orderBy('created_at', 'desc')->get();
-         
-        if ($dados == []) {
-            return ['message' => 'Não há registros no momento!', 'dados' => $dados,'code' => 500];
-        }
 
         $count = 0;
         $entrada = 0;
         $saida = 0;
         $calcMedia = 0;
+        $media = 0;
         
         foreach ($dados as $item) {
             if ($item->status == 'entrada') {
@@ -41,8 +38,11 @@ class DolarRepository extends AbstractRepository implements DolarRepositoryInter
                 $count++;
             }
         }
-
-        $media = $calcMedia / $count;
+        
+        if($calcMedia !== 0){
+            $media = $calcMedia / $count;
+        }
+        
         $saldo = $entrada - $saida;
         
         return ['dados' => $dados, 'media' => $media, 'saldo' => $saldo];

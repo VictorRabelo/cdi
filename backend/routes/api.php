@@ -25,6 +25,7 @@ Route::group(['prefix' =>'/v1'], function() {
         Route::get('/vendas-total','Dashboard\DashboardController@getVendasTotal')->middleware(['auth:api', 'scope:admin']);
         Route::get('/clientes-total','Dashboard\DashboardController@getTotalClientes')->middleware(['auth:api', 'scope:admin']);
         Route::get('/produtos-enviados','Dashboard\DashboardController@getProdutosEnviados')->middleware(['auth:api', 'scope:admin']);
+        Route::get('/produtos-cadastrados','Dashboard\DashboardController@getProdutosCadastrados')->middleware(['auth:api', 'scope:admin']);
         Route::get('/produtos-pagos','Dashboard\DashboardController@getProdutosPagos')->middleware(['auth:api', 'scope:admin']);
         Route::get('/produtos-estoque','Dashboard\DashboardController@getProdutosEstoque')->middleware(['auth:api', 'scope:admin']);
         Route::get('/produtos-vendidos','Dashboard\DashboardController@getProdutosVendidos')->middleware(['auth:api', 'scope:admin']);

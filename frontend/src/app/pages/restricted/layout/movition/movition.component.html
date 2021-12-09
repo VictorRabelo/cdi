@@ -25,6 +25,10 @@
         <div class="container-fluid">
             <div class="row text-right">
                 <div class="col-4 col-md-3 ml-auto">
+                    <label class="text-danger">Saldo total atual:</label>
+                    <span class="pl-2">{{ saldo | currency: 'R$' }}</span>
+                </div>
+                <div class="col-4 col-md-3">
                     <label class="text-danger">Saldo:</label>
                     <span class="pl-2">{{ saldo | currency: 'R$' }}</span>
                 </div>
@@ -39,7 +43,7 @@
                                 </button>
                             </div>
                             <div class="card-tools">
-                                <div class="input-group input-group-sm" style="width: 200px;">
+                                <div class="input-group input-group-sm inputSearch">
                                     <input type="text" name="table_search" class="form-control float-right" [(ngModel)]="term" placeholder="Pesquisar...">
                 
                                     <div class="input-group-append">

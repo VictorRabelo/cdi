@@ -1,0 +1,107 @@
+<div class="content-wrapper">
+  <div class="card mt-2" [ngClass]="{'card-load': loading}">  
+    <div class="card-loader" *ngIf="loading"><i class="fas fa-sync-alt anim-rotate"></i></div>
+    <div class="card-header">
+      <h4 class="title-card-header-cutsom">
+        <button type="button" class="btn btn-sm mr-2" [routerLink]="[ '/restricted/entregas' ]">
+          <i class="fa fa-arrow-left"></i>
+        </button>
+        Detalhes da venda:
+        <span class="badge badge-success" *ngIf="vendaCurrent.status === 'pago'">{{vendaCurrent.status}}</span>
+        <span class="badge badge-warning" *ngIf="vendaCurrent.status === 'pendente'">{{vendaCurrent.status}}</span>
+        <span class="badge badge-primary" *ngIf="!vendaCurrent.status">Aberta</span>
+        <div class="float-right">
+          <button type="button" class="btn btn-success mr-2" (click)="finishSale()" *ngIf="!vendaCurrent.status">
+            <i class="fas fa-check"></i> Finalizar
+          </button>
+          <button type="button" class="btn btn-primary mr-2" (click)="detailSale()" *ngIf="vendaCurrent.status">
+            <i class="fas fa-eye"></i> Detalhes
+          </button>
+        </div>
+      </h4>  
+    </div>
+  
+    <div class="card-body">
+  
+      <div class="row form-group">
+        <div class="col-sm-3 form-group">
+          <label>Entregador:</label>
+          <div class="input-group">
+            <input type="text" readonly class="form-control" [(ngModel)]="vendaCurrent.cliente">
+            <div class="input-group-append" *ngIf="!vendaCurrent.status">
+              <button class="btn btn-light" (click)="openPessoal()">
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+  
+        <div class="col-sm-2 form-group">
+          <label>Lucro:</label>
+          <input type="tel" readonly currencyMask class="form-control" [(ngModel)]="vendaCurrent.lucro">
+        </div>
+  
+        <div class="col-sm-2 form-group">
+          <label>Total:</label>
+          <input type="tel" readonly currencyMask class="form-control" [(ngModel)]="vendaCurrent.total_final">
+        </div>
+        
+        <div class="col-sm-2 form-group" *ngIf="vendaCurrent.status == 'pendente'">
+          <button class="btn btn-primary btn-debitar" (click)="openBaixa()">
+            <i class="fas fa-money-bill"></i> Finalizar
+          </button>
+        </div>
+
+        <div class="col-sm-2 ml-auto form-group">
+          <h5>{{ vendaCurrent.id_venda }}#{{ vendaCurrent.created_at }}</h5>
+        </div>
+      </div>
+      <div class="row" *ngIf="!vendaCurrent.status">
+        <div class="col-sm-4 form-group">
+          <button class="btn btn-primary" (click)="openProducts()">
+            <i class="fas fa-search"></i> Pesquisar Produtos
+          </button>
+        </div>
+      </div>
+  
+      <div class="table-responsive" style="height: 315px;">
+        <table class="table table-hover text-nowrap">
+          <thead>
+            <th>#COD</th>
+            <th>Qtd.</th>
+            <th>Foto</th>
+            <th>Produto</th>
+            <th class="text-right">Valor</th>
+            <th class="text-right">Lucro</th>
+            <th class="text-right" *ngIf="!vendaCurrent.status">Ação</th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of vendaCurrent.itens;">
+              <td>{{ item.produto.id_produto }}</td>
+              <td>{{item.qtd_venda | number}}</td>
+              <td>
+                <async-image url="{{ item.produto.path }}"></async-image>
+              </td>
+              <td>{{ item.produto.name | titlecase }}</td>
+              <td class="text-right">{{ item.preco_venda | currency:'R$' }}</td>
+              <td class="text-right">{{ item.lucro_venda | currency:'R$' }}</td>
+              <td class="text-right" *ngIf="!vendaCurrent.status">
+                <button class="btn btn-sm btn-primary mr-2" (click)="openItem(item.id)">
+                  <i class="fas fa-pen"></i>
+                </button>
+                <button class="btn btn-sm btn-danger" (click)="deleteItemConfirm(item)">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="vendaCurrent.itens.length == 0">
+            <tr class="text-center">
+              <td colspan="7">Não há itens no momento</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,8 +1,9 @@
 import { Component} from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { VendaService } from '@app/services/venda.service';
+import { RouterOutlet } from '@angular/router';
 
 import { ControllerBase } from 'src/app/controller/controller.base';
+import { slideInLayoutAnimation } from '@app/animations';
 
 import * as $ from 'jquery';
 
@@ -10,7 +11,10 @@ import * as $ from 'jquery';
 @Component({
   selector: 'app-layout',
   templateUrl: './layout.component.html',
-  styleUrls: ['./layout.component.css']
+  styleUrls: ['./layout.component.css'],
+  animations: [
+    slideInLayoutAnimation
+  ]
 })
 export class LayoutComponent extends ControllerBase {
 
@@ -24,5 +28,8 @@ export class LayoutComponent extends ControllerBase {
 
   }
 
+  prepareRoute(outlet: RouterOutlet) {
+    return outlet.activatedRouteData.animation;
+  }
 
 }

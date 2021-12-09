@@ -63,7 +63,7 @@ export class ControllerBase implements OnInit, AfterContentInit, AfterViewInit, 
         return parts[parts.length -1];
     }
 
-    getMessage(){
+    getMessage(): string{
         
         let d = new Date();
         let hour = d.getHours();

@@ -1,79 +1,126 @@
-import { Component, OnInit } from '@angular/core';
-import { ClienteFormComponent } from '@app/components/cliente-form/cliente-form.component';
-import { ControllerBase } from '@app/controller/controller.base';
-import { ClienteService } from '@app/services/cliente.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { MessageService } from 'primeng/api';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { EntregaService } from '@app/services/entrega.service';
+import { MessageService } from '@app/services/message.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { SubSink } from 'subsink';
 
 @Component({
   selector: 'app-entregas',
   templateUrl: './entregas.component.html',
-  styleUrls: ['./entregas.component.css'],
-  providers: [ MessageService ]
+  styleUrls: ['./entregas.component.css']
 })
-export class EntregasComponent extends ControllerBase {
-
+export class EntregasComponent implements OnInit, OnDestroy {
   private sub = new SubSink();
+  public today: number = Date.now();
+
+  dataSource: any[] = [];
 
   loading: boolean = false;
 
-  dados: any = [];
+  filters: any = { date: '' };
 
-  title: string = 'clientes';
+  totalVendas: number = 0;
+  
   term: string;
 
   constructor(
-    private clienteService: ClienteService, 
-    private messageService: MessageService,
-    private modalCtrl: NgbModal,
-  ) {
-    super();
+    private router: Router,
+    private service: EntregaService,
+    private message: MessageService,
+    private spinner: NgxSpinnerService,
+  ) { }
+
+  ngOnInit(): void {
+    this.getStart();
   }
 
-  ngOnInit() {
+  getStart(){
+    this.loading = true;
     this.getAll();
   }
 
-  openForm(crud, item = undefined){
-    const modalRef = this.modalCtrl.open(ClienteFormComponent, { size: 'sm', backdrop: 'static' });
-    modalRef.componentInstance.data = item;
-    modalRef.componentInstance.crud = crud;
-    modalRef.componentInstance.module = this.title;
-    modalRef.result.then(res => {
-      if(res.message){
-        this.messageService.add({key: 'bc', severity:'success', summary: 'Sucesso', detail: res.message});
+  getAll() {
+    this.sub.sink = this.service.getAll(this.filters).subscribe(res => {
+      this.dataSource = res.vendas;
+      this.totalVendas = res.totalVendas;
+      this.today = res.data;
+      this.filters.date = res.mounth;
+
+    },error =>{
+      
+      this.loading = false;
+      this.message.toastError(error.message);
+      console.log(error);
+
+    },()=> {
+      this.loading = false;
+    });
+  }
+
+  add() {
+    this.message.swal.fire({
+      title: 'Iniciar nova entrega?',
+      icon: 'question',
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Voltar',
+      showCancelButton: true
+    }).then(res => {
+      if (res.isConfirmed) {
+        this.createVenda();
       }
-      this.getAll();
     })
   }
 
-  getAll(){
+  createVenda() {
     this.loading = true;
-    this.sub.sink = this.clienteService.getAll().subscribe(
-      (res: any) => {
-        this.loading = false;
-        this.dados = res;
-      },error => console.log(error))
+    this.service.store({}).subscribe(res => {
+      this.router.navigate([`/restricted/entregas/${res.id_venda}`]);
+    }, error =>{
+      this.loading = false;
+      this.message.toastError(error.message)
+      console.log(error)
+    })
+  }
+
+  editVenda(id) {
+    this.router.navigate([`/restricted/entregas/${id}`]);
+  }
+
+  deleteConfirm(item) {
+    this.message.swal.fire({
+      title: 'Atenção!',
+      icon: 'warning',
+      html: `Deseja excluir essa entrega?`,
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Voltar',
+      showCancelButton: true
+    }).then(res => {
+      if (res.isConfirmed) {
+        this.delete(item);
+      }
+    })
   }
 
   delete(id){
-    
     this.loading = true;
+    this.spinner.show();
 
-    this.clienteService.delete(id).subscribe(
-      (res: any) => {
-        this.getAll();
-      },
-      error => console.log(error),
-      () => {
-        this.messageService.add({key: 'bc', severity:'success', summary: 'Sucesso', detail: 'Excluido com Sucesso!'});
-        this.loading = false;
+    this.service.delete(id).subscribe(res => {
+      if (res.message) {
+        this.message.toastSuccess(res.message)
       }
-    );
+      this.getAll();
+    },error =>{
+      this.loading = false;
+      this.message.toastError(error.message)
+      console.log(error)
+    }, () => {
+      this.spinner.hide();
+    });
   }
-
-  ngOnDestroy(){
+  
+  ngOnDestroy() {
     this.sub.unsubscribe();
   }
 

@@ -37,6 +37,7 @@ export class EstoqueComponent extends ControllerBase {
   pagos: number = 0;
   estoque: number = 0;
   vendidos: number = 0;
+  totalEstoque: number = 0;
 
   constructor(
     private estoqueService: EstoqueService,
@@ -53,11 +54,12 @@ export class EstoqueComponent extends ControllerBase {
 
   getStart(){
     this.loading = true;
-    this.getAll();
+    this.getAll(this.queryParams);
     this.getProdutosEstoque();
     this.getProdutosEnviados();
     this.getProdutosPagos();
     this.getProdutosVendidos();
+    this.getProdutosCadastrados();
   }
 
   openForm(crud, item = undefined){
@@ -76,9 +78,9 @@ export class EstoqueComponent extends ControllerBase {
     })
   }
 
-  getAll(){
+  getAll(queryParams: any = undefined){
     
-    this.sub.sink = this.estoqueService.getAll().subscribe(
+    this.sub.sink = this.estoqueService.getAll(queryParams).subscribe(
       (res: any) => {
         this.estoques = res;
       },
@@ -119,6 +121,18 @@ export class EstoqueComponent extends ControllerBase {
     });
   }
   
+  getProdutosCadastrados(){
+    
+    this.sub.sink = this.dashboardService.getProdutosCadastrados().subscribe((res: any) => {
+      this.loading = false;
+      this.totalEstoque = res;
+    },
+    error => {
+      console.log(error)
+      this.loading = false;
+    });
+  }
+
   getProdutosPagos(){
 
     this.sub.sink = this.dashboardService.getProdutosPagos().subscribe((res: any) => {
@@ -166,7 +180,7 @@ export class EstoqueComponent extends ControllerBase {
           message: "Deletado com sucesso!",
           position: 'topRight'
         });
-        this.getAll();
+        this.getStart();
       },
       error => {
         this.iziToast.error({
