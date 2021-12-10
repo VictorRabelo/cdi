@@ -4,12 +4,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 
 import { first } from 'rxjs/operators';
-import { MessageService } from 'primeng/api';
-
-import { ControllerBase } from '@app/controller/controller.base';
-import { NgxIzitoastService } from 'ngx-izitoast';
 import { Store } from '@ngrx/store';
 import { Login } from '@app/core/actions/auth.action';
+
+import { ControllerBase } from '@app/controller/controller.base';
+import { MessageService } from '@app/services/message.service';
 import { AuthService } from '@app/services/auth.service';
 import { environment } from '@env/environment';
 
@@ -17,13 +16,13 @@ import { environment } from '@env/environment';
   selector: 'app-signin',
   templateUrl: './signin.component.html',
   styleUrls: ['./signin.component.css'],
-  providers: [ MessageService ],
   encapsulation: ViewEncapsulation.None
 })
 export class SigninComponent extends ControllerBase {
 
   loading: boolean  = false;
   loadingOk: boolean  = false;
+  loadingError: boolean  = false;
 
   returnUrl: string;
   error = '';
@@ -32,9 +31,8 @@ export class SigninComponent extends ControllerBase {
   dados: any = {};
 
   constructor(
-    public iziToast: NgxIzitoastService, 
     private title: Title,
-    private messageService: MessageService,
+    private message: MessageService,
     private router: Router, 
     private snap: ActivatedRoute,
     private service: AuthService,
@@ -57,11 +55,7 @@ export class SigninComponent extends ControllerBase {
     this.title.setTitle('CDI | Login');
     
     if(this.param){
-      this.iziToast.error({
-        title: 'Error 401!',
-        message: this.param,
-        position: 'topRight'
-      });
+      this.message.toastError(this.param, 'Error 401!');
     }
 
     let lembraLogin = localStorage.getItem('lembrarLogin');
@@ -78,24 +72,43 @@ export class SigninComponent extends ControllerBase {
     if(this.dados.lembrarLogin) {
       localStorage.setItem('lembrarLogin', this.dados.login);
     }
-    
+  
+    if(this.loadingError) {
+      this.loadingError = false;
+    }
+
     this.loading = true;
     
-    this.service.login(this.dados.login, this.dados.password)
-      .pipe(first())
+    this.service.login(this.dados.login, this.dados.password).pipe(first())
       .subscribe(
         res => {
+          if(!res.token){
+
+            this.loading = false;
+            this.loadingOk = false;
+            this.loadingError = true;
+
+            return this.message.toastError('Usuário inválido!');
+          }
+
           this.store.dispatch(new Login({ token: res.token }));
           localStorage.setItem(environment.tema, res.tema);
-          this.messageService.add({key: 'bc', severity:'success', summary: `Bem - Vindo ${res.name}`, detail: this.getMessage()});
+          
+          const welcome: string = `Bem - Vindo ${res.name},`;
+          const message: string = this.getMessage();
+          this.message.toastSuccess(message, welcome);
+
           this.loading = false;
           this.loadingOk = true;
 
         },
         error => {
-          this.messageService.add({key: 'bc', severity:'error', summary: 'Atenção', detail: error});
+          this.message.toastError(error.message);
+          
           this.loading = false;
           this.loadingOk = false;
+          this.loadingError = true;
+
         },
         () => {
           setTimeout(() => { 

@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-use App\Models\Venda;
 use App\Models\Produto;
+use App\Models\Entrega;
 
 class EntregaItem extends Model
 {
@@ -16,10 +16,10 @@ class EntregaItem extends Model
 
     protected $fillable = [
         'id',
-        'entregador_id',
+        'entrega_id',
         'produto_id',
         'qtd_entrega',
-        'lucro_entrega',
+        'qtd_disponivel',
         'preco_entrega'
     ];
 
@@ -32,6 +32,11 @@ class EntregaItem extends Model
     public function produto()
     {
         return $this->belongsTo(Produto::class, 'produto_id', 'id_produto');
+    }
+
+    public function entrega()
+    {
+        return $this->belongsTo(Entrega::class, 'entrega_id', 'id_entrega');
     }
 
 }

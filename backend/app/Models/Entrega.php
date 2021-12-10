@@ -3,11 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Cliente;
 use App\Models\User;
 use App\Models\Produto;
-use App\Models\Movition;
-use App\Models\ProdutoVenda;
 
 class Entrega extends Model
 {
@@ -17,6 +14,7 @@ class Entrega extends Model
     public $timestamps = true;
 
     protected $fillable = [
+        'id_entrega',
         'entregador_id',
         'total_final', 
         'lucro',

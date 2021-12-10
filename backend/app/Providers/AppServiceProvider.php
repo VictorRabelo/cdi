@@ -28,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind('App\Repositories\Contracts\Produto\ProdutoRepositoryInterface','App\Repositories\Eloquent\Produto\ProdutoRepository');
         $this->app->bind('App\Repositories\Contracts\Relatorio\RelatorioRepositoryInterface','App\Repositories\Eloquent\Relatorio\RelatorioRepository');
         $this->app->bind('App\Repositories\Contracts\Venda\VendaRepositoryInterface','App\Repositories\Eloquent\Venda\VendaRepository');
+        $this->app->bind('App\Repositories\Contracts\Entrega\EntregaRepositoryInterface','App\Repositories\Eloquent\Entrega\EntregaRepository');
     }
     
     public function boot()

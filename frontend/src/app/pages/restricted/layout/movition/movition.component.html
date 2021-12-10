@@ -7,7 +7,25 @@
                 <div class="col-sm-6">
                     <h1 class="m-0">Movimentação / {{ type | titlecase }}</h1>
                 </div><!-- /.col -->
-                <div class="col-sm-6">
+                <div class="col-2 ml-auto">
+                    <select class="form-control d-inline" name="date" [(ngModel)]="filters.date" (change)="getAll()">
+                      <option selected value="" *ngIf="filters.date == ''">Aguarde...</option>
+                      <option value="0" *ngIf="type == 'historico'">Todas</option>
+                      <option value="01">Janeiro</option>
+                      <option value="02">Fevereiro</option>
+                      <option value="03">Março</option>
+                      <option value="04">Abril</option>
+                      <option value="05">Maio</option>
+                      <option value="06">Junho</option>
+                      <option value="07">Julho</option>
+                      <option value="08">Agosto</option>
+                      <option value="09">Setembro</option>
+                      <option value="10">Outubro</option>
+                      <option value="11">Novembro</option>
+                      <option value="12">Dezembro</option>
+                    </select>                     
+                </div>
+                <div class="col-sm-2">
                     <ol class="breadcrumb float-sm-right">
                         
                         <li class="breadcrumb-item"><a [routerLink]="['/restricted/home']"><i class="fas fa-home"></i></a></li>
@@ -25,12 +43,12 @@
         <div class="container-fluid">
             <div class="row text-right">
                 <div class="col-4 col-md-3 ml-auto">
-                    <label class="text-danger">Saldo total atual:</label>
-                    <span class="pl-2">{{ saldo | currency: 'R$' }}</span>
+                    <label class="text-danger">Saldo total:</label>
+                    <span class="pl-2">{{ saldoTotal | currency: 'R$' }}</span>
                 </div>
-                <div class="col-4 col-md-3">
-                    <label class="text-danger">Saldo:</label>
-                    <span class="pl-2">{{ saldo | currency: 'R$' }}</span>
+                <div class="col-4 col-md-3" *ngIf="type !== 'historico'">
+                    <label class="text-danger">Saldo do mês:</label>
+                    <span class="pl-2">{{ saldoMes | currency: 'R$' }}</span>
                 </div>
             </div>
             <div class="row">

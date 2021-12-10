@@ -1,25 +1,27 @@
 <?php
 
-namespace App\Repositories\Eloquent\Venda;
+namespace App\Repositories\Eloquent\Entrega;
 
 use App\Enums\CodeStatusVendaEnum;
+use App\Models\Entrega;
+use App\Models\EntregaItem;
 use App\Models\Estoque;
 use App\Models\Movition;
 use App\Models\ProdutoVenda;
 use App\Models\Venda;
-use App\Repositories\Contracts\Venda\VendaRepositoryInterface;
+use App\Repositories\Contracts\Entrega\EntregaRepositoryInterface;
 use App\Repositories\Eloquent\AbstractRepository;
 use App\Utils\Messages;
 use App\Utils\Tools;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class VendaRepository extends AbstractRepository implements VendaRepositoryInterface
+class EntregaRepository extends AbstractRepository implements EntregaRepositoryInterface
 {
     /**
-     * @var Venda
+     * @var Entrega
      */
-    protected $model = Venda::class;
+    protected $model = Entrega::class;
 
     /**
      * @var Tools
@@ -33,18 +35,12 @@ class VendaRepository extends AbstractRepository implements VendaRepositoryInter
 
     public function index($queryParams)
     {
-        if (isset($queryParams['aReceber'])) {
-            return $this->aReceber();
-        }
-
-        $totalVendas = $this->model->select(DB::raw('sum(total_final) as total'))->get();
-
         if(isset($queryParams['date'])) {
             if($queryParams['date'] == 0){
-                $dados = $this->model->with('produto', 'cliente', 'vendedor')->orderBy('id_venda', 'desc')->get();
+                $dados = $this->model->with('entregador')->orderBy('id_entrega', 'desc')->get();
             } else {
                 $date = $this->dateFilter($queryParams['date']);
-                $dados = $this->model->with('produto', 'cliente', 'vendedor')->whereBetween('created_at', [$date['inicio'], $date['fim']])->orderBy('id_venda', 'desc')->get();
+                $dados = $this->model->with('entregador')->whereBetween('created_at', [$date['inicio'], $date['fim']])->orderBy('id_entrega', 'desc')->get();
             }
 
             if (!$dados) {
@@ -53,7 +49,7 @@ class VendaRepository extends AbstractRepository implements VendaRepositoryInter
 
         } else {
             $date = $this->dateMonth();
-            $dados = $this->model->with('produto', 'cliente', 'vendedor')->whereBetween('created_at', [$date['inicio'], $date['fim']])->orderBy('id_venda', 'desc')->get();
+            $dados = $this->model->with('entregador')->whereBetween('created_at', [$date['inicio'], $date['fim']])->orderBy('id_entrega', 'desc')->get();
             if (!$dados) {
                 return $this->messages->error;
             }
@@ -74,9 +70,8 @@ class VendaRepository extends AbstractRepository implements VendaRepositoryInter
         }
 
         return [
-            'vendas'       => $dataSource,
+            'entregas'       => $dataSource,
             'totalMensal'  => $totalMensal,
-            'totalVendas'  => $totalVendas[0]['total'],
             'lucro'        => $lucro,
             'pago'         => $pago,
             'data'         => isset($date['inicio'])? $date['inicio']:date('Y-m-d'),
@@ -85,12 +80,12 @@ class VendaRepository extends AbstractRepository implements VendaRepositoryInter
     }
     
     public function show($id){
-        $dadosVenda = Venda::where('id_venda', '=', $id)->leftJoin('clientes','clientes.id_cliente', '=', 'vendas.cliente_id')->select('clientes.name as cliente', 'vendas.*')->first();
-        if (!$dadosVenda) {
+        $dadosEntrega = $this->model->where('id_entrega', '=', $id)->leftJoin('users','users.id', '=', 'entregas.entregador_id')->select('users.name as entregador', 'entregas.*')->first();
+        if (!$dadosEntrega) {
             return false;
         }
         
-        $dadosProdutos = ProdutoVenda::with('produto')->where('venda_id', '=', $id)->orderBy('created_at', 'desc')->get();
+        $dadosProdutos = EntregaItem::with('produto')->where('entrega_id', '=', $id)->orderBy('created_at', 'desc')->get();
         if (!$dadosProdutos) {
             return false;
         }
@@ -100,15 +95,12 @@ class VendaRepository extends AbstractRepository implements VendaRepositoryInter
             $item->preco_venda *= $item->qtd_venda;
             $item->lucro_venda *= $item->qtd_venda;
         }
-        return ['dadosVenda' => $dadosVenda, 'dadosProdutos' => $dadosProdutos];
+        return ['dadosEntrega' => $dadosEntrega, 'dadosProdutos' => $dadosProdutos];
     }
 
     public function create($dados)
     {
-        if (!$dados) {
-            $dados['vendedor_id'] = $this->userLogado()->id;
-            return $this->store($dados);
-        }
+        return $this->store($dados);
     }
 
     public function update($dados, $id)

@@ -1,10 +1,8 @@
 <div class="hold-transition login-page">
   <div class="login-box">
-
-    <!-- /.login-logo -->
     <div class="card card-outline card-primary">
+
       <div class="card-header text-center">
-        <!--<h2><b>Casa do Importado</b></h2>-->
         <img src="/assets/img/logo-cdi.jpg" class="logo" alt="Logo CDI">
       </div>
 
@@ -46,9 +44,12 @@
             </div>
           
             <div class="col-4">
-              <button type="submit" class="btn btn-primary btn-block" [ngClass]="{'btn-success': loadingOk}">
+              <button type="submit" class="btn btn-primary btn-block" 
+                [ngClass]="{'btn-danger': loadingError, 'btn-success': loadingOk}"
+                [disabled]="loading">
                 <i class="fas fa-check d-inline" *ngIf="loadingOk && !loading"></i>
-                <p class="d-inline" *ngIf="!loading && !loadingOk">Entrar</p>
+                <i class="fas fa-times" *ngIf="loadingError"></i>
+                <p class="d-inline" *ngIf="!loading && !loadingOk && !loadingError">Entrar</p>
                 <i class="fas fa-sync-alt anim-rotate" *ngIf="loading"></i>
               </button>
             </div>
@@ -56,9 +57,7 @@
 
         </form>
       </div>
-      <!-- /.card-body -->
+
     </div>
-    <!-- /.card -->
-    <p-toast position="bottom-center" key="bc"></p-toast>
   </div>
 </div>

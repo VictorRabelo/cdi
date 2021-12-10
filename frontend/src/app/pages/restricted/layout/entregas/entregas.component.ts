@@ -42,7 +42,7 @@ export class EntregasComponent implements OnInit, OnDestroy {
 
   getAll() {
     this.sub.sink = this.service.getAll(this.filters).subscribe(res => {
-      this.dataSource = res.vendas;
+      this.dataSource = res.entregas;
       this.totalVendas = res.totalVendas;
       this.today = res.data;
       this.filters.date = res.mounth;
@@ -67,15 +67,15 @@ export class EntregasComponent implements OnInit, OnDestroy {
       showCancelButton: true
     }).then(res => {
       if (res.isConfirmed) {
-        this.createVenda();
+        this.createEntrega();
       }
     })
   }
 
-  createVenda() {
+  createEntrega() {
     this.loading = true;
     this.service.store({}).subscribe(res => {
-      this.router.navigate([`/restricted/entregas/${res.id_venda}`]);
+      this.router.navigate([`/restricted/entregas/${res.id_entrega}`]);
     }, error =>{
       this.loading = false;
       this.message.toastError(error.message)

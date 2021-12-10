@@ -26,7 +26,8 @@ export class MovitionComponent implements OnInit {
 
   filters: any = { date: '' };
 
-  saldo: number = 0;
+  saldoTotal: number = 0;
+  saldoMes: number = 0;
   
   type: string;
 
@@ -54,7 +55,10 @@ export class MovitionComponent implements OnInit {
   getAll() {
     this.sub.sink = this.service.getAll(this.filters).subscribe(res => {
       this.dataSource = res.dados;
-      this.saldo = res.saldo;
+      this.saldoTotal = res.saldoTotal;
+      if(this.type !== 'historico'){
+        this.saldoMes = res.saldoMes;
+      }
 
     },error =>{
       

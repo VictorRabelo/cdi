@@ -32,6 +32,7 @@ export class ModalDolarFormComponent implements OnInit, OnDestroy {
   loading: boolean = false;
 
   @Input() data: any;
+  @Input() crud: string;
 
   dados: any = {};
   title: string;

@@ -146,6 +146,28 @@ Route::group(['prefix' =>'/v1'], function() {
         });
     });
     
+    Route::group(['prefix' =>'/entregas'], function() {
+        
+        Route::get('/','Entrega\EntregaController@index')->middleware(['auth:api', 'scope:admin']);
+        Route::get('/{id}','Entrega\EntregaController@show')->middleware(['auth:api', 'scope:admin']);
+        
+        Route::post('/','Entrega\EntregaController@store')->middleware(['auth:api', 'scope:admin']);   
+        Route::post('/finish','Entrega\EntregaController@finishVenda')->middleware(['auth:api', 'scope:admin']);
+        
+        Route::put('/{id}','Entrega\EntregaController@update')->middleware(['auth:api', 'scope:admin']);
+        Route::put('/{id}/receber','Entrega\EntregaController@updateReceber')->middleware(['auth:api', 'scope:admin']);
+        
+        Route::delete('/{id}','Entrega\EntregaController@destroy')->middleware(['auth:api', 'scope:admin']);
+
+        Route::group(['prefix' =>'/item'], function() {
+            Route::get('/{id}','Entrega\EntregaController@showItem')->middleware(['auth:api', 'scope:admin']);
+            Route::post('/','Entrega\EntregaController@storeItem')->middleware(['auth:api', 'scope:admin']);
+            Route::put('/{id}','Entrega\EntregaController@updateItem')->middleware(['auth:api', 'scope:admin']);
+            Route::delete('/{id}','Entrega\EntregaController@destroyItem')->middleware(['auth:api', 'scope:admin']);
+
+        });
+    });
+    
     Route::group(['prefix' =>'/despesas'], function() {
         
         Route::get('/','Despesa\DespesaController@index')->middleware(['auth:api', 'scope:admin']);

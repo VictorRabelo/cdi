@@ -46,6 +46,14 @@ abstract class AbstractRepository
         return date('Y-m-d');
     }
 
+    public function dateYear()
+    {
+        date_default_timezone_set('America/Sao_Paulo');
+        $date_start = date('Y-01-01');
+        $date_end = date('Y-12-t');
+        return ['inicio' => $date_start, 'fim' => $date_end];
+    }
+    
     public function dateMonth()
     {
         date_default_timezone_set('America/Sao_Paulo');
