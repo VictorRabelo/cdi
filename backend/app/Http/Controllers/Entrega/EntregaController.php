@@ -91,7 +91,7 @@ class EntregaController extends Controller
     {
         try {
 
-            $res = $this->entregaRepository->deleteVenda($id);
+            $res = $this->entregaRepository->deleteEntrega($id);
 
             if ($res['code'] == 500) {
                 return response()->json(['response' => 'Erro de Servidor'], 500);
@@ -104,12 +104,12 @@ class EntregaController extends Controller
         }
     }
 
-    public function finishVenda(Request $request)
+    public function finishEntrega(Request $request)
     {
         try {
             $dados = $request->all();
 
-            $res = $this->entregaRepository->finishVenda($dados);
+            $res = $this->entregaRepository->finishEntrega($dados);
 
             if ($res['code'] == 500) {
                 return response()->json(['message' => $res['message']], $res['code']);

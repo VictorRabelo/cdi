@@ -21,6 +21,7 @@ class CreateTableEntregaItens extends Migration
             $table->integer('qtd_produto');
             $table->integer('qtd_disponivel');
             
+            $table->float('lucro_entrega', 8, 2);
             $table->float('preco_entrega', 8, 2);
 
             $table->timestamps();

@@ -5,8 +5,6 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import { EntregaService } from '@app/services/entrega.service';
 import { MessageService } from '@app/services/message.service';
 
-import { EntregaFinishComponent } from './entrega-finish/entrega-finish.component';
-
 import { ModalProductsComponent } from '@app/components/modal-products/modal-products.component';
 import { ModalProductDadosComponent } from '@app/components/modal-product-dados/modal-product-dados.component';
 import { ModalPessoalComponent } from '@app/components/modal-pessoal/modal-pessoal.component';
@@ -67,39 +65,29 @@ export class EntregaDetalheComponent implements OnInit {
     });
   }
 
-  detailSale(){
-    const modalRef = this.modalCtrl.open(EntregaFinishComponent, { size: 'md', backdrop: 'static' });
-    modalRef.componentInstance.data = Object.assign({}, this.entregaCurrent);
-    modalRef.componentInstance.type = 'detail';
-  }
-
-  finishSale() {
+  finishEntrega() {
     if(this.entregaCurrent.itens.length == 0){
       this.message.toastError('Está sem produtos!');
       return;
     }
     
-    if(!this.entregaCurrent.cliente){
-      this.message.toastError('Está faltando o cliente!');
+    if(!this.entregaCurrent.entregador){
+      this.message.toastError('Está faltando o entregador!');
       return;
     }
 
+    this.loading = true;
 
-      this.entregaCurrent.restante = this.entregaCurrent.total_final;
-      this.entregaCurrent.pago = 0.00;
-      this.entregaCurrent.debitar = 0.00;
-      this.entregaCurrent.pagamento = '';
-      this.entregaCurrent.status = '';
-
-
-    const modalRef = this.modalCtrl.open(EntregaFinishComponent, { size: 'md', backdrop: 'static' });
-    modalRef.componentInstance.data = Object.assign({}, this.entregaCurrent);
-    modalRef.componentInstance.type = 'finish';
-    modalRef.result.then(res => {
-      if (res) {
-        this.getById(this.entregaCurrent.id_entrega);
-      }
-    })
+    this.service.finishEntrega(this.entregaCurrent).subscribe(res => {
+      this.message.toastSuccess(res);
+      this.getById(this.entregaCurrent.id_entrega);
+    }, error => {
+      console.log(error)
+      this.message.toastError(error.message);
+      this.loading = false;
+    }, () => {
+      this.loading = false;
+    });
   }
 
   updateSale() {
@@ -139,7 +127,7 @@ export class EntregaDetalheComponent implements OnInit {
 
   openItem(item) {
     const modalRef = this.modalCtrl.open(ModalProductDadosComponent, { size: 'md', backdrop: 'static' });
-    modalRef.componentInstance.data = {id:item, crud: 'Alterar'};
+    modalRef.componentInstance.data = {id:item, crud: 'Alterar', type: 'entregas'};
     modalRef.result.then(res => {
       this.getById(this.entregaCurrent.id_entrega);
     })

@@ -6,16 +6,13 @@
         <button type="button" class="btn btn-sm mr-2" [routerLink]="[ '/restricted/entregas' ]">
           <i class="fa fa-arrow-left"></i>
         </button>
-        Detalhes da venda:
-        <span class="badge badge-success" *ngIf="entregaCurrent.status === 'pago'">{{entregaCurrent.status}}</span>
-        <span class="badge badge-warning" *ngIf="entregaCurrent.status === 'pendente'">{{entregaCurrent.status}}</span>
+        Detalhes da entrega:
+        <span class="badge badge-success" *ngIf="entregaCurrent.status === 'baixa'">Concluído</span>
+        <span class="badge badge-warning" *ngIf="entregaCurrent.status === 'pendente'">Pendente</span>
         <span class="badge badge-primary" *ngIf="!entregaCurrent.status">Aberta</span>
         <div class="float-right">
-          <button type="button" class="btn btn-success mr-2" (click)="finishSale()" *ngIf="!entregaCurrent.status">
+          <button type="button" class="btn btn-success mr-2" (click)="finishEntrega()" *ngIf="!entregaCurrent.status">
             <i class="fas fa-check"></i> Finalizar
-          </button>
-          <button type="button" class="btn btn-primary mr-2" (click)="detailSale()" *ngIf="entregaCurrent.status">
-            <i class="fas fa-eye"></i> Detalhes
           </button>
         </div>
       </h4>  
@@ -48,7 +45,7 @@
         
         <div class="col-sm-2 form-group" *ngIf="entregaCurrent.status == 'pendente'">
           <button class="btn btn-primary btn-debitar" (click)="openBaixa()">
-            <i class="fas fa-money-bill"></i> Finalizar
+            <i class="fas fa-money-bill"></i> Dar Baixa
           </button>
         </div>
 
@@ -78,13 +75,13 @@
           <tbody>
             <tr *ngFor="let item of entregaCurrent.itens;">
               <td>{{ item.produto.id_produto }}</td>
-              <td>{{item.qtd_venda | number}}</td>
+              <td>{{item.qtd_produto | number}}</td>
               <td>
                 <async-image url="{{ item.produto.path }}"></async-image>
               </td>
               <td>{{ item.produto.name | titlecase }}</td>
-              <td class="text-right">{{ item.preco_venda | currency:'R$' }}</td>
-              <td class="text-right">{{ item.lucro_venda | currency:'R$' }}</td>
+              <td class="text-right">{{ item.preco_entrega | currency:'R$' }}</td>
+              <td class="text-right">{{ item.lucro_entrega | currency:'R$' }}</td>
               <td class="text-right" *ngIf="!entregaCurrent.status">
                 <button class="btn btn-sm btn-primary mr-2" (click)="openItem(item.id)">
                   <i class="fas fa-pen"></i>

@@ -152,7 +152,7 @@ Route::group(['prefix' =>'/v1'], function() {
         Route::get('/{id}','Entrega\EntregaController@show')->middleware(['auth:api', 'scope:admin']);
         
         Route::post('/','Entrega\EntregaController@store')->middleware(['auth:api', 'scope:admin']);   
-        Route::post('/finish','Entrega\EntregaController@finishVenda')->middleware(['auth:api', 'scope:admin']);
+        Route::post('/finish','Entrega\EntregaController@finishEntrega')->middleware(['auth:api', 'scope:admin']);
         
         Route::put('/{id}','Entrega\EntregaController@update')->middleware(['auth:api', 'scope:admin']);
         Route::put('/{id}/receber','Entrega\EntregaController@updateReceber')->middleware(['auth:api', 'scope:admin']);

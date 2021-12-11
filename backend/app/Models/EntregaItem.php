@@ -18,9 +18,10 @@ class EntregaItem extends Model
         'id',
         'entrega_id',
         'produto_id',
-        'qtd_entrega',
+        'qtd_produto',
         'qtd_disponivel',
-        'preco_entrega'
+        'lucro_entrega',
+        'preco_entrega',
     ];
 
     protected $hidden = [];

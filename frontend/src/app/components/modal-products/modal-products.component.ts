@@ -55,7 +55,15 @@ export class ModalProductsComponent implements OnInit {
     modalRef.componentInstance.data = produto;
     
     if (this.data) {
-      produto.venda_id = this.data.id_venda;
+      
+      if(this.data.id_venda){
+        produto.venda_id = this.data.id_venda;
+      }
+
+      if(this.data.id_entrega){
+        produto.entrega_id = this.data.id_entrega;
+      }
+      
       modalRef.componentInstance.data = produto;
     }
   }

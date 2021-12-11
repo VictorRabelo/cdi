@@ -18,7 +18,7 @@ class Entrega extends Model
         'entregador_id',
         'total_final', 
         'lucro',
-        'qtd_produto',
+        'qtd_produtos',
         'status',
         'caixa',
     ];

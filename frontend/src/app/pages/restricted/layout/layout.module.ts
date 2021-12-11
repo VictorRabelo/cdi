@@ -20,6 +20,7 @@ import { SalesComponent } from './sales/sales.component';
 import { SaleDetalheComponent } from './sales/sale-detalhe/sale-detalhe.component';
 import { SaleFinishComponent } from './sales/sale-detalhe/sale-finish/sale-finish.component';
 import { EntregasComponent } from './entregas/entregas.component';
+import { EntregaDetalheComponent } from './entregas/entrega-detalhe/entrega-detalhe.component';
 
 import { SortDirective } from '@app/directive/sort.directive';
 
@@ -40,8 +41,6 @@ import { NgbDropdownModule, NgbModule, NgbPaginationModule } from '@ng-bootstrap
 import { UsersComponent } from './users/users.component';
 import { MovitionComponent } from './movition/movition.component';
 import { UtilModule } from '@app/util/util.module';
-import { EntregaFinishComponent } from './entregas/entrega-detalhe/entrega-finish/entrega-finish.component';
-import { EntregaDetalheComponent } from './entregas/entrega-detalhe/entrega-detalhe.component';
  
 export const customCurrencyMaskConfig = {
     align: "left",
@@ -103,7 +102,6 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     PerfilComponent,
     EntregasComponent,
     EntregaDetalheComponent,
-    EntregaFinishComponent,
     MovitionComponent,
 
   ],

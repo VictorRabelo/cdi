@@ -32,7 +32,7 @@ export class EntregaService {
         return this.http.post<any>(`${this.baseUrl}/entregas`, store).pipe(map(res =>{ return res.response }));
     }
 
-    finishSale(dados: any) {
+    finishEntrega(dados: any) {
         return this.http.post<any>(`${this.baseUrl}/entregas/finish`, dados);
     }
 

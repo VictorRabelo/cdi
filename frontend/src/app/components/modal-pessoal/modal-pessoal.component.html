@@ -31,7 +31,7 @@
             </thead>
             <tbody *ngFor="let item of dataSource | filter:term">
                 <tr>
-                    <td *ngIf="this.type == 'clientes'">{{ item.name }}</td>
+                    <td *ngIf="this.type !== 'fornecedores'">{{ item.name }}</td>
                     <td *ngIf="this.type == 'fornecedores'">{{ item.fornecedor }}</td>
                     <td>{{ item.telefone | mask: '(00) 0 0 0000-0000' }}</td>
                     <td class="text-center" width="10%">

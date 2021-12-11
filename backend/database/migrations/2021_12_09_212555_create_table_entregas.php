@@ -16,8 +16,8 @@ class CreateTableEntregas extends Migration
         Schema::create('entregas', function (Blueprint $table) {
             $table->id('id_entrega');
             $table->foreignId('entregador_id')->nullable();
-            $table->float('total_final', 8, 2)->nullable();
-            $table->float('lucro', 8, 2)->nullable();
+            $table->float('total_final', 8, 2)->default(0.00)->nullable();
+            $table->float('lucro', 8, 2)->default(0.00)->nullable();
             $table->integer('qtd_produtos')->nullable();
             $table->string('status')->nullable();
             $table->string('caixa')->nullable();
