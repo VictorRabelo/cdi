@@ -144,8 +144,8 @@ class RelatorioRepository extends AbstractRepository implements RelatorioReposit
             $dadosEntrega->qtd_disponiveis += $item->qtd_produto;
         }
         
-        $idEntregador = auth()->user()->id;
-        $dadosVendas = Venda::where('vendedor_id', '=', $idEntregador)->leftJoin('clientes','clientes.id_cliente', '=', 'vendas.cliente_id')->select('clientes.name as cliente', 'vendas.*')->get();
+        $idEntregador = Auth::user()->id;
+        $dadosVendas = Venda::with('produtos', 'cliente')->where('vendedor_id', $idEntregador)->orderBy('id_venda', 'desc')->get();
         
         $pdf = PDF::loadView('pdf.entrega-detalhes', compact('dadosEntrega', 'dadosProdutos', 'dadosVendas'));
         $result = $pdf->download($data_now.'.pdf');

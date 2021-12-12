@@ -85,5 +85,33 @@
             @endforeach
         </table>
         <div class="page-break"></div>
+        <table class="customers">
+            <tr>
+                <th colspan="6">Vendas - {{date('d/m/Y', strtotime($data_now))}}</th>
+            </tr>
+            <tr>
+                <th>Cliente</th>
+                <th>Qtd</th>
+                <th>Produtos</th>
+                <th>Valor Pago</th>
+                <th>Valor Vendido</th>
+                <th>Lucro</th>
+            </tr>
+            @foreach ($dadosVendas as $data)
+                <tr>
+                    <td>{{ $data->cliente['name']?$data->cliente['name']:'Cliente não informado' }}</td>
+                    <td>{{ $data->qtd_produto }}</td>
+                    <td>
+                        @foreach ($data->produtos as $value)
+                            <span>{{ $value->name }}<span><br>
+                        @endforeach
+                    </td>
+                    <td>{{ 'R$ '.number_format($data->pago, 2, ',', '.') }}</td>
+                    <td>{{ 'R$ '.number_format($data->total_final, 2, ',', '.') }}</td>
+                    <td>{{ 'R$ '.number_format($data->lucro, 2, ',', '.') }}</td>
+                </tr>
+            @endforeach
+            
+        </table>
     </body>
 </html>
