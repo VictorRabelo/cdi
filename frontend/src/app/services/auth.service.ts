@@ -30,5 +30,8 @@ export class AuthService {
   getUserByToken(queryParams: any = {}): Promise<any> {
     return this.http.get(`${this.baseUrl}/oauth/me`, { params: queryParams }).toPromise();
   }
-  
+
+  alterSenha(dados) {
+    return this.http.post<any>(`${this.baseUrl}/oauth/alter-password`, dados);
+  }
 }

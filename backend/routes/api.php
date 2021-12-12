@@ -14,6 +14,7 @@ Route::group(['prefix' =>'/v1'], function() {
     // Autentificação
     Route::group(['prefix' =>'/oauth'], function() {
         Route::post('/login', 'Auth\AuthController@login');
+        Route::post('/alter-password', 'Auth\AuthController@alterSenha')->middleware('auth:api');
         Route::get('/me', 'Auth\AuthController@me')->middleware('auth:api');
         Route::get('/logout', 'Auth\AuthController@logout')->middleware('auth:api');
     });

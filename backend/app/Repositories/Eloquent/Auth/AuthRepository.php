@@ -55,9 +55,9 @@ class AuthRepository
     public function alterSenha(Request $request)
     {
         $params = $request->all();
-        $user = auth()->user();
+        $id = auth()->user()->id;
 
-        $resp = User::where('id', $user->id)->first();
+        $resp = User::where('id', $id)->first();
         
         if(empty($resp)){
             return false;

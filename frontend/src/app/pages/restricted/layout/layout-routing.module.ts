@@ -8,7 +8,6 @@ import { EntregasComponent } from './entregas/entregas.component';
 import { EstoqueComponent } from './estoque/estoque.component';
 import { FornecedoresComponent } from './fornecedores/fornecedores.component';
 import { HomeComponent } from './home/home.component';
-import { PerfilComponent } from './perfil/perfil.component';
 import { RelatoriosComponent } from './relatorios/relatorios.component';
 import { SalesComponent } from './sales/sales.component';
 import { SaleDetalheComponent } from './sales/sale-detalhe/sale-detalhe.component';
@@ -20,8 +19,6 @@ const routes: Routes = [
   {path: '', pathMatch: 'full', redirectTo: 'home'},
       
   {path: 'home', component: HomeComponent, data: { animation: 'HomePage' }},
-
-  {path: 'perfil', component: PerfilComponent, data: { animation: 'PerfilPage' }},
 
   {
     path: 'vendas', children: [

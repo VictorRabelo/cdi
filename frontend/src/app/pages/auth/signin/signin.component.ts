@@ -81,7 +81,7 @@ export class SigninComponent extends ControllerBase {
     
     this.service.login(this.dados.login, this.dados.password).pipe(first())
       .subscribe(
-        res => {
+        (res) => {
           if(res.message){
             return this.errorLogin();
           }

@@ -14,23 +14,18 @@ export class UserService {
   }
 
   getById(id: number) {
-      return this.http.get<any>(`${this.baseUrl}/users/${id}`).pipe(map(res =>{ return res.response }));
+    return this.http.get<any>(`${this.baseUrl}/users/${id}`).pipe(map(res =>{ return res.response }));
   }
 
   store(store: any){
-      return this.http.post<any>(`${this.baseUrl}/users`, store);
+    return this.http.post<any>(`${this.baseUrl}/users`, store);
   }
 
   update(update: any){
-      return this.http.put<any>(`${this.baseUrl}/users/${update.id}`, update).pipe(map(res =>{ return res.response }));
+    return this.http.put<any>(`${this.baseUrl}/users/${update.id}`, update).pipe(map(res =>{ return res.response }));
   }
 
   delete(id: number){
-      return this.http.delete<any>(`${this.baseUrl}/users/${id}`);
+    return this.http.delete<any>(`${this.baseUrl}/users/${id}`);
   }
-
-  alterSenha(dados) {
-    return this.http.put<any>(`${this.baseUrl}/alter-password`, dados);
-  }
-  
 }

@@ -16,7 +16,6 @@ import { ClientesComponent } from './clientes/clientes.component';
 import { RelatoriosComponent } from './relatorios/relatorios.component';
 import { FornecedoresComponent } from './fornecedores/fornecedores.component';
 import { CategoriasComponent } from './categorias/categorias.component';
-import { PerfilComponent } from './perfil/perfil.component';
 import { SalesComponent } from './sales/sales.component';
 import { SaleDetalheComponent } from './sales/sale-detalhe/sale-detalhe.component';
 import { SaleFinishComponent } from './sales/sale-detalhe/sale-finish/sale-finish.component';
@@ -100,7 +99,6 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     RelatoriosComponent,
     FornecedoresComponent,
     CategoriasComponent,
-    PerfilComponent,
     EntregasComponent,
     EntregaDetalheComponent,
     MovitionComponent,

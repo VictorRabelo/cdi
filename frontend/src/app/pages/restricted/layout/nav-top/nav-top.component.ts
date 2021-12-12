@@ -10,6 +10,8 @@ import { select, Store } from '@ngrx/store';
 import { currentUser } from '@app/core/selectors/auth.selector';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalAlterPasswordComponent } from '@app/components/modal-alter-password/modal-alter-password.component';
 
 declare let $: any;
 
@@ -42,6 +44,7 @@ export class NavTopComponent extends ControllerBase {
   constructor(
     private router: Router, 
     private spinner: NgxSpinnerService,
+    private modalCtrl: NgbModal,
     private message: MessageService,
     private service: UserService,
     public store: Store<any>
@@ -80,6 +83,15 @@ export class NavTopComponent extends ControllerBase {
   onResize(event?) {
     this.screenHeight = window.innerHeight;
     this.screenWidth = window.innerWidth;
+  }
+
+  alterPassword(){
+    const modalRef = this.modalCtrl.open(ModalAlterPasswordComponent, { size: 'sm', backdrop: 'static' });
+    modalRef.result.then(res => {
+      if(res){
+        this.message.toastSuccess('Senha atualizada com sucesso!');
+      }
+    })
   }
 
   logout() {
