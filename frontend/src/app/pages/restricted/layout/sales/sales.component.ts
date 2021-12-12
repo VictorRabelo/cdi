@@ -42,7 +42,7 @@ export class SalesComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.getAll();
   }
-
+  
   getAll() {
     this.sub.sink = this.service.getAll(this.filters).subscribe(res => {
       this.dataSource = res.vendas;

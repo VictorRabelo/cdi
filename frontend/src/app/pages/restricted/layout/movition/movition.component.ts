@@ -52,11 +52,19 @@ export class MovitionComponent implements OnInit {
     this.getAll();
   }
 
+  filterDate(event: any) {
+    this.filters.date = `${event.year}-${event.month}`;
+    this.filters.type = this.type
+
+    this.loading = true;
+    this.getAll()
+  }
+
   getAll() {
+    
     this.sub.sink = this.service.getAll(this.filters).subscribe(res => {
       this.dataSource = res.dados;
       this.saldoTotal = res.saldoTotal;
-      this.filters.date = res.month;
       if(this.type !== 'historico'){
         this.saldoMes = res.saldoMes;
       }

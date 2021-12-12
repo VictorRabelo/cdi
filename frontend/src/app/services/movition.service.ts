@@ -14,14 +14,10 @@ export class MovitionService {
     constructor(private http: HttpClient) { }
     
     getAll(queryParams: any = {}) {
-        let params
-        
-        if(queryParams.type){
-            params = new HttpParams().set('type', queryParams.type);
-        }
+        let params = new HttpParams().set('type', queryParams.type);
         
         if(queryParams.date !== ''){
-            params = new HttpParams().set('date', queryParams.date);
+            params = params.append('date', queryParams.date);
         }
 
         return this.http.get<any>(`${environment.apiUrl}/movition`, { params: params });

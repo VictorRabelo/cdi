@@ -3,8 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { LayoutRoutingModule } from './layout-routing.module';
-import { ComponentsModule } from '@app/components/components.module';
 import { LayoutComponent } from "./layout.component";
+import { ComponentsModule } from '@app/components/components.module';
+
 import { NavTopComponent } from "./nav-top/nav-top.component";
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { HomeComponent } from "./home/home.component";
@@ -21,8 +22,10 @@ import { SaleDetalheComponent } from './sales/sale-detalhe/sale-detalhe.componen
 import { SaleFinishComponent } from './sales/sale-detalhe/sale-finish/sale-finish.component';
 import { EntregasComponent } from './entregas/entregas.component';
 import { EntregaDetalheComponent } from './entregas/entrega-detalhe/entrega-detalhe.component';
+import { MovitionComponent } from './movition/movition.component';
 
 import { SortDirective } from '@app/directive/sort.directive';
+import { UtilModule } from '@app/util/util.module';
 
 // PrimeNG
 import { ToastModule } from 'primeng/toast';
@@ -39,8 +42,6 @@ import { NgxIziToastModule } from 'ngx-izitoast';
 import { DataTablesModule } from 'angular-datatables';
 import { NgbDropdownModule, NgbModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { UsersComponent } from './users/users.component';
-import { MovitionComponent } from './movition/movition.component';
-import { UtilModule } from '@app/util/util.module';
  
 export const customCurrencyMaskConfig = {
     align: "left",

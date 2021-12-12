@@ -8,22 +8,15 @@
                     <h1 class="m-0">Movimentação / {{ type | titlecase }}</h1>
                 </div><!-- /.col -->
                 <div class="col-2 ml-auto">
-                    <select class="form-control d-inline" name="date" [(ngModel)]="filters.date" (change)="getAll()">
-                      <option selected value="" *ngIf="filters.date == ''">Aguarde...</option>
-                      <option value="0" *ngIf="type == 'historico'">Todas</option>
-                      <option value="01">Janeiro</option>
-                      <option value="02">Fevereiro</option>
-                      <option value="03">Março</option>
-                      <option value="04">Abril</option>
-                      <option value="05">Maio</option>
-                      <option value="06">Junho</option>
-                      <option value="07">Julho</option>
-                      <option value="08">Agosto</option>
-                      <option value="09">Setembro</option>
-                      <option value="10">Outubro</option>
-                      <option value="11">Novembro</option>
-                      <option value="12">Dezembro</option>
-                    </select>                     
+                    <div class="input-group input-group-sm inputSearch">
+                        <input class="form-control" placeholder="yyyy-mm-dd" name="date" (ngModelChange)="filterDate($event)"
+                            [(ngModel)]="filters.date" ngbDatepicker #d="ngbDatepicker">
+                        <div class="input-group-append">
+                            <button class="btn btn-sm btn-outline-secondary" (click)="d.toggle()" type="button">
+                                <i class="far fa-calendar-alt"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-sm-2">
                     <ol class="breadcrumb float-sm-right">

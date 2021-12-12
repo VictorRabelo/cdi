@@ -1,0 +1,9 @@
+.inputVenda {
+    width: 160px;
+}
+
+@media (max-width: 480px){
+    .inputVenda {
+        width: 42px !important;
+    }
+}

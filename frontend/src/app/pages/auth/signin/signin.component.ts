@@ -82,13 +82,12 @@ export class SigninComponent extends ControllerBase {
     this.service.login(this.dados.login, this.dados.password).pipe(first())
       .subscribe(
         res => {
+          if(res.message){
+            return this.errorLogin();
+          }
+
           if(!res.token){
-
-            this.loading = false;
-            this.loadingOk = false;
-            this.loadingError = true;
-
-            return this.message.toastError('Usuário inválido!');
+            return this.errorLogin();
           }
 
           this.store.dispatch(new Login({ token: res.token }));
@@ -103,12 +102,7 @@ export class SigninComponent extends ControllerBase {
 
         },
         error => {
-          this.message.toastError(error.message);
-          
-          this.loading = false;
-          this.loadingOk = false;
-          this.loadingError = true;
-
+          this.errorLogin();
         },
         () => {
           setTimeout(() => { 
@@ -118,4 +112,9 @@ export class SigninComponent extends ControllerBase {
       );
   }
 
+  public errorLogin(): void {
+    this.loading = false;
+    this.loadingOk = false;
+    this.loadingError = true;
+  }
 }

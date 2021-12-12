@@ -13,8 +13,6 @@ import { AuthService } from '@app/services/auth.service';
 import { AppState } from '../reducers';
 import { environment } from '../../../environments/environment';
 import { isUserLoaded } from '../selectors/auth.selector';
-import { MessageService } from '@app/services/message.service';
-
 @Injectable()
 export class AuthEffects {
   @Effect({ dispatch: false })
@@ -67,7 +65,6 @@ export class AuthEffects {
   constructor(private actions$: Actions,
     private router: Router,
     private auth: AuthService,
-    private message: MessageService,
     private store: Store<AppState>) {
 
     this.router.events.subscribe(event => {

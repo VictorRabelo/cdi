@@ -23,13 +23,13 @@ body::-webkit-scrollbar-thumb, .modal::-webkit-scrollbar-thumb, .table-responsiv
     border-radius: 20px;  /* creates padding around scroll thumb */
 }
 
-.mat-tab-body-content::-webkit-scrollbar {
-    height: 8px;               /* width of the entire scrollbar */
+body::-webkit-scrollbar, .mat-tab-body-content::-webkit-scrollbar, .table-responsive::-webkit-scrollbar {
+    height: 8px;               /* height of the entire scrollbar */
 }
-.mat-tab-body-content::-webkit-scrollbar-track {
+body::-webkit-scrollbar-track, .mat-tab-body-content::-webkit-scrollbar-track, .table-responsive::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.5);        /* color of the tracking area */
 }
-.mat-tab-body-content::-webkit-scrollbar-thumb {
+body::-webkit-scrollbar-thumb, .mat-tab-body-content::-webkit-scrollbar-thumb, .table-responsive::-webkit-scrollbar-thumb {
     background: rgba(0, 0, 0, 0.5);      /* color of the scroll thumb */
     border-radius: 20px;  /* creates padding around scroll thumb */
 }

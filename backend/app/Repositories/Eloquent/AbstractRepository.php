@@ -69,6 +69,14 @@ abstract class AbstractRepository
         $date_end = date('Y-' . $month . '-t');
         return ['inicio' => $date_start, 'fim' => $date_end];
     }
+
+    public function filterDate($date)
+    {
+        date_default_timezone_set('America/Sao_Paulo');
+        $date_start = date($date.'-01');
+        $date_end = date($date.'-t');
+        return ['inicio' => $date_start, 'fim' => $date_end];
+    }
     
     public function userLogado()
     {

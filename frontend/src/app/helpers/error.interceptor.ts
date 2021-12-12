@@ -26,7 +26,7 @@ export class ErrorInterceptor implements HttpInterceptor {
       }
 
       if(error.status == 401){
-        this.message.toastError('Usuário não autenticado');
+        this.message.toastError('Usuário inválido!');
 
         this.store.dispatch(new Logout());
       }
@@ -54,7 +54,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         }
       }
 
-      const err = error.error.message || error.error.code;
+      const err = error.message || error.error.message || error.error.code;
       
       return throwError(err);
     }));
