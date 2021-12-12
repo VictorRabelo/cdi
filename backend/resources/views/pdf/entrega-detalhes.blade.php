@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Detelhes da entrega</title>
+        <style>
+            .page-break {
+                page-break-after: always;
+            }
+
+            .customers {
+                font-family: Arial, Helvetica, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            .customers td, .customers th {
+                border: 1px solid #ddd;
+                padding: 8px;
+            }
+
+            .customers tr:nth-child(even){background-color: #f2f2f2;}
+
+            .customers tr:hover {background-color: #ddd;}
+
+            .customers th {
+                padding-top: 10px;
+                padding-bottom: 10px;
+                background-color: #343a40;
+                color: white;
+            }
+             
+            th,td {
+                text-align: center;
+                align-items: center;
+                vertical-align: middle;
+            }
+            
+        </style>
+    </head>
+    <body>
+        <table class="customers">
+            <tr>
+                <th colspan="5">Detelhes da entrega - {{date('d/m/Y', strtotime($data->updated_at))}}</th>
+            </tr>
+            <tr>
+                <th>Entregador</th>
+                <th>Qtd. de Produtos</th>
+                <th>Lucro</th>
+                <th>Valor Total</th>
+                <th>Status</th>
+            </tr>
+            <tr>
+                <td>{{ $dadosEntrega->entregador }}</td>
+                <td>{{ $dadosEntrega->qtd_produtos }}</td>
+                <td>{{ 'R$ '.number_format($dadosEntrega->lucro, 2, ',', '.') }}</td>
+                <td>{{ 'R$ '.number_format($dadosEntrega->total_final, 2, ',', '.') }}</td>
+                <td style="color: #fff;" bgcolor="{{($dadosEntrega->status !== 'ok')?'#0000ff':'#008000'}}">
+                    {{ $data->status }}
+                </td>
+            </tr>
+            <tr>
+                <th colspan="5">Produtos da entrega</th>
+            </tr>
+            <tr>
+                <th>#COD</th>
+                <th>Qtd.</th>
+                <th>Foto</th>
+                <th>Valor</th>
+                <th>Lucro</th>
+            </tr>
+            @foreach ($dadosProdutos as $data)
+                <tr>
+                    <td>#{{ $data->produto->id_produto }}</td>
+                    <td>{{ $data->qtd_produto }}</td>
+                    <td>
+                        <img src="{{ storage_path('app/public/'.$data->path) }}" alt="Produto">
+                    </td>
+                    
+                    <td>{{ 'R$ '.number_format($data->preco_entrega, 2, ',', '.') }}</td>
+                    <td>{{ 'R$ '.number_format($data->lucro_entrega, 2, ',', '.') }}</td>
+                </tr>
+            @endforeach
+        </table>
+        <div class="page-break"></div>
+    </body>
+</html>

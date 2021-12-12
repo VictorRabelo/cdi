@@ -17,6 +17,8 @@ interface EntregaRepositoryInterface extends CrudRepositoryInterface
     public function deleteEntrega($id);
 
     public function finishEntrega($dados);
+    
+    public function baixaEntrega($dados, $id);
 
     //itens
     public function getItemById($id);

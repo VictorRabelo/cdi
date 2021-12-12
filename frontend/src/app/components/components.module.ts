@@ -18,7 +18,6 @@ import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { ModalMovitionComponent } from './modal-movition/modal-movition.component';
 import { UtilModule } from '@app/util/util.module';
 import { ModalDolarFormComponent } from './modal-dolar-form/modal-dolar-form.component';
-import { ModalBaixaComponent } from './modal-baixa/modal-baixa.component';
 
 export const customCurrencyMaskConfig = {
   align: "right",
@@ -44,7 +43,6 @@ export const customCurrencyMaskConfig = {
     ModalProductDadosComponent,
     ModalDebitarComponent,
     ModalMovitionComponent,
-    ModalBaixaComponent,
     ModalDolarFormComponent
   ],
   imports: [
@@ -64,7 +62,6 @@ export const customCurrencyMaskConfig = {
     ModalProductsComponent,
     ModalProductDadosComponent,
     ModalDebitarComponent,
-    ModalBaixaComponent,
     ModalMovitionComponent,
     ModalDolarFormComponent,
   ],
@@ -77,7 +74,6 @@ export const customCurrencyMaskConfig = {
     ModalDebitarComponent,
     ModalMovitionComponent,
     ModalDolarFormComponent,
-    ModalBaixaComponent,
   ],
 })
 export class ComponentsModule { }

@@ -61,7 +61,6 @@ class EntregaRepository extends AbstractRepository implements EntregaRepositoryI
             
             $lucro += $item->lucro;
             $totalMensal += $item->total_final;
-            $pago += $item->pago;
 
             array_push($dataSource, $item);
         }
@@ -70,7 +69,6 @@ class EntregaRepository extends AbstractRepository implements EntregaRepositoryI
             'entregas'     => $dataSource,
             'totalMensal'  => $totalMensal,
             'lucro'        => $lucro,
-            'pago'         => $pago,
             'data'         => isset($date['inicio'])? $date['inicio']:date('Y-m-d'),
             'mounth'       => isset($queryParams['date'])? $queryParams['date']:date('m'),
         ];
@@ -87,11 +85,15 @@ class EntregaRepository extends AbstractRepository implements EntregaRepositoryI
             return false;
         }
 
+        $dadosEntrega->qtd_disponiveis = 0;
+
         foreach ($dadosProdutos as $item) {
             $item->id_estoque = $item->produto->estoque()->first()->id_estoque;
             $item->preco_entrega *= $item->qtd_produto;
             $item->lucro_entrega *= $item->qtd_produto;
+            $dadosEntrega->qtd_disponiveis += $item->qtd_produto;
         }
+
         return ['dadosEntrega' => $dadosEntrega, 'dadosProdutos' => $dadosProdutos];
     }
 
@@ -110,10 +112,6 @@ class EntregaRepository extends AbstractRepository implements EntregaRepositoryI
         $dadosEntrega->fill($dados);
         if (!$dadosEntrega->save()) {
             return ['message' => 'Falha ao debitar!', 'code' => 500];
-        }
-
-        if(isset($dados['baixaEntrega'])){
-            return $this->baixaEntrega($dados, $id);
         }
 
         return ['message' => 'Venda atualizada com sucesso!', 'code' => 200];
@@ -138,10 +136,13 @@ class EntregaRepository extends AbstractRepository implements EntregaRepositoryI
             
             if ($dadoEstoque->und == 0) {
                 $dadoProduto->update(['status' => 'ok']);
+            } else {
+                if($dados->status == 'pendente'){
+                    $dadoEstoque->increment('und', $item->qtd_produto);
+                }
             }
-            
-            $dadoEstoque->increment('und', $item->qtd_produto);
 
+            $item->delete();
         }
 
         $dados->delete();
@@ -173,7 +174,7 @@ class EntregaRepository extends AbstractRepository implements EntregaRepositoryI
             return ['message' => 'Falha na movimentação do estoque', 'code' => 500];
         }
 
-        return ['message' => 'Venda realizada com sucesso!', 'code' => 200];
+        return ['message' => 'Entrega realizada com sucesso!', 'code' => 200];
     }
 
     // Item 
@@ -283,10 +284,31 @@ class EntregaRepository extends AbstractRepository implements EntregaRepositoryI
         return ['message' => 'Item deletado com sucesso!'];
     }
 
-    private function baixaEntrega($dados, $id)
+    public function baixaEntrega($dados, $id)
     {
+        $dadosEntrega = Entrega::where('id_entrega', '=', $id)->first();
+        if(!$dadosEntrega) {
+            return ['message' => 'Não encontrou a entrega!', 'code' => 500];
+        }
+        
+        foreach ($dadosEntrega->entregasItens()->get() as $item) {
+            
+            $dadoProduto = $item->produto()->first();
+            $dadoEstoque = $dadoProduto->estoque()->first();
 
-        return ['message' => 'Debitado com sucesso!', 'code' => 200];
+            if ($dadoEstoque->und == 0) {
+                $dadoProduto->update(['status' => 'ok']);
+            }
+
+            if($item->qtd_disponivel > 0){
+                $dadoEstoque->increment('und', $item->qtd_disponivel);
+                $item->decrement('qtd_disponivel', $item->qtd_disponivel);
+            }
+        }
+        
+        $dadosEntrega->update(['status' => 'ok']);
+
+        return ['message' => 'Baixa com sucesso!', 'code' => 200];
     }
 
 

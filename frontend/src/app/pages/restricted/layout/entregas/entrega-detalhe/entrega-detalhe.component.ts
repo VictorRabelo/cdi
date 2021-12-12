@@ -8,10 +8,8 @@ import { MessageService } from '@app/services/message.service';
 import { ModalProductsComponent } from '@app/components/modal-products/modal-products.component';
 import { ModalProductDadosComponent } from '@app/components/modal-product-dados/modal-product-dados.component';
 import { ModalPessoalComponent } from '@app/components/modal-pessoal/modal-pessoal.component';
-import { ModalDebitarComponent } from '@app/components/modal-debitar/modal-debitar.component';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModalBaixaComponent } from '@app/components/modal-baixa/modal-baixa.component';
 
 
 @Component({
@@ -133,12 +131,19 @@ export class EntregaDetalheComponent implements OnInit {
     })
   }
 
-  openBaixa(){
-    const modalRef = this.modalCtrl.open(ModalBaixaComponent, { size: 'sm', backdrop: 'static' });
-    modalRef.componentInstance.data = this.entregaCurrent;
-    modalRef.result.then(res => {
+  darBaixa(){
+    this.loading = true;
+
+    this.service.baixaEntrega(this.entregaCurrent.id_entrega, this.entregaCurrent).subscribe(res => {
       this.getById(this.entregaCurrent.id_entrega);
-    })
+    }, error => {
+      console.log(error)
+      this.message.toastError(error.message);
+      this.loading = false;
+    }, () => {
+      this.loading = false;
+    });
+
   }
 
   deleteItemConfirm(item) {

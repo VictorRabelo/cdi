@@ -153,10 +153,13 @@ class VendaRepository extends AbstractRepository implements VendaRepositoryInter
             
             if ($dadoEstoque->und == 0) {
                 $dadoProduto->update(['status' => 'ok']);
+            } else {
+                if($dados->status == 'pendente'){
+                    $dadoEstoque->increment('und', $item->qtd_venda);
+                }
             }
-            
-            $dadoEstoque->increment('und', $item->qtd_venda);
 
+            $item->delete();
         }
 
         $dados->delete();

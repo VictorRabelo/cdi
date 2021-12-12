@@ -4,6 +4,8 @@ namespace App\Repositories\Eloquent\Relatorio;
 
 use PDF;
 use App\Models\Cliente;
+use App\Models\Entrega;
+use App\Models\EntregaItem;
 use App\Models\Venda;
 use App\Repositories\Contracts\Relatorio\RelatorioRepositoryInterface;
 use App\Repositories\Eloquent\AbstractRepository;
@@ -35,7 +37,7 @@ class RelatorioRepository extends AbstractRepository implements RelatorioReposit
             return $this->messages->notFound;
         }
 
-        $pdf = PDF::loadView('pdf.vendas', compact('datas'));
+        $pdf = PDF::loadView('pdf.vendas', compact('datas', 'data_now'));
         $result = $pdf->download($data_now.'.pdf');
         
         $base = base64_encode($result);
@@ -94,6 +96,58 @@ class RelatorioRepository extends AbstractRepository implements RelatorioReposit
         $datas = 0;
     
         $pdf = PDF::loadView('pdf.cliente', compact('datas'));
+        $result = $pdf->download($data_now.'.pdf');
+    
+        $base = base64_encode($result);
+    
+        return ['file' => $base,'data' => $data_now];
+            
+        
+    }
+
+    public function entregas()
+    {
+        $data_now = $this->dateNow();
+    
+        $datas = Entrega::with('entregador')->orderBy('id_entrega', 'desc')->get();
+    
+        $pdf = PDF::loadView('pdf.entregas', compact('datas', 'data_now'));
+        $result = $pdf->download($data_now.'.pdf');
+    
+        $base = base64_encode($result);
+    
+        return ['file' => $base,'data' => $data_now];
+            
+        
+    }
+
+    public function entregaDetalhes($id)
+    {
+        $data_now = $this->dateNow();
+    
+        $dadosEntrega = Entrega::where('id_entrega', '=', $id)->leftJoin('users','users.id', '=', 'entregas.entregador_id')->select('users.name as entregador', 'entregas.*')->first();
+        if (!$dadosEntrega) {
+            return false;
+        }
+        
+        $dadosProdutos = EntregaItem::with('produto')->where('entrega_id', '=', $id)->orderBy('created_at', 'desc')->get();
+        if (!$dadosProdutos) {
+            return false;
+        }
+
+        $dadosEntrega->qtd_disponiveis = 0;
+
+        foreach ($dadosProdutos as $item) {
+            $item->id_estoque = $item->produto->estoque()->first()->id_estoque;
+            $item->preco_entrega *= $item->qtd_produto;
+            $item->lucro_entrega *= $item->qtd_produto;
+            $dadosEntrega->qtd_disponiveis += $item->qtd_produto;
+        }
+        
+        $idEntregador = auth()->user()->id;
+        $dadosVendas = Venda::where('vendedor_id', '=', $idEntregador)->leftJoin('clientes','clientes.id_cliente', '=', 'vendas.cliente_id')->select('clientes.name as cliente', 'vendas.*')->get();
+        
+        $pdf = PDF::loadView('pdf.entrega-detalhes', compact('dadosEntrega', 'dadosProdutos', 'dadosVendas'));
         $result = $pdf->download($data_now.'.pdf');
     
         $base = base64_encode($result);

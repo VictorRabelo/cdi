@@ -15,6 +15,14 @@ export class RelatorioService {
         return this.http.get<any>(`${environment.apiUrl}/relatorios/vendas`).pipe(map(res =>{ return res.response }));
     }
 
+    getEntregas() {
+        return this.http.get<any>(`${environment.apiUrl}/relatorios/entregas`).pipe(map(res =>{ return res.response }));
+    }
+
+    getEntregaDetalhes() {
+        return this.http.get<any>(`${environment.apiUrl}/relatorios/entrega-detalhes`).pipe(map(res =>{ return res.response }));
+    }
+
     getEstoque() {
         return this.http.get<any>(`${environment.apiUrl}/relatorios/estoque`).pipe(map(res =>{ return res.response }));
     }

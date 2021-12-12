@@ -54,9 +54,11 @@ class MovitionRepository extends AbstractRepository implements MovitionRepositor
         }
 
         return [
-            'dados' => $dados,
-            'saldoMes' => $this->tools->calcularEntradaSaida($dados),
+            'dados'      => $dados,
+            'saldoMes'   => $this->tools->calcularEntradaSaida($dados),
             'saldoTotal' => $this->tools->calcularEntradaSaida($saldoTotal),
+            'month'     => isset($queryParams['date'])? $queryParams['date']:date('m'),
+
         ];
     }
     
@@ -73,9 +75,10 @@ class MovitionRepository extends AbstractRepository implements MovitionRepositor
         }
 
         return [
-            'dados' => $dados,
-            'saldoMes' => $this->tools->calcularEntradaSaida($dados),
-            'saldoTotal' => $this->tools->calcularEntradaSaida($saldoTotal)
+            'dados'      => $dados,
+            'saldoMes'   => $this->tools->calcularEntradaSaida($dados),
+            'saldoTotal' => $this->tools->calcularEntradaSaida($saldoTotal),
+            'month'     => isset($queryParams['date'])? $queryParams['date']:date('m'),
         ];
     }
     
@@ -92,9 +95,10 @@ class MovitionRepository extends AbstractRepository implements MovitionRepositor
         }
 
         return [
-            'dados' => $dados,
-            'saldoMes' => $this->tools->calcularEntradaSaida($dados),
+            'dados'      => $dados,
+            'saldoMes'   => $this->tools->calcularEntradaSaida($dados),
             'saldoTotal' => $this->tools->calcularEntradaSaida($saldoTotal),
+            'month'     => isset($queryParams['date'])? $queryParams['date']:date('m'),
         ];
     }
 

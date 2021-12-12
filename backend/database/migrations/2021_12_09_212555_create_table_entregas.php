@@ -20,7 +20,6 @@ class CreateTableEntregas extends Migration
             $table->float('lucro', 8, 2)->default(0.00)->nullable();
             $table->integer('qtd_produtos')->nullable();
             $table->string('status')->nullable();
-            $table->string('caixa')->nullable();
             $table->timestamps();
 
             $table->foreign('entregador_id')->references('id')->on('users')->onDelete('SET NULL')->onUpdate('cascade');

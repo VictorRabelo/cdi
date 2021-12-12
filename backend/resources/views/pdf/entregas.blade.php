@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>Vendas</title>
+        <title>Entregas</title>
         <style>
             .page-break {
                 page-break-after: always;
@@ -43,28 +43,24 @@
     <body>
         <table id="customers">
             <tr>
-                <th colspan="6">Vendas - {{date('d/m/Y', strtotime($data_now))}}</th>
+                <th colspan="5">Entregas - {{date('d/m/Y', strtotime($data_now))}}</th>
             </tr>
             <tr>
-                <th>Cliente</th>
-                <th>Qtd</th>
-                <th>Produtos</th>
-                <th>Valor Pago</th>
-                <th>Valor Vendido</th>
+                <th>Entregador</th>
+                <th>Qtd. de Produtos</th>
                 <th>Lucro</th>
+                <th>Valor Total</th>
+                <th>Status</th>
             </tr>
             @foreach ($datas as $data)
                 <tr>
-                    <td>{{ $data->cliente['name']?$data->cliente['name']:'Cliente não informado' }}</td>
-                    <td>{{ $data->qtd_produto }}</td>
-                    <td>
-                        @foreach ($data->produtos as $value)
-                            <span>{{ $value->name }}<span><br>
-                        @endforeach
-                    </td>
-                    <td>{{ 'R$ '.number_format($data->pago, 2, ',', '.') }}</td>
-                    <td>{{ 'R$ '.number_format($data->total_final, 2, ',', '.') }}</td>
+                    <td>{{ $data->entregador->name }}</td>
+                    <td>{{ $data->qtd_produtos }}</td>
                     <td>{{ 'R$ '.number_format($data->lucro, 2, ',', '.') }}</td>
+                    <td>{{ 'R$ '.number_format($data->total_final, 2, ',', '.') }}</td>
+                    <td style="color: #fff;" bgcolor="{{($data->status !== 'ok')?'#0000ff':'#008000'}}">
+                        {{ $data->status }}
+                    </td>
                 </tr>
             @endforeach
             

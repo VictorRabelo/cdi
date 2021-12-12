@@ -7,7 +7,7 @@
           <i class="fa fa-arrow-left"></i>
         </button>
         Detalhes da entrega:
-        <span class="badge badge-success" *ngIf="entregaCurrent.status === 'baixa'">Concluído</span>
+        <span class="badge badge-success" *ngIf="entregaCurrent.status === 'ok'">Ok</span>
         <span class="badge badge-warning" *ngIf="entregaCurrent.status === 'pendente'">Pendente</span>
         <span class="badge badge-primary" *ngIf="!entregaCurrent.status">Aberta</span>
         <div class="float-right">
@@ -35,22 +35,27 @@
   
         <div class="col-sm-2 form-group">
           <label>Lucro:</label>
-          <input type="tel" readonly currencyMask class="form-control" [(ngModel)]="entregaCurrent.lucro">
+          <input type="text" readonly currencyMask class="form-control" [(ngModel)]="entregaCurrent.lucro">
         </div>
   
         <div class="col-sm-2 form-group">
           <label>Total:</label>
-          <input type="tel" readonly currencyMask class="form-control" [(ngModel)]="entregaCurrent.total_final">
-        </div>
-        
-        <div class="col-sm-2 form-group" *ngIf="entregaCurrent.status == 'pendente'">
-          <button class="btn btn-primary btn-debitar" (click)="openBaixa()">
-            <i class="fas fa-money-bill"></i> Dar Baixa
-          </button>
+          <input type="text" readonly currencyMask class="form-control" [(ngModel)]="entregaCurrent.total_final">
         </div>
 
         <div class="col-sm-2 ml-auto form-group">
           <h5>{{ entregaCurrent.id_entrega }}#{{ entregaCurrent.created_at }}</h5>
+        </div>
+      </div>
+      <div class="row" *ngIf="entregaCurrent.status == 'pendente'">
+        <div class="col-sm-2 form-group">
+          <label>Produtos Disponíveis:</label>
+          <input type="number" readonly class="form-control" [(ngModel)]="entregaCurrent.qtd_disponiveis">
+        </div>
+        <div class="col-sm-2 form-group">
+          <button class="btn btn-primary btn-debitar" (click)="darBaixa()">
+            <i class="fas fa-money-bill"></i> Dar Baixa
+          </button>
         </div>
       </div>
       <div class="row" *ngIf="!entregaCurrent.status">

@@ -155,7 +155,7 @@ Route::group(['prefix' =>'/v1'], function() {
         Route::post('/finish','Entrega\EntregaController@finishEntrega')->middleware(['auth:api', 'scope:admin']);
         
         Route::put('/{id}','Entrega\EntregaController@update')->middleware(['auth:api', 'scope:admin']);
-        Route::put('/{id}/receber','Entrega\EntregaController@updateReceber')->middleware(['auth:api', 'scope:admin']);
+        Route::put('/{id}/dar-baixa','Entrega\EntregaController@baixaEntrega')->middleware(['auth:api', 'scope:admin']);
         
         Route::delete('/{id}','Entrega\EntregaController@destroy')->middleware(['auth:api', 'scope:admin']);
 
@@ -220,6 +220,10 @@ Route::group(['prefix' =>'/v1'], function() {
         Route::get('/estoque','Relatorio\RelatorioController@estoque')->middleware(['auth:api', 'scope:admin']);
         
         Route::get('/vendidos','Relatorio\RelatorioController@vendidos')->middleware(['auth:api', 'scope:admin']);
+        
+        Route::get('/entregas','Relatorio\RelatorioController@entregas')->middleware(['auth:api', 'scope:admin']);
+        
+        Route::get('/entrega-detalhes/{id}','Relatorio\RelatorioController@entregaDetalhes')->middleware(['auth:api', 'scope:admin']);
 
     });
 

@@ -42,6 +42,18 @@ export class RelatoriosComponent extends ControllerBase {
       })
   }
 
+  downloadEntregas(){
+    this.loading = true;
+    this.sub.sink = this.relatorioService.getEntregas().subscribe(
+      (res: any) => {
+        this.downloadPDF(res.file, res.data, 'entregas')
+      },
+      error => console.log(error),
+      ()=>{
+        this.loading = false;
+      })
+  }
+
   downloadEstoque(){
     this.loading = true;
     this.sub.sink = this.relatorioService.getEstoque().subscribe(

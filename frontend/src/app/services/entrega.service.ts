@@ -27,6 +27,14 @@ export class EntregaService {
     getById(id: number) {
         return this.http.get<any>(`${this.baseUrl}/entregas/${id}`);
     }
+    
+    update(id: number, update: any) {
+        return this.http.put<any>(`${this.baseUrl}/entregas/${id}`, update);
+    }
+
+    baixaEntrega(id: number, dados: any) {
+        return this.http.put<any>(`${this.baseUrl}/entregas/${id}/dar-baixa`, dados);
+    }
 
     store(store: any){
         return this.http.post<any>(`${this.baseUrl}/entregas`, store).pipe(map(res =>{ return res.response }));
@@ -34,10 +42,6 @@ export class EntregaService {
 
     finishEntrega(dados: any) {
         return this.http.post<any>(`${this.baseUrl}/entregas/finish`, dados);
-    }
-
-    update(id: number, update: any) {
-        return this.http.put<any>(`${this.baseUrl}/entregas/${id}`, update);
     }
 
     delete(id: number){

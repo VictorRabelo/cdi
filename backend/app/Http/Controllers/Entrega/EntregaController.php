@@ -121,6 +121,24 @@ class EntregaController extends Controller
             return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
         }
     }
+   
+    public function baixaEntrega(Request $request, $id)
+    {
+        try {
+            $dados = $request->all();
+
+            $res = $this->entregaRepository->baixaEntrega($dados, $id);
+
+            if ($res['code'] == 500) {
+                return response()->json(['message' => $res['message']], $res['code']);
+            }
+
+            return response()->json($res['message'], $res['code']);
+            
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
+        }
+    }
     
     // Item
     public function showItem($id)
