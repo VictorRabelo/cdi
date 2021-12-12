@@ -14,6 +14,9 @@
           <button type="button" class="btn btn-success mr-2" (click)="finishEntrega()" *ngIf="!entregaCurrent.status">
             <i class="fas fa-check"></i> Finalizar
           </button>
+          <button type="button" class="btn btn-success mr-2" (click)="downloadRelatorio()" *ngIf="entregaCurrent.status == 'ok'">
+            <i class="fas fa-print"></i> Relatório da entrega
+          </button>
         </div>
       </h4>  
     </div>

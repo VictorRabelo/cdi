@@ -4,14 +4,15 @@ import { animate, style, transition, trigger } from '@angular/animations';
 
 import { EntregaService } from '@app/services/entrega.service';
 import { MessageService } from '@app/services/message.service';
+import { RelatorioService } from '@app/services/relatorio.service';
 
 import { ModalProductsComponent } from '@app/components/modal-products/modal-products.component';
 import { ModalProductDadosComponent } from '@app/components/modal-product-dados/modal-product-dados.component';
 import { ModalPessoalComponent } from '@app/components/modal-pessoal/modal-pessoal.component';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
-
+import { SubSink } from 'subsink';
+import { ControllerBase } from '@app/controller/controller.base';
 @Component({
   selector: 'app-entrega-detalhe',
   templateUrl: './entrega-detalhe.component.html',
@@ -27,7 +28,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
     )
   ],
 })
-export class EntregaDetalheComponent implements OnInit {
+export class EntregaDetalheComponent extends ControllerBase {
+  private sub = new SubSink();
 
   entregaCurrent: any = { cliente: 'Selecione um entregador', itens: [] };
 
@@ -37,8 +39,11 @@ export class EntregaDetalheComponent implements OnInit {
     private modalCtrl: NgbModal,
     private activeRoute: ActivatedRoute,
     private service: EntregaService,
+    private serviceRelatorio: RelatorioService,
     private message: MessageService,
-  ) { }
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.activeRoute.params.subscribe(params => {
@@ -48,7 +53,7 @@ export class EntregaDetalheComponent implements OnInit {
 
   getById(id) {
     this.loading = true;
-    this.service.getById(id).subscribe(res => {
+    this.sub.sink = this.service.getById(id).subscribe(res => {
       this.entregaCurrent = res.dadosEntrega;
       
       this.verificaDados(this.entregaCurrent);
@@ -179,5 +184,21 @@ export class EntregaDetalheComponent implements OnInit {
     if(res.entregador == null) {
       this.entregaCurrent.entregador = 'Entregador não informado';
     }
+  }
+
+  downloadRelatorio(){
+    this.loading = true;
+    this.sub.sink = this.serviceRelatorio.getEntregaDetalhes(this.entregaCurrent.id_entrega).subscribe(
+      (res: any) => {
+        this.downloadPDF(res.file, res.data, 'detalhes-entrega')
+      },
+      error => console.log(error),
+      ()=>{
+        this.loading = false;
+      })
+  }
+
+  ngOnDestroy(){
+    this.sub.unsubscribe();
   }
 }

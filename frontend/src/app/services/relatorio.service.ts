@@ -19,8 +19,8 @@ export class RelatorioService {
         return this.http.get<any>(`${environment.apiUrl}/relatorios/entregas`).pipe(map(res =>{ return res.response }));
     }
 
-    getEntregaDetalhes() {
-        return this.http.get<any>(`${environment.apiUrl}/relatorios/entrega-detalhes`).pipe(map(res =>{ return res.response }));
+    getEntregaDetalhes(id: number) {
+        return this.http.get<any>(`${environment.apiUrl}/relatorios/entrega-detalhes/${id}`).pipe(map(res =>{ return res.response }));
     }
 
     getEstoque() {

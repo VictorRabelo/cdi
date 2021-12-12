@@ -87,4 +87,33 @@ export class ControllerBase implements OnInit, AfterContentInit, AfterViewInit, 
             return "Uma Ótima Noite!";
         }
     }
+
+    downloadPDF(file, data, type) {
+    
+        let fileName = data +'_'+ type + '.pdf';
+        const bytes: Uint8Array = this.base64ToArrayBuffer(file);
+        const filePdf: Blob = new Blob([bytes], {type: 'application/pdf'});
+        let fileURL = URL.createObjectURL(filePdf);
+    
+        let link = document.createElement("a");
+        link.href = fileURL;
+        link.download = fileName;
+        document.body.append(link);
+    
+        link.click();
+        link.remove();
+        // in case the Blob uses a lot of memory
+        window.addEventListener('focus', e=>URL.revokeObjectURL(fileURL), {once:true});
+    }
+    
+    base64ToArrayBuffer(base64: string): Uint8Array {
+        var binaryString = window.atob(base64);
+        var binaryLen = binaryString.length;
+        var bytes = new Uint8Array(binaryLen);
+        for (var i = 0; i < binaryLen; i++) {
+          var ascii = binaryString.charCodeAt(i);
+          bytes[i] = ascii;
+        }
+        return bytes;
+    }
 }
