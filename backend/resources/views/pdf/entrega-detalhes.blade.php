@@ -87,7 +87,7 @@
         <div class="page-break"></div>
         <table class="customers">
             <tr>
-                <th colspan="6">Vendas - {{date('d/m/Y', strtotime($data_now))}}</th>
+                <th colspan="6">Vendas - {{ $dadosEntrega->entregador }} - {{date('d/m/Y', strtotime($data_now))}}</th>
             </tr>
             <tr>
                 <th>Cliente</th>
