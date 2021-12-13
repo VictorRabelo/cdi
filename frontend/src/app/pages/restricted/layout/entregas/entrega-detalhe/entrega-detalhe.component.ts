@@ -192,8 +192,12 @@ export class EntregaDetalheComponent extends ControllerBase {
       (res: any) => {
         this.downloadPDF(res.file, res.data, 'detalhes-entrega')
       },
-      error => console.log(error),
-      ()=>{
+      error => {
+        console.log(error)
+        this.loading = false;
+        this.message.toastError();
+      },
+      () => {
         this.loading = false;
       })
   }

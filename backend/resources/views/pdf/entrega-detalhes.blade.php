@@ -21,10 +21,6 @@
                 padding: 8px;
             }
 
-            .customers tr:nth-child(even){background-color: #f2f2f2;}
-
-            .customers tr:hover {background-color: #ddd;}
-
             .customers th {
                 padding-top: 10px;
                 padding-bottom: 10px;
@@ -43,7 +39,7 @@
     <body>
         <table class="customers">
             <tr>
-                <th colspan="5">Detelhes da entrega - {{date('d/m/Y', strtotime($data->updated_at))}}</th>
+                <th colspan="5">Detelhes da entrega - {{date('d/m/Y', strtotime($dadosEntrega->updated_at))}}</th>
             </tr>
             <tr>
                 <th>Entregador</th>
@@ -58,8 +54,11 @@
                 <td>{{ 'R$ '.number_format($dadosEntrega->lucro, 2, ',', '.') }}</td>
                 <td>{{ 'R$ '.number_format($dadosEntrega->total_final, 2, ',', '.') }}</td>
                 <td style="color: #fff;" bgcolor="{{($dadosEntrega->status !== 'ok')?'#0000ff':'#008000'}}">
-                    {{ $data->status }}
+                    {{ $dadosEntrega->status }}
                 </td>
+            </tr>
+            <tr>
+                <td colspan="5"></td>
             </tr>
             <tr>
                 <th colspan="5">Produtos da entrega</th>
@@ -75,10 +74,7 @@
                 <tr>
                     <td>#{{ $data->produto->id_produto }}</td>
                     <td>{{ $data->qtd_produto }}</td>
-                    <td>
-                        <img src="{{ storage_path('app/public/'.$data->path) }}" alt="Produto">
-                    </td>
-                    
+                    <td>{{ $data->produto->name }}</td>
                     <td>{{ 'R$ '.number_format($data->preco_entrega, 2, ',', '.') }}</td>
                     <td>{{ 'R$ '.number_format($data->lucro_entrega, 2, ',', '.') }}</td>
                 </tr>
@@ -89,29 +85,34 @@
             <tr>
                 <th colspan="6">Vendas - {{ $dadosEntrega->entregador }} - {{date('d/m/Y', strtotime($data_now))}}</th>
             </tr>
-            <tr>
-                <th>Cliente</th>
-                <th>Qtd</th>
-                <th>Produtos</th>
-                <th>Valor Pago</th>
-                <th>Valor Vendido</th>
-                <th>Lucro</th>
-            </tr>
-            @foreach ($dadosVendas as $data)
+            @if (count($dadosVendas) > 0)    
                 <tr>
-                    <td>{{ $data->cliente['name']?$data->cliente['name']:'Cliente não informado' }}</td>
-                    <td>{{ $data->qtd_produto }}</td>
-                    <td>
-                        @foreach ($data->produtos as $value)
-                            <span>{{ $value->name }}<span><br>
-                        @endforeach
-                    </td>
-                    <td>{{ 'R$ '.number_format($data->pago, 2, ',', '.') }}</td>
-                    <td>{{ 'R$ '.number_format($data->total_final, 2, ',', '.') }}</td>
-                    <td>{{ 'R$ '.number_format($data->lucro, 2, ',', '.') }}</td>
+                    <th>Cliente</th>
+                    <th>Qtd</th>
+                    <th>Produtos</th>
+                    <th>Valor Pago</th>
+                    <th>Valor Vendido</th>
+                    <th>Lucro</th>
                 </tr>
-            @endforeach
-            
+                @foreach ($dadosVendas as $data)
+                    <tr>
+                        <td>{{ $data->cliente['name']?$data->cliente['name']:'Cliente não informado' }}</td>
+                        <td>{{ $data->qtd_produto }}</td>
+                        <td>
+                            @foreach ($data->produtos as $value)
+                                <span>{{ $value->name }}<span><br>
+                            @endforeach
+                        </td>
+                        <td>{{ 'R$ '.number_format($data->pago, 2, ',', '.') }}</td>
+                        <td>{{ 'R$ '.number_format($data->total_final, 2, ',', '.') }}</td>
+                        <td>{{ 'R$ '.number_format($data->lucro, 2, ',', '.') }}</td>
+                    </tr>
+                @endforeach    
+            @else
+                <tr>
+                    <th colspan="6">Não há vendas!</th>
+                </tr>
+            @endif
         </table>
     </body>
 </html>

@@ -133,8 +133,8 @@ class RelatorioRepository extends AbstractRepository implements RelatorioReposit
         $dadosProdutos = EntregaItem::with('produto')->where('entrega_id', '=', $id)->orderBy('created_at', 'desc')->get();
         if (!$dadosProdutos) {
             return false;
-        }
-
+        } 
+        
         $dadosEntrega->qtd_disponiveis = 0;
 
         foreach ($dadosProdutos as $item) {
@@ -144,12 +144,12 @@ class RelatorioRepository extends AbstractRepository implements RelatorioReposit
             $dadosEntrega->qtd_disponiveis += $item->qtd_produto;
         }
         
-        $idEntregador = Auth::user()->id;
-        $dadosVendas = Venda::with('produtos', 'cliente')->where('vendedor_id', $idEntregador)->orderBy('id_venda', 'desc')->get();
-        
-        $pdf = PDF::loadView('pdf.entrega-detalhes', compact('dadosEntrega', 'dadosProdutos', 'dadosVendas'));
+        $idEntregador = $dadosEntrega->entregador_id;
+        $dadosVendas = Venda::with('produtos', 'cliente')->where('vendedor_id', $idEntregador)->where('created_at')->orderBy('id_venda', 'desc')->get();
+
+        $pdf = PDF::loadView('pdf.entrega-detalhes', compact('dadosEntrega', 'dadosProdutos', 'dadosVendas', 'data_now'));
         $result = $pdf->download($data_now.'.pdf');
-    
+
         $base = base64_encode($result);
     
         return ['file' => $base,'data' => $data_now];
