@@ -79,7 +79,7 @@
                                     </tr>
                                 </thead>
                                 <tbody *ngFor="let item of dataSource | filter:term">
-                                    <tr [ngClass]="{'tr-entrada': item.tipo === 'entrada', 'tr-saida': item.tipo === 'saida'}">
+                                    <tr [ngClass]="{'tr-saida': item.tipo === 'saida'}">
                                         <td>{{ item.data }}</td>
                                         <td>{{ item.valor | currency: 'R$' }}</td>
                                         <td>{{ item.descricao }}</td>

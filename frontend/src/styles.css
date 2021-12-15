@@ -55,22 +55,13 @@ body::-webkit-scrollbar-thumb, .mat-tab-body-content::-webkit-scrollbar-thumb, .
 .inputSearch {
     width: 200px;
 }
-
-
-.tr-entrada {
-    background-color: rgba(0, 128, 0, 0.5);
-}
-  
-.tr-entrada:hover {
-    background-color: rgba(0, 128, 0, 0.3) !important;
-}
   
 .tr-saida {
-    background-color: rgba(255, 0, 0, 0.5);
+    color: rgb(255, 0, 0);
 }
   
 .tr-saida:hover {
-    background-color: rgba(255, 0, 0, 0.3) !important;
+    color: rgb(255, 0, 0) !important;
 }
 
 .card-load {
