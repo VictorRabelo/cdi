@@ -46,7 +46,7 @@ export class SaleFinishComponent implements OnInit {
     }
 
     this.loading = true;
-    this.service.finishSale(this.data).subscribe(res => {
+    this.service.finishSale(this.dados).subscribe(res => {
       this.close(true);
     }, error => {
       console.log(error)
