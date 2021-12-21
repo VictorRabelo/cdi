@@ -60,6 +60,11 @@
             <i class="fas fa-money-bill"></i> Dar Baixa
           </button>
         </div>
+        <div class="col-sm-4 form-group" *ngIf="entregaCurrent.status == 'pendente'">
+          <button class="btn btn-primary" (click)="openProducts()" style="margin-top: 32px;">
+            <i class="fas fa-search"></i> Pesquisar Produtos
+          </button>
+        </div>
       </div>
       <div class="row" *ngIf="!entregaCurrent.status">
         <div class="col-sm-4 form-group">
@@ -78,7 +83,7 @@
             <th>Produto</th>
             <th class="text-right">Valor</th>
             <th class="text-right">Lucro</th>
-            <th class="text-right" *ngIf="!entregaCurrent.status">Ação</th>
+            <th class="text-right" *ngIf="entregaCurrent.status !== 'ok'">Ação</th>
           </thead>
           <tbody>
             <tr *ngFor="let item of entregaCurrent.itens;">
@@ -90,7 +95,7 @@
               <td>{{ item.produto.name | titlecase }}</td>
               <td class="text-right">{{ item.preco_entrega | currency:'R$' }}</td>
               <td class="text-right">{{ item.lucro_entrega | currency:'R$' }}</td>
-              <td class="text-right" *ngIf="!entregaCurrent.status">
+              <td class="text-right" *ngIf="entregaCurrent.status !== 'ok'">
                 <button class="btn btn-sm btn-primary mr-2" (click)="openItem(item.id)">
                   <i class="fas fa-pen"></i>
                 </button>
