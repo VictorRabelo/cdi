@@ -5,27 +5,20 @@
     <div class="container-fluid">
       <div class="row mb-2">
         
-        <div class="col-sm-6">
-          <h1 class="m-0">Vendas / Mês {{ today | date:'MM' }}</h1>
+        <div class="col-8">
+          <h1 class="m-0 text-title-sales">Vendas / Mês {{ today | date:'MM' }}</h1>
         </div>
         
-        <div class="col-2 ml-auto">
-          <select class="form-control d-inline" name="date" [(ngModel)]="filters.date" (change)="getAll()">
-            <option selected value="" *ngIf="filters.date == ''">Aguarde...</option>
-            <option value="0">Todas</option>
-            <option value="01">Janeiro</option>
-            <option value="02">Fevereiro</option>
-            <option value="03">Março</option>
-            <option value="04">Abril</option>
-            <option value="05">Maio</option>
-            <option value="06">Junho</option>
-            <option value="07">Julho</option>
-            <option value="08">Agosto</option>
-            <option value="09">Setembro</option>
-            <option value="10">Outubro</option>
-            <option value="11">Novembro</option>
-            <option value="12">Dezembro</option>
-          </select>                  
+        <div class="col-4">
+          <div class="input-group input-group-sm mobile-calender">
+            <input class="form-control" placeholder="yyyy-mm-dd" name="date" (ngModelChange)="filterDate($event)"
+              [(ngModel)]="filters.date" ngbDatepicker #d="ngbDatepicker">
+            <div class="input-group-append">
+              <button class="btn btn-sm btn-outline-secondary" (click)="d.toggle()" type="button">
+                <i class="far fa-calendar-alt"></i>
+              </button>
+            </div>
+          </div>
         </div>
       </div><!-- /.row -->
     </div><!-- /.container-fluid -->
@@ -35,23 +28,22 @@
   <!-- Main content -->
   <section class="content">
     <div class="container-fluid">
-      <div class="row text-right">
-              
-        <div class="col-4 col-md-3">
-          <label class="text-danger">Total de vendas:</label>
-          <span class="pl-2">{{ totalVendas | currency: 'R$' }}</span>
+      <div class="row mb-2">
+        <div class="col-6 col-md-3">
+          <label class="text-danger d-block">Total de vendas:</label>
+          <span class="colorMoney">{{ totalVendas | currency: 'R$' }}</span>
         </div>
-        <div class="col-4 col-md-3">
-          <label class="text-danger">Vendas do mês:</label>
-          <span class="pl-2">{{ totalMensal | currency: 'R$' }}</span>
+        <div class="col-6 col-md-3">
+          <label class="text-danger d-block">Vendas do mês:</label>
+          <span class="colorMoney">{{ totalMensal | currency: 'R$' }}</span>
         </div>
-        <div class="col-4 col-md-3 ml-auto">
-          <label class="text-danger">Recebido:</label>
-          <span class="pl-2">{{ recebido | currency: 'R$' }}</span>
+        <div class="col-6 col-md-3">
+          <label class="text-danger d-block">Recebido:</label>
+          <span class="colorMoney">{{ recebido | currency: 'R$' }}</span>
         </div>
-        <div class="col-4 col-md-3">
-          <label class="text-danger">Lucro:</label>
-          <span class="pl-2">{{ lucro | currency: 'R$' }}</span>
+        <div class="col-6 col-md-3">
+          <label class="text-danger d-block">Lucro:</label>
+          <span class="colorMoney">{{ lucro | currency: 'R$' }}</span>
         </div>
       </div>
       

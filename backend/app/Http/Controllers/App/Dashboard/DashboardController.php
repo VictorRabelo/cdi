@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Dashboard;
+namespace App\Http\Controllers\App\Dashboard;
 
 use App\Enums\CodeStatusEnum;
 use App\Http\Controllers\Controller;

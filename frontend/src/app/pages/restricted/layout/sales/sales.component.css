@@ -2,7 +2,28 @@
     width: 160px;
 }
 
+.colorMoney {
+    color: green !important;
+}
+
 @media (max-width: 480px){
+    .text-title-sales {
+        font-size: 18pt;
+    }
+    
+    .text-totalizer {
+        font-size: 10pt;
+    }
+
+    .mobile-calender {
+        width: 122px !important;
+    }
+
+    .card-header>.card-tools .input-group, .card-header>.card-tools .nav, .card-header>.card-tools .pagination {
+        margin-bottom: 0 !important;
+        margin-top: -0.3rem !important;
+    }
+
     .inputVenda {
         width: 42px !important;
     }

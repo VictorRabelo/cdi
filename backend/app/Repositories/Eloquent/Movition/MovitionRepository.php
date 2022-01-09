@@ -104,10 +104,9 @@ class MovitionRepository extends AbstractRepository implements MovitionRepositor
     
     private function geral()
     {
-        $dateYear = $this->dateYear();
         $dateMonth = $this->dateMonth();
 
-        $saldoTotal = $this->model->whereBetween('data', [$dateYear['inicio'], $dateYear['fim']])->where('status', 'geral')->orderBy('data', 'desc')->orderBy('id_movition', 'desc')->get();
+        $saldoTotal = $this->model->where('status', 'geral')->orderBy('data', 'desc')->orderBy('id_movition', 'desc')->get();
         $dados = $this->model->whereBetween('data', [$dateMonth['inicio'], $dateMonth['fim']])->where('status', 'geral')->orderBy('data', 'desc')->orderBy('id_movition', 'desc')->get();
 
         if (!$dados) {
@@ -125,9 +124,8 @@ class MovitionRepository extends AbstractRepository implements MovitionRepositor
     private function eletronico()
     {
         $dateMonth = $this->dateMonth();
-        $dateYear = $this->dateYear();
 
-        $saldoTotal = $this->model->whereBetween('data', [$dateYear['inicio'], $dateYear['fim']])->where('status', 'eletronico')->orderBy('data', 'desc')->orderBy('id_movition', 'desc')->get();
+        $saldoTotal = $this->model->where('status', 'eletronico')->orderBy('data', 'desc')->orderBy('id_movition', 'desc')->get();
         $dados = $this->model->whereBetween('data', [$dateMonth['inicio'], $dateMonth['fim']])->where('status', 'eletronico')->orderBy('data', 'desc')->orderBy('id_movition', 'desc')->get();
 
         if (!$dados) {

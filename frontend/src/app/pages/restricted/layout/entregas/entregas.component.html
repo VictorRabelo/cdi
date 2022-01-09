@@ -5,11 +5,11 @@
     <div class="container-fluid">
       <div class="row mb-2">
         
-        <div class="col-sm-6">
-          <h1 class="m-0">Entregas / Mês {{ today | date:'MM' }}</h1>
+        <div class="col-8">
+          <h1 class="m-0 text-title-entregas">Entregas / Mês {{ today | date:'MM' }}</h1>
         </div>
         
-        <div class="col-2 ml-auto">
+        <div class="col-4">
           <select class="form-control d-inline" name="date" [(ngModel)]="filters.date" (change)="getAll()">
             <option selected value="" *ngIf="filters.date == ''">Aguarde...</option>
             <option value="0">Todas</option>

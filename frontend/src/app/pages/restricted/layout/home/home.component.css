@@ -62,6 +62,14 @@ th, td{
 }
 
 @media (max-width: 480px){
+    .text-title-dash {
+        font-size: 18pt !important;
+    }
+    
+    .text-subtitle-dash {
+        font-size: 14pt !important;
+    }
+    
     .home{
         top: -15px;
         left: 2px;

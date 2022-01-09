@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Venda;
-
-use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+namespace App\Http\Controllers\App\Venda;
 
 use App\Enums\CodeStatusEnum;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
 use App\Repositories\Contracts\Venda\VendaRepositoryInterface;
 
 class VendaController extends Controller
@@ -24,8 +24,8 @@ class VendaController extends Controller
             $queryParams = $request->all();
             $res = $this->vendaRepository->index($queryParams);
 
-            if (!$res) {
-                return response()->json(['response' => 'Erro de Servidor'], 500);
+            if (isset($res['code']) && $res['code'] == 500) {
+                return response()->json($res, 500);
             }
 
             return response()->json(['response' => $res], 200);

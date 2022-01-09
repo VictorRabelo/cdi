@@ -1,3 +1,10 @@
 th, td{
     text-align: center;
 }
+
+@media (max-width: 480px){
+    .card-header>.card-tools .input-group, .card-header>.card-tools .nav, .card-header>.card-tools .pagination {
+        margin-bottom: 0 !important;
+        margin-top: -0.3rem !important;
+    }
+}

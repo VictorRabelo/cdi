@@ -227,6 +227,64 @@ Route::group(['prefix' =>'/v1'], function() {
         Route::get('/entrega-detalhes/{id}','Relatorio\RelatorioController@entregaDetalhes')->middleware(['auth:api', 'scope:admin']);
 
     });
+    
+    Route::group(['prefix' =>'/app'], function() {
+
+        Route::group(['prefix' =>'/dashboard'], function() {
+        
+            Route::get('/vendas-dia','App\Dashboard\DashboardController@getVendasDia');
+            Route::get('/vendas-mes','App\DashboardController@getVendasMes');
+            Route::get('/vendas-total','App\Dashboard\DashboardController@getVendasTotal');
+            Route::get('/clientes-total','App\Dashboard\DashboardController@getTotalClientes');
+            Route::get('/produtos-disponiveis','App\Dashboard\DashboardController@getProdutosDisponiveis');
+        });
+        
+        Route::group(['prefix' =>'/clientes'], function() {
+        
+            Route::get('/','App\Cliente\ClienteController@index');
+            Route::get('/{id}','App\Cliente\ClienteController@show');
+            
+            Route::post('/','App\Cliente\ClienteController@store');
+            
+            Route::put('/{id}','App\Cliente\ClienteController@update');
+            
+            Route::delete('/{id}','App\Cliente\ClienteController@destroy');
+    
+        });
+
+        Route::group(['prefix' =>'/estoques'], function() {
+        
+            Route::get('/','App\Estoque\EstoqueController@index');        
+            Route::get('/{id}','App\Estoque\EstoqueController@show');
+    
+        });
+
+
+        Route::group(['prefix' =>'/vendas'], function() {
+            
+            Route::get('/','App\Venda\VendaController@index');
+            Route::get('/{id}','App\Venda\VendaController@show');
+            
+            Route::post('/','App\Venda\VendaController@store');   
+            Route::post('/finish','App\Venda\VendaController@finishVenda');
+            
+            Route::put('/{id}','App\Venda\VendaController@update');
+
+            Route::group(['prefix' =>'/item'], function() {
+                Route::get('/{id}','App\Venda\VendaController@showItem');
+                Route::post('/','App\Venda\VendaController@storeItem');
+                Route::put('/{id}','App\Venda\VendaController@updateItem');
+                Route::delete('/{id}','App\Venda\VendaController@destroyItem');
+
+            });
+        });
+    
+        Route::group(['prefix' =>'/entregas'], function() {
+            Route::get('/','App\Entrega\EntregaController@index');
+            Route::get('/{id}','App\Entrega\EntregaController@show');
+        });
+    
+    });
 
 });
 

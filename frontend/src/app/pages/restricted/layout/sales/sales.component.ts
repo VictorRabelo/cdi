@@ -43,6 +43,13 @@ export class SalesComponent implements OnInit, OnDestroy {
     this.getAll();
   }
   
+  filterDate(event: any) {
+    this.filters.date = `${event.year}-${event.month}`;
+  
+    this.loading = true;
+    this.getAll()
+  }
+
   getAll() {
     this.sub.sink = this.service.getAll(this.filters).subscribe(res => {
       this.dataSource = res.vendas;

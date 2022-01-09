@@ -10,12 +10,14 @@ abstract class AbstractRepository
     protected $model;
     protected $tools;
     protected $messages;
+    protected $baseApp;
 
     public function __construct()
     {
         $this->model = $this->resolveModel();
         $this->tools = $this->resolveTools();
         $this->messages = $this->resolveMessages();
+        $this->baseApp = $this->resolveBaseApp();
     }
 
     protected function resolveModel()
@@ -31,6 +33,11 @@ abstract class AbstractRepository
     protected function resolveMessages()
     {
         return app($this->messages);
+    }
+
+    protected function resolveBaseApp()
+    {
+        return app($this->baseApp);
     }
 
     public function verifica($dados)

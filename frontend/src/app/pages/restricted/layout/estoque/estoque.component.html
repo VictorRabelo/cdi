@@ -2,12 +2,12 @@
 <div class="content-wrapper">    <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
+            <div class="row">
+                <div class="col-8">
                     <h1 class="m-0">Estoque</h1>
                 </div>
-                <div class="col-4 col-sm-2 ml-auto">
-                    <select class="form-control d-inline" id="status" name="status" [(ngModel)]="queryParams.status" (change)="rangeStatus()">
+                <div class="col-4">
+                    <select class="form-control" id="status" name="status" [(ngModel)]="queryParams.status" (change)="rangeStatus()">
                         <option value="all">Todos</option>
                         <option value="pago">Pago</option>
                         <option value="pendente">Enviado</option>
@@ -24,25 +24,25 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-sm-2 col-md-2">
-                    <label class="text-danger">Em Estoque:</label>
-                    <span class="pl-2 text-success">{{ estoque }}</span>
+                <div class="col-4 col-md-2 text-center">
+                    <label class="text-danger d-block">Em Estoque:</label>
+                    <span class="text-success">{{ estoque }}</span>
                 </div>
-                <div class="col-sm-2 col-md-2 mx-2">
-                    <label class="text-danger">Enviados:</label>
-                    <span class="pl-2 text-success">{{ enviados }}</span>
+                <div class="col-4 col-md-2 text-center">
+                    <label class="text-danger d-block">Enviados:</label>
+                    <span class="text-success">{{ enviados }}</span>
                 </div>
-                <div class="col-sm-2 col-md-2 mx-2">
-                    <label class="text-danger">Pagos:</label>
-                    <span class="pl-2 text-success">{{ pagos }}</span>
+                <div class="col-4 col-md-2 text-center">
+                    <label class="text-danger d-block">Pagos:</label>
+                    <span class="text-success">{{ pagos }}</span>
                 </div>
-                <div class="col-sm-2 col-md-2 mx-2">
-                    <label class="text-danger">Vendidos:</label>
-                    <span class="pl-2 text-success">{{ vendidos }}</span>
+                <div class="col-4 col-md-2 text-center">
+                    <label class="text-danger d-block">Vendidos:</label>
+                    <span class="text-success">{{ vendidos }}</span>
                 </div>
-                <div class="col-sm-2 col-md-2">
-                    <label class="text-danger">Total em Estoque:</label>
-                    <span class="pl-2 text-success">{{ totalEstoque }}</span>
+                <div class="col-5 col-md-2 text-center">
+                    <label class="text-danger d-block">Total em Estoque:</label>
+                    <span class="text-success">{{ totalEstoque }}</span>
                 </div>
             </div>
             <div class="row">

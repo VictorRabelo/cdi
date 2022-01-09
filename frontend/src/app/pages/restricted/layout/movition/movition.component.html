@@ -4,10 +4,10 @@
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0">Movimentação / {{ type | titlecase }}</h1>
+                <div class="col-7">
+                    <h1 class="m-0 text-title-movition">Movimentação / {{ type | titlecase }}</h1>
                 </div><!-- /.col -->
-                <div class="col-2 ml-auto">
+                <div class="col-5">
                     <div class="input-group input-group-sm inputSearch">
                         <input class="form-control" placeholder="yyyy-mm-dd" name="date" (ngModelChange)="filterDate($event)"
                             [(ngModel)]="filters.date" ngbDatepicker #d="ngbDatepicker">
@@ -18,7 +18,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-2">
+                <div class="col-5 ml-auto">
                     <ol class="breadcrumb float-sm-right">
                         
                         <li class="breadcrumb-item"><a [routerLink]="['/restricted/home']"><i class="fas fa-home"></i></a></li>
@@ -34,14 +34,14 @@
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
-            <div class="row text-right">
-                <div class="col-4 col-md-3 ml-auto">
-                    <label class="text-danger">Saldo total:</label>
-                    <span class="pl-2">{{ saldoTotal | currency: 'R$' }}</span>
+            <div class="row">
+                <div class="col-4 ml-auto">
+                    <label class="text-danger d-block">Saldo total:</label>
+                    <span>{{ saldoTotal | currency: 'R$' }}</span>
                 </div>
-                <div class="col-4 col-md-3" *ngIf="type !== 'historico'">
-                    <label class="text-danger">Saldo do mês:</label>
-                    <span class="pl-2">{{ saldoMes | currency: 'R$' }}</span>
+                <div class="col-4" *ngIf="type !== 'historico'">
+                    <label class="text-danger d-block">Saldo do mês:</label>
+                    <span>{{ saldoMes | currency: 'R$' }}</span>
                 </div>
             </div>
             <div class="row">

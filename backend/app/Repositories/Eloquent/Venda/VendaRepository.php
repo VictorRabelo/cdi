@@ -9,6 +9,7 @@ use App\Models\ProdutoVenda;
 use App\Models\Venda;
 use App\Repositories\Contracts\Venda\VendaRepositoryInterface;
 use App\Repositories\Eloquent\AbstractRepository;
+use App\Resolvers\AppResolverInterface;
 use App\Utils\Messages;
 use App\Utils\Tools;
 use Illuminate\Http\Request;
@@ -31,19 +32,27 @@ class VendaRepository extends AbstractRepository implements VendaRepositoryInter
      */
     protected $messages = Messages::class;
 
+    /**
+     * @var AppResolverInterface
+     */
+    protected $baseApp = AppResolverInterface::class;
+
     public function index($queryParams)
     {
+
+        if (isset($queryParams['app']) && $queryParams['app']) {
+            return $this->baseApp->getVendas($queryParams, isset($queryParams['date'])?$queryParams['date']:false);
+        }
+
         if (isset($queryParams['aReceber'])) {
             return $this->aReceber();
         }
-
-        $totalVendas = $this->model->select(DB::raw('sum(total_final) as total'))->get();
 
         if(isset($queryParams['date'])) {
             if($queryParams['date'] == 0){
                 $dados = $this->model->with('produto', 'cliente', 'vendedor')->orderBy('id_venda', 'desc')->get();
             } else {
-                $date = $this->dateFilter($queryParams['date']);
+                $date = $this->filterDate($queryParams['date']);
                 $dados = $this->model->with('produto', 'cliente', 'vendedor')->whereBetween('created_at', [$date['inicio'], $date['fim']])->orderBy('id_venda', 'desc')->get();
             }
 
@@ -59,29 +68,7 @@ class VendaRepository extends AbstractRepository implements VendaRepositoryInter
             }
         }
         
-        $lucro = 0;
-        $totalMensal = 0;
-        $pago = 0;
-
-        $dataSource = [];
-        foreach ($dados as $item) {
-            
-            $lucro += $item->lucro;
-            $totalMensal += $item->total_final;
-            $pago += $item->pago;
-
-            array_push($dataSource, $item);
-        }
-
-        return [
-            'vendas'       => $dataSource,
-            'totalMensal'  => $totalMensal,
-            'totalVendas'  => $totalVendas[0]['total'],
-            'lucro'        => $lucro,
-            'pago'         => $pago,
-            'data'         => isset($date['inicio'])? $date['inicio']:date('Y-m-d'),
-            'mounth'       => isset($queryParams['date'])? $queryParams['date']:date('m'),
-        ];
+        return $this->tools->calculoVenda($dados);
     }
     
     public function show($id){
@@ -105,6 +92,11 @@ class VendaRepository extends AbstractRepository implements VendaRepositoryInter
 
     public function create($dados)
     {
+        if (isset($dados['app'])) {
+            $dados['vendedor_id'] = $dados['userId'];
+            return $this->store($dados);
+        }
+
         if (!$dados) {
             $dados['vendedor_id'] = $this->userLogado()->id;
             return $this->store($dados);

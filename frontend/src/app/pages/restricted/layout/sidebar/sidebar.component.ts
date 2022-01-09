@@ -33,4 +33,16 @@ export class SidebarComponent extends ControllerBase {
       classList.remove("menu-open");
     }
   }
+
+  closeSide(){
+    const mobile: number = window.innerWidth;
+
+    if(mobile > 420) {
+      return;
+    }
+
+    document.body.classList.remove('sidebar-open');
+    document.body.classList.add('sidebar-closed');
+    document.body.classList.add('sidebar-collapse');
+  }
 }
