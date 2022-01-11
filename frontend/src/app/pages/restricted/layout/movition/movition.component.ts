@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { FilterFormComponent } from '@app/components/filter-form/filter-form.component';
 
 import { ModalMovitionComponent } from '@app/components/modal-movition/modal-movition.component';
 
@@ -52,12 +53,16 @@ export class MovitionComponent implements OnInit {
     this.getAll();
   }
 
-  filterDate(event: any) {
-    this.filters.date = `${event.year}-${event.month}`;
-    this.filters.type = this.type
-
-    this.loading = true;
-    this.getAll()
+  filterDate() {
+    const modalRef = this.modalCtrl.open(FilterFormComponent, { size: 'sm', backdrop: 'static' });
+    modalRef.result.then(res => {
+      if(res.date){
+        this.filters.date = res.date;
+  
+        this.loading = true;
+        this.getAll();
+      }
+    })
   }
 
   getAll() {

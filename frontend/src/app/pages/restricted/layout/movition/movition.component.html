@@ -4,21 +4,15 @@
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
-                <div class="col-7">
+                <div class="col-9">
                     <h1 class="m-0 text-title-movition">Movimentação / {{ type | titlecase }}</h1>
                 </div><!-- /.col -->
-                <div class="col-5">
-                    <div class="input-group input-group-sm inputSearch">
-                        <input class="form-control" placeholder="yyyy-mm-dd" name="date" (ngModelChange)="filterDate($event)"
-                            [(ngModel)]="filters.date" ngbDatepicker #d="ngbDatepicker">
-                        <div class="input-group-append">
-                            <button class="btn btn-sm btn-outline-secondary" (click)="d.toggle()" type="button">
-                                <i class="far fa-calendar-alt"></i>
-                            </button>
-                        </div>
-                    </div>
+                <div class="col-3 mb-2 text-right">
+                    <button class="btn btn-primary btn-md" title="Filtro de Pesquisa" (click)="filterDate()">
+                      <i class="fas fa-search"></i>
+                    </button>           
                 </div>
-                <div class="col-5 ml-auto">
+                <div class="col-12 text-right">
                     <ol class="breadcrumb float-sm-right">
                         
                         <li class="breadcrumb-item"><a [routerLink]="['/restricted/home']"><i class="fas fa-home"></i></a></li>
