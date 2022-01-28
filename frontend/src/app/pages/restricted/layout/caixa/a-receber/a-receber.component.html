@@ -64,6 +64,7 @@
                             <table class="table table-hover text-nowrap">
                                 <thead>
                                     <tr>
+                                        <th scope="col">Data</th>
                                         <th scope="col">Nome</th>
                                         <th scope="col">Telefone</th>
                                         <th scope="col">Total</th>
@@ -75,6 +76,7 @@
 
                                 <tbody *ngFor="let item of dataSource | filter:term">
                                     <tr>
+                                        <td>{{ item.created_at }}</td>
                                         <td>{{ item.nameCliente }}</td>
                                         <td>{{ item.telefoneCliente | mask: '(00) 00000-0000' }}</td>
                                         <td>{{ item.total_final | currency: 'R$' }}</td>

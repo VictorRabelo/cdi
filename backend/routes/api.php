@@ -230,6 +230,10 @@ Route::group(['prefix' =>'/v1'], function() {
     
     Route::group(['prefix' =>'/app'], function() {
 
+        Route::group(['prefix' =>'/oauth'], function() {
+            Route::post('/login', 'Auth\AuthController@login');
+        });
+        
         Route::group(['prefix' =>'/dashboard'], function() {
         
             Route::get('/vendas-dia','App\Dashboard\DashboardController@getVendasDia');

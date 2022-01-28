@@ -19,7 +19,7 @@ class AuthController extends Controller
     {
 
         $credentials = $request->all();
-        
+
         $res = $this->authRepository->logar($credentials);
 
         if (!$res) {

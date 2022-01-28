@@ -7,7 +7,7 @@
       </div>
 
       <div class="card-body">
-        <form #form="ngForm" (ngSubmit)="onSubmit(form)" (keydown.enter)="$event.preventDefault()">
+        <form #form="ngForm" (ngSubmit)="onSubmit(form)" (keydown.enter)="onSubmit(form)">
           
           <div class="input-group mb-3">
             <input type="text" class="form-control" placeholder="Login" autocomplete="off"

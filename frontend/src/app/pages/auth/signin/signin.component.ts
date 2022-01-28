@@ -82,11 +82,7 @@ export class SigninComponent extends ControllerBase {
     this.service.login(this.dados.login, this.dados.password).pipe(first())
       .subscribe(
         (res) => {
-          if(res.message){
-            return this.errorLogin();
-          }
-
-          if(!res.token){
+          if(res == undefined){
             return this.errorLogin();
           }
 
@@ -100,21 +96,22 @@ export class SigninComponent extends ControllerBase {
           this.loading = false;
           this.loadingOk = true;
 
-        },
-        error => {
-          this.errorLogin();
-        },
-        () => {
           setTimeout(() => { 
             this.router.navigate(['/restricted']); 
           }, 1500);
+        },
+        error => {
+          this.errorLogin();
         }
       );
   }
 
-  public errorLogin(): void {
+  public errorLogin() {
     this.loading = false;
     this.loadingOk = false;
     this.loadingError = true;
+
+    return this.message.toastError('Falha no login');
+    
   }
 }
