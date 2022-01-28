@@ -22,13 +22,14 @@
           </div>
           
           <div class="input-group mb-3">
-            <input type="password" class="form-control" placeholder="Senha" autocomplete="off"
+            <input [type]="type" class="form-control" placeholder="Senha" autocomplete="off"
               name="password" [(ngModel)]="dados.password" #password="ngModel" 
               [ngClass]="{'is-invalid': !password.valid && (password.touched || form.submitted)}" 
               required />
             <div class="input-group-append">
-              <div class="input-group-text">
-                <span class="fas fa-lock"></span>
+              <div class="input-group-text" style="cursor: pointer;" (click)="changePassword()">
+                <i class="fas fa-eye" *ngIf="!show" [@enterAnimationIcon]></i>
+                <i class="fas fa-eye-slash" *ngIf="show" [@enterAnimationIcon]></i>
               </div>
             </div>
           </div>

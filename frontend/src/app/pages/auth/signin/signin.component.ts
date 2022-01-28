@@ -11,11 +11,15 @@ import { ControllerBase } from '@app/controller/controller.base';
 import { MessageService } from '@app/services/message.service';
 import { AuthService } from '@app/services/auth.service';
 import { environment } from '@env/environment';
+import { enterAnimationIcon } from '@app/animations';
 
 @Component({
   selector: 'app-signin',
   templateUrl: './signin.component.html',
   styleUrls: ['./signin.component.css'],
+  animations: [
+    enterAnimationIcon
+  ],
   encapsulation: ViewEncapsulation.None
 })
 export class SigninComponent extends ControllerBase {
@@ -23,6 +27,9 @@ export class SigninComponent extends ControllerBase {
   loading: boolean  = false;
   loadingOk: boolean  = false;
   loadingError: boolean  = false;
+
+  show: boolean = false;
+  type: string = 'password';
 
   returnUrl: string;
   error = '';
@@ -106,6 +113,16 @@ export class SigninComponent extends ControllerBase {
       );
   }
 
+  public changePassword(){
+    if(!this.show){
+      this.type = 'text';
+      this.show = true;
+    } else {
+      this.show = false;
+      this.type = 'password'
+    }
+  }
+  
   public errorLogin() {
     this.loading = false;
     this.loadingOk = false;

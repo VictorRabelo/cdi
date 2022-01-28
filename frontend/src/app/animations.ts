@@ -1,5 +1,13 @@
 import { animate, animateChild, group, query, style, transition, trigger } from "@angular/animations";
 
+export const enterAnimationIcon = 
+    trigger('enterAnimationIcon', [
+        transition(':enter', [
+            style({opacity: 0}),
+            animate('600ms', style({opacity: 1}))
+        ])
+    ]);
+    
 export const slideInLayoutAnimation = 
     trigger('routeLayoutAnimations', [
         transition('* <=> *', [
