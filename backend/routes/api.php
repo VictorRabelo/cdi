@@ -21,14 +21,14 @@ Route::group(['prefix' =>'/v1'], function() {
     
     Route::group(['prefix' =>'/dashboard'], function() {
         
-        Route::get('/vendas-dia','Dashboard\DashboardController@getVendasDia')->middleware(['auth:api', 'scope:admin']);
-        Route::get('/vendas-mes','Dashboard\DashboardController@getVendasMes')->middleware(['auth:api', 'scope:admin']);
-        Route::get('/vendas-total','Dashboard\DashboardController@getVendasTotal')->middleware(['auth:api', 'scope:admin']);
+        Route::get('/vendas-dia','Dashboard\DashboardController@getVendasDia')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
+        Route::get('/vendas-mes','Dashboard\DashboardController@getVendasMes')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
+        Route::get('/vendas-total','Dashboard\DashboardController@getVendasTotal')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
         Route::get('/clientes-total','Dashboard\DashboardController@getTotalClientes')->middleware(['auth:api', 'scope:admin']);
         Route::get('/produtos-enviados','Dashboard\DashboardController@getProdutosEnviados')->middleware(['auth:api', 'scope:admin']);
         Route::get('/produtos-cadastrados','Dashboard\DashboardController@getProdutosCadastrados')->middleware(['auth:api', 'scope:admin']);
         Route::get('/produtos-pagos','Dashboard\DashboardController@getProdutosPagos')->middleware(['auth:api', 'scope:admin']);
-        Route::get('/produtos-estoque','Dashboard\DashboardController@getProdutosEstoque')->middleware(['auth:api', 'scope:admin']);
+        Route::get('/produtos-estoque','Dashboard\DashboardController@getProdutosEstoque')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
         Route::get('/produtos-vendidos','Dashboard\DashboardController@getProdutosVendidos')->middleware(['auth:api', 'scope:admin']);
         Route::get('/contas-receber','Dashboard\DashboardController@getContasReceber')->middleware(['auth:api', 'scope:admin']);
         
@@ -36,13 +36,13 @@ Route::group(['prefix' =>'/v1'], function() {
     
     Route::group(['prefix' =>'/clientes'], function() {
         
-        Route::get('/','Cliente\ClienteController@index')->middleware(['auth:api', 'scope:admin']);
+        Route::get('/','Cliente\ClienteController@index')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
         Route::get('/total','Cliente\ClienteController@total')->middleware(['auth:api', 'scope:admin']);
-        Route::get('/{id}','Cliente\ClienteController@show')->middleware(['auth:api', 'scope:admin']);
+        Route::get('/{id}','Cliente\ClienteController@show')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
         
-        Route::post('/','Cliente\ClienteController@store')->middleware(['auth:api', 'scope:admin']);
+        Route::post('/','Cliente\ClienteController@store')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
         
-        Route::put('/{id}','Cliente\ClienteController@update')->middleware(['auth:api', 'scope:admin']);
+        Route::put('/{id}','Cliente\ClienteController@update')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
         
         Route::delete('/{id}','Cliente\ClienteController@destroy')->middleware(['auth:api', 'scope:admin']);
 
@@ -66,7 +66,7 @@ Route::group(['prefix' =>'/v1'], function() {
         Route::get('/','User\UserController@index')->middleware(['auth:api', 'scope:admin']);
         Route::get('/{id}','User\UserController@show')->middleware(['auth:api', 'scope:admin']);
         
-        Route::post('/','User\UserController@store')->middleware(['auth:api', 'scope:admin']);
+        Route::post('/','User\UserController@store');
         
         Route::put('/{id}','User\UserController@update')->middleware(['auth:api', 'scope:admin']);
         
@@ -126,31 +126,41 @@ Route::group(['prefix' =>'/v1'], function() {
     
     Route::group(['prefix' =>'/vendas'], function() {
         
-        Route::get('/','Venda\VendaController@index')->middleware(['auth:api', 'scope:admin']);
+        Route::group(['prefix' =>'/item'], function() {
+            Route::get('/{id}','Venda\VendaController@showItem')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
+            Route::get('/{id}/app','Venda\VendaController@showItemApp')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
+            Route::post('/','Venda\VendaController@storeItem')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
+            Route::put('/{id}','Venda\VendaController@updateItem')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
+            Route::delete('/{id}','Venda\VendaController@destroyItem')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
+
+        });
+
+        Route::get('/','Venda\VendaController@index')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
         Route::get('/a-receber','Venda\VendaController@aReceber')->middleware(['auth:api', 'scope:admin']);
-        Route::get('/{id}','Venda\VendaController@show')->middleware(['auth:api', 'scope:admin']);
+        Route::get('/{id}','Venda\VendaController@show')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
         
-        Route::post('/','Venda\VendaController@store')->middleware(['auth:api', 'scope:admin']);   
-        Route::post('/finish','Venda\VendaController@finishVenda')->middleware(['auth:api', 'scope:admin']);
+        Route::post('/','Venda\VendaController@store')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);   
+        Route::post('/finish','Venda\VendaController@finishVenda')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
         
-        Route::put('/{id}','Venda\VendaController@update')->middleware(['auth:api', 'scope:admin']);
+        Route::put('/{id}','Venda\VendaController@update')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
         Route::put('/{id}/receber','Venda\VendaController@updateReceber')->middleware(['auth:api', 'scope:admin']);
         
         Route::delete('/{id}','Venda\VendaController@destroy')->middleware(['auth:api', 'scope:admin']);
-
-        Route::group(['prefix' =>'/item'], function() {
-            Route::get('/{id}','Venda\VendaController@showItem')->middleware(['auth:api', 'scope:admin']);
-            Route::post('/','Venda\VendaController@storeItem')->middleware(['auth:api', 'scope:admin']);
-            Route::put('/{id}','Venda\VendaController@updateItem')->middleware(['auth:api', 'scope:admin']);
-            Route::delete('/{id}','Venda\VendaController@destroyItem')->middleware(['auth:api', 'scope:admin']);
-
-        });
     });
     
     Route::group(['prefix' =>'/entregas'], function() {
         
-        Route::get('/','Entrega\EntregaController@index')->middleware(['auth:api', 'scope:admin']);
-        Route::get('/{id}','Entrega\EntregaController@show')->middleware(['auth:api', 'scope:admin']);
+        Route::group(['prefix' =>'/item'], function() {
+            Route::get('/','Entrega\EntregaController@allItem')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
+            Route::get('/{id}','Entrega\EntregaController@showItem')->middleware(['auth:api', 'scope:admin']);
+            Route::post('/','Entrega\EntregaController@storeItem')->middleware(['auth:api', 'scope:admin']);
+            Route::put('/{id}','Entrega\EntregaController@updateItem')->middleware(['auth:api', 'scope:admin']);
+            Route::delete('/{id}','Entrega\EntregaController@destroyItem')->middleware(['auth:api', 'scope:admin']);
+
+        });
+
+        Route::get('/','Entrega\EntregaController@index')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
+        Route::get('/{id}','Entrega\EntregaController@show')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
         
         Route::post('/','Entrega\EntregaController@store')->middleware(['auth:api', 'scope:admin']);   
         Route::post('/finish','Entrega\EntregaController@finishEntrega')->middleware(['auth:api', 'scope:admin']);
@@ -159,16 +169,22 @@ Route::group(['prefix' =>'/v1'], function() {
         Route::put('/{id}/dar-baixa','Entrega\EntregaController@baixaEntrega')->middleware(['auth:api', 'scope:admin']);
         
         Route::delete('/{id}','Entrega\EntregaController@destroy')->middleware(['auth:api', 'scope:admin']);
-
-        Route::group(['prefix' =>'/item'], function() {
-            Route::get('/{id}','Entrega\EntregaController@showItem')->middleware(['auth:api', 'scope:admin']);
-            Route::post('/','Entrega\EntregaController@storeItem')->middleware(['auth:api', 'scope:admin']);
-            Route::put('/{id}','Entrega\EntregaController@updateItem')->middleware(['auth:api', 'scope:admin']);
-            Route::delete('/{id}','Entrega\EntregaController@destroyItem')->middleware(['auth:api', 'scope:admin']);
-
-        });
     });
     
+    Route::group(['prefix' =>'/despesas-entrega'], function() {
+        
+        Route::get('/','DespesaEntrega\DespesaEntregaController@index')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
+        Route::get('/movimentacao','DespesaEntrega\DespesaEntregaController@movimentacao')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
+        Route::get('/{id}','DespesaEntrega\DespesaEntregaController@show')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
+        
+        Route::post('/','DespesaEntrega\DespesaEntregaController@store')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
+        
+        Route::put('/{id}','DespesaEntrega\DespesaEntregaController@update')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
+        
+        Route::delete('/{id}','DespesaEntrega\DespesaEntregaController@destroy')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
+
+    });
+
     Route::group(['prefix' =>'/despesas'], function() {
         
         Route::get('/','Despesa\DespesaController@index')->middleware(['auth:api', 'scope:admin']);
@@ -226,68 +242,6 @@ Route::group(['prefix' =>'/v1'], function() {
         
         Route::get('/entrega-detalhes/{id}','Relatorio\RelatorioController@entregaDetalhes')->middleware(['auth:api', 'scope:admin']);
 
-    });
-    
-    Route::group(['prefix' =>'/app'], function() {
-
-        Route::group(['prefix' =>'/oauth'], function() {
-            Route::post('/login', 'Auth\AuthController@login');
-        });
-        
-        Route::group(['prefix' =>'/dashboard'], function() {
-        
-            Route::get('/vendas-dia','App\Dashboard\DashboardController@getVendasDia');
-            Route::get('/vendas-mes','App\DashboardController@getVendasMes');
-            Route::get('/vendas-total','App\Dashboard\DashboardController@getVendasTotal');
-            Route::get('/clientes-total','App\Dashboard\DashboardController@getTotalClientes');
-            Route::get('/produtos-disponiveis','App\Dashboard\DashboardController@getProdutosDisponiveis');
-        });
-        
-        Route::group(['prefix' =>'/clientes'], function() {
-        
-            Route::get('/','App\Cliente\ClienteController@index');
-            Route::get('/{id}','App\Cliente\ClienteController@show');
-            
-            Route::post('/','App\Cliente\ClienteController@store');
-            
-            Route::put('/{id}','App\Cliente\ClienteController@update');
-            
-            Route::delete('/{id}','App\Cliente\ClienteController@destroy');
-    
-        });
-
-        Route::group(['prefix' =>'/estoques'], function() {
-        
-            Route::get('/','App\Estoque\EstoqueController@index');        
-            Route::get('/{id}','App\Estoque\EstoqueController@show');
-    
-        });
-
-
-        Route::group(['prefix' =>'/vendas'], function() {
-            
-            Route::get('/','App\Venda\VendaController@index');
-            Route::get('/{id}','App\Venda\VendaController@show');
-            
-            Route::post('/','App\Venda\VendaController@store');   
-            Route::post('/finish','App\Venda\VendaController@finishVenda');
-            
-            Route::put('/{id}','App\Venda\VendaController@update');
-
-            Route::group(['prefix' =>'/item'], function() {
-                Route::get('/{id}','App\Venda\VendaController@showItem');
-                Route::post('/','App\Venda\VendaController@storeItem');
-                Route::put('/{id}','App\Venda\VendaController@updateItem');
-                Route::delete('/{id}','App\Venda\VendaController@destroyItem');
-
-            });
-        });
-    
-        Route::group(['prefix' =>'/entregas'], function() {
-            Route::get('/','App\Entrega\EntregaController@index');
-            Route::get('/{id}','App\Entrega\EntregaController@show');
-        });
-    
     });
 
 });
