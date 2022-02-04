@@ -3,6 +3,7 @@
 namespace App\Repositories\Eloquent\Venda;
 
 use App\Enums\CodeStatusVendaEnum;
+use App\Models\EntregaItem;
 use App\Models\Estoque;
 use App\Models\Movition;
 use App\Models\ProdutoVenda;
@@ -210,11 +211,15 @@ class VendaRepository extends AbstractRepository implements VendaRepositoryInter
             return false;
         }
         
-        $produto = $dados->produto()->first();
-        $dados->produto = $produto;
-        $entregaItem = $produto->entregaItem()->first();
-        $dados->produto->estoque = $produto->estoque()->first();
+        $dados->produto = $dados->produto()->first();
+        $dados->venda = $dados->venda()->first();
         
+        $entregaItem = EntregaItem::where('entrega_id', $dados->venda->entrega_id)->where('produto_id', $dados->produto->id_produto)->first();
+        
+        if (!$entregaItem) {
+            return false;
+        }
+
         $dados->produto->und = $entregaItem->qtd_disponivel;
         $dados->produto->preco = $entregaItem->preco_entrega;
         $dados->produto->unitario = $entregaItem->preco_entrega;

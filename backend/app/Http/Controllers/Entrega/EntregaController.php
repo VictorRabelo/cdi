@@ -141,6 +141,24 @@ class EntregaController extends Controller
     }
     
     // Item
+    public function allItem(Request $request)
+    {
+        try {
+            $queryParams = $request->all();
+            $res = $this->entregaRepository->getAllItem($queryParams);
+            
+            if (isset($res['code']) && $res['code'] == 500) {
+                return response()->json(['message' => $res['message']], $res['code']);
+            }
+            
+            return response()->json($res, 200);
+
+
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
+        }
+    }
+    
     public function showItem($id)
     {
         try {

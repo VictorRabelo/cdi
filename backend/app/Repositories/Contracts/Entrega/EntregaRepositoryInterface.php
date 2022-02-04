@@ -21,6 +21,8 @@ interface EntregaRepositoryInterface extends CrudRepositoryInterface
     public function baixaEntrega($dados, $id);
 
     //itens
+    public function getAllItem($queryParams);
+    
     public function getItemById($id);
 
     public function createItem($dados);

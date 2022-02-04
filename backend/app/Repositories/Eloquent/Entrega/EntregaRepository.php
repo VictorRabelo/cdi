@@ -101,7 +101,7 @@ class EntregaRepository extends AbstractRepository implements EntregaRepositoryI
             $item->id_estoque = $item->produto->estoque()->first()->id_estoque;
             $item->preco_entrega *= $item->qtd_produto;
             $item->lucro_entrega *= $item->qtd_produto;
-            $dadosEntrega->qtd_disponiveis += $item->qtd_produto;
+            $dadosEntrega->qtd_disponiveis += $item->qtd_disponivel;
         }
 
         return ['dadosEntrega' => $dadosEntrega, 'dadosProdutos' => $dadosProdutos];

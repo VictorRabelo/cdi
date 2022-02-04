@@ -125,6 +125,14 @@ class AppService extends AbstractRepository implements AppResolverInterface
             return $this->messages->error;
         }
         
+        foreach ($dados as $item) {
+            $produtos = $item->entregasItens()->get();
+
+            foreach ($produtos as $value) {
+                $produtos->qtd_disponiveis += $value->qtd_disponivel;
+            }   
+        }
+
         return $dados;
     }
     

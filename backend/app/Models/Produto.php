@@ -11,6 +11,7 @@ use App\Models\Valor;
 use App\Models\Frete;
 use App\Models\ProdutoProduto;
 use App\Models\Fornecedor;
+use App\Models\EntregaItem;
 use Illuminate\Support\Facades\Storage;
 
 class Produto extends Model
@@ -58,6 +59,10 @@ class Produto extends Model
 
     public function estoque() {
         return $this->hasOne(Estoque::class, 'produto_id');
+    }
+    
+    public function entregaItem() {
+        return $this->hasOne(EntregaItem::class, 'produto_id');
     }
 
     public function categoria() {
