@@ -42,20 +42,12 @@ export class ControllerBase implements OnInit, AfterContentInit, AfterViewInit, 
         return this.currentUser && this.currentUser.role === Role.admin;  
     }
     
-    isDiretor() {
-        return this.currentUser && this.currentUser.role === Role.diretor;  
+    isEntregador() {
+        return this.currentUser && this.currentUser.role === Role.entregador;  
     }
     
-    isFinanceiro() {
-        return this.currentUser && this.currentUser.role === Role.financeiro;  
-    }
-    
-    isConsultor() {
-        return this.currentUser && this.currentUser.role === Role.consultor;  
-    }
-    
-    isClient() {
-        return this.currentUser && this.currentUser.role === Role.client;  
+    isVendedor() {
+        return this.currentUser && this.currentUser.role === Role.vendedor;  
     }
 
     getExtensionFileName(img: any): string {

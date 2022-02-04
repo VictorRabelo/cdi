@@ -61,7 +61,7 @@
             </select>
           </div>
           <div class="form-group" *ngIf="type == 'finish' && dados.status != 'pago'">
-            <label for="prazo" class="fieldset">A prazo?:</label>                            
+            <label for="prazo" class="fieldset">Sem entrada?: </label>                            
             <input class="form-check-input ml-3" type="checkbox" id="prazo" name="prazo" [(ngModel)]="dados.prazo">
           </div>
         </div>

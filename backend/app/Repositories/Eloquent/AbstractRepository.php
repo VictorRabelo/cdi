@@ -50,38 +50,46 @@ abstract class AbstractRepository
     public function dateNow()
     {
         date_default_timezone_set('America/Sao_Paulo');
-        return date('Y-m-d');
+        return date('Y-m-d H:i:s');
     }
 
+    public function dateToday()
+    {
+        date_default_timezone_set('America/Sao_Paulo');
+        $date_start = date('Y-m-d'.' '.'00:00');
+        $date_end = date('Y-m-d'.' '.'23:59');
+        return ['inicio' => $date_start, 'fim' => $date_end];
+    }
+    
     public function dateYear()
     {
         date_default_timezone_set('America/Sao_Paulo');
-        $date_start = date('Y-01-01');
-        $date_end = date('Y-12-t');
+        $date_start = date('Y-01-01'.' '.'00:00');
+        $date_end = date('Y-12-t'.' '.'23:59');
         return ['inicio' => $date_start, 'fim' => $date_end];
     }
     
     public function dateMonth()
     {
         date_default_timezone_set('America/Sao_Paulo');
-        $date_start = date('Y-m-01');
-        $date_end = date('Y-m-t');
+        $date_start = date('Y-m-01'.' '.'00:00');
+        $date_end = date('Y-m-t'.' '.'23:59');
         return ['inicio' => $date_start, 'fim' => $date_end];
     }
 
     public function dateFilter($month)
     {
         date_default_timezone_set('America/Sao_Paulo');
-        $date_start = date('Y-' . $month . '-01');
-        $date_end = date('Y-' . $month . '-t');
+        $date_start = date('Y-' . $month . '-01'.' '.'00:00');
+        $date_end = date('Y-' . $month . '-t'.' '.'23:59');
         return ['inicio' => $date_start, 'fim' => $date_end];
     }
 
     public function filterDate($date)
     {
         date_default_timezone_set('America/Sao_Paulo');
-        $date_start = date($date.'-01');
-        $date_end = date($date.'-t');
+        $date_start = date($date.'-01'.' '.'00:00');
+        $date_end = date($date.'-t'.' '.'23:59');
         return ['inicio' => $date_start, 'fim' => $date_end];
     }
     

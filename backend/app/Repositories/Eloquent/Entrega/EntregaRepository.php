@@ -8,6 +8,7 @@ use App\Models\EntregaItem;
 use App\Models\Estoque;
 use App\Repositories\Contracts\Entrega\EntregaRepositoryInterface;
 use App\Repositories\Eloquent\AbstractRepository;
+use App\Resolvers\AppResolverInterface;
 use App\Utils\Messages;
 use App\Utils\Tools;
 use Illuminate\Http\Request;
@@ -30,8 +31,17 @@ class EntregaRepository extends AbstractRepository implements EntregaRepositoryI
      */
     protected $messages = Messages::class;
 
+    /**
+     * @var AppResolverInterface
+     */
+    protected $baseApp = AppResolverInterface::class;
+
     public function index($queryParams)
     {
+        if(isset($queryParams['app'])) {
+            return $this->baseApp->getEntregasDisponiveis($queryParams);
+        }
+
         if(isset($queryParams['date'])) {
             if($queryParams['date'] == 0){
                 $dados = $this->model->with('entregador')->orderBy('id_entrega', 'desc')->get();
@@ -178,6 +188,12 @@ class EntregaRepository extends AbstractRepository implements EntregaRepositoryI
     }
 
     // Item 
+    public function getAllItem($queryParams){
+        if (isset($queryParams['app'])) {
+            return $this->baseApp->getAllItemAvailable($queryParams);
+        }
+    }
+    
     public function getItemById($id){
         $dados = EntregaItem::where('id', '=', $id)->first();
         if (!$dados) {

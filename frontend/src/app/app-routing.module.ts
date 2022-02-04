@@ -9,12 +9,15 @@ import { Role } from './models/role';
 import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
-  {path: '', pathMatch: 'full', redirectTo: 'signin'},
+  { path: '', pathMatch: 'full', redirectTo: 'signin' },
 
-  {path: 'signin', component: SigninComponent, data: { animation: 'SigninPage' }},
+  { path: 'signin', component: SigninComponent, data: { animation: 'SigninPage' } },
 
-  {path: 'restricted', component: LayoutComponent,
-    canActivate: [AuthGuard], data: { roles: [Role.admin], animation: 'LayoutPage' }, 
+  { 
+    path: 'restricted', 
+    component: LayoutComponent,
+    canActivate: [AuthGuard], 
+    data: { roles: [Role.admin, Role.vendedor], animation: 'LayoutPage' }, 
     loadChildren: () => import('./pages/restricted/layout/layout.module').then(m => m.LayoutModule)
   },
 
