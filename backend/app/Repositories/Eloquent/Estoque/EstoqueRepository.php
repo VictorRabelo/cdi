@@ -33,11 +33,11 @@ class EstoqueRepository extends AbstractRepository implements EstoqueRepositoryI
     public function index($queryParams){
 
         if(!isset($queryParams['status']) || $queryParams['status'] == 'all'){
-            $dados = DB::table('estoques')->join('produtos', 'produtos.id_produto', '=', 'estoques.produto_id')->leftJoin('categorias', 'categorias.id_categoria', '=', 'produtos.categoria_id')->join('datas', 'datas.id_data', '=', 'produtos.data_id')->join('valores', 'valores.id_valor', '=', 'produtos.valor_id')->join('fretes', 'fretes.id_frete', '=', 'produtos.frete_id')->leftJoin('fornecedores', 'fornecedores.id_fornecedor', '=', 'produtos.fornecedor_id')->orderBy('status', 'asc')->orderBy('name', 'asc')->get();
+            $dados = DB::table('estoques')->join('produtos', 'produtos.id_produto', '=', 'estoques.produto_id')->leftJoin('categorias', 'categorias.id_categoria', '=', 'produtos.categoria_id')->join('datas', 'datas.id_data', '=', 'produtos.data_id')->join('valores', 'valores.id_valor', '=', 'produtos.valor_id')->join('fretes', 'fretes.id_frete', '=', 'produtos.frete_id')->leftJoin('fornecedores', 'fornecedores.id_fornecedor', '=', 'produtos.fornecedor_id')->orderBy('status', 'asc')->orderBy('produto_id', 'asc')->orderBy('name', 'asc')->get();
         }
 
         if (isset($queryParams['status']) && $queryParams['status'] !== 'all') {
-            $dados = DB::table('estoques')->join('produtos', 'produtos.id_produto', '=', 'estoques.produto_id')->leftJoin('categorias', 'categorias.id_categoria', '=', 'produtos.categoria_id')->join('datas', 'datas.id_data', '=', 'produtos.data_id')->join('valores', 'valores.id_valor', '=', 'produtos.valor_id')->join('fretes', 'fretes.id_frete', '=', 'produtos.frete_id')->leftJoin('fornecedores', 'fornecedores.id_fornecedor', '=', 'produtos.fornecedor_id')->where('status', $queryParams['status'])->orderBy('name', 'asc')->get();
+            $dados = DB::table('estoques')->join('produtos', 'produtos.id_produto', '=', 'estoques.produto_id')->leftJoin('categorias', 'categorias.id_categoria', '=', 'produtos.categoria_id')->join('datas', 'datas.id_data', '=', 'produtos.data_id')->join('valores', 'valores.id_valor', '=', 'produtos.valor_id')->join('fretes', 'fretes.id_frete', '=', 'produtos.frete_id')->leftJoin('fornecedores', 'fornecedores.id_fornecedor', '=', 'produtos.fornecedor_id')->where('status', $queryParams['status'])->orderBy('name', 'asc')->orderBy('produto_id', 'asc')->get();
         }
 
         if (!$dados) {

@@ -34,6 +34,10 @@
                 vertical-align: middle;
             }
             
+            .margin {
+                margin: 20px 0px;
+            }
+
         </style>
     </head>
     <body>
@@ -58,7 +62,9 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="5"></td>
+                <td colspan="5">
+                    <hr>
+                </td>
             </tr>
             <tr>
                 <th colspan="5">Produtos da entrega</th>
@@ -80,7 +86,8 @@
                 </tr>
             @endforeach
         </table>
-        <div class="page-break"></div>
+        <hr>
+        <div class="margin"></div>
         <table class="customers">
             <tr>
                 <th colspan="6">Vendas - {{ $dadosEntrega->entregador }} - {{date('d/m/Y', strtotime($data_now))}}</th>
@@ -111,6 +118,33 @@
             @else
                 <tr>
                     <th colspan="6">Não há vendas!</th>
+                </tr>
+            @endif
+        </table>
+        <hr>
+        <div class="margin"></div>
+        <table class="customers">
+            <tr>
+                <th colspan="4">Despesas do entregador - {{ $dadosEntrega->entregador }} - {{date('d/m/Y', strtotime($data_now))}} -> {{ 'R$ '.number_format($totalDespesa, 2, ',', '.') }}</th>
+            </tr>
+            @if (count($despesaEntrega) > 0)    
+                <tr>
+                    <th>#ID</th>
+                    <th>Valor</th>
+                    <th>Descrição</th>
+                    <th>Data</th>
+                </tr>
+                @foreach ($despesaEntrega as $data)
+                    <tr>
+                        <td>{{ $data->id_despesaEntrega }}</td>
+                        <td>{{ 'R$ '.number_format($data->valor, 2, ',', '.') }}</td>
+                        <td>{{ $data->descricao }}</td>
+                        <td>{{ $data->created_at }}</td>
+                    </tr>
+                @endforeach    
+            @else
+                <tr>
+                    <th colspan="4">Não houve despesas!</th>
                 </tr>
             @endif
         </table>

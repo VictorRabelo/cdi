@@ -21,4 +21,7 @@ class DespesaEntrega extends Model
         'data' => 'date:d-m-Y',
     ];
 
+    public function entregador() {
+        return $this->hasOne(User::class, 'id', 'entregador_id');
+    }
 }

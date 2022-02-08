@@ -6,6 +6,7 @@ use PDF;
 use App\Models\Cliente;
 use App\Models\Entrega;
 use App\Models\EntregaItem;
+use App\Models\DespesaEntrega;
 use App\Models\Venda;
 use App\Repositories\Contracts\Relatorio\RelatorioRepositoryInterface;
 use App\Repositories\Eloquent\AbstractRepository;
@@ -124,14 +125,27 @@ class RelatorioRepository extends AbstractRepository implements RelatorioReposit
     public function entregaDetalhes($id)
     {
         $data_now = $this->dateNow();
-    
+        $today = $this->dateToday();
+        
         $dadosEntrega = Entrega::where('id_entrega', '=', $id)->leftJoin('users','users.id', '=', 'entregas.entregador_id')->select('users.name as entregador', 'entregas.*')->first();
         if (!$dadosEntrega) {
             return false;
         }
         
+        $idEntregador = $dadosEntrega->entregador_id;
+        
         $dadosProdutos = EntregaItem::with('produto')->where('entrega_id', '=', $id)->orderBy('created_at', 'desc')->get();
         if (!$dadosProdutos) {
+            return false;
+        } 
+        
+        $despesaEntrega = DespesaEntrega::with('entregador')->whereBetween('created_at', [$today['inicio'], $today['fim']])->where('entregador_id', '=', $idEntregador)->get();
+        if (!$despesaEntrega) {
+            return false;
+        } 
+        
+        $dadosVendas = Venda::with('produtos', 'cliente')->where('vendedor_id', $idEntregador)->whereBetween('created_at', [$today['inicio'], $today['fim']])->orderBy('id_venda', 'desc')->get();
+        if (!$dadosVendas) {
             return false;
         } 
         
@@ -144,10 +158,13 @@ class RelatorioRepository extends AbstractRepository implements RelatorioReposit
             $dadosEntrega->qtd_disponiveis += $item->qtd_produto;
         }
         
-        $idEntregador = $dadosEntrega->entregador_id;
-        $dadosVendas = Venda::with('produtos', 'cliente')->where('vendedor_id', $idEntregador)->where('created_at')->orderBy('id_venda', 'desc')->get();
-
-        $pdf = PDF::loadView('pdf.entrega-detalhes', compact('dadosEntrega', 'dadosProdutos', 'dadosVendas', 'data_now'));
+        $totalDespesa = 0;
+        
+        foreach ($despesaEntrega as $item) {
+            $totalDespesa += $item->valor;
+        }
+        
+        $pdf = PDF::loadView('pdf.entrega-detalhes', compact('dadosEntrega', 'dadosProdutos', 'dadosVendas', 'despesaEntrega', 'data_now', 'totalDespesa'));
         $result = $pdf->download($data_now.'.pdf');
 
         $base = base64_encode($result);

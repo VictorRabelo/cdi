@@ -50,7 +50,13 @@ abstract class AbstractRepository
     public function dateNow()
     {
         date_default_timezone_set('America/Sao_Paulo');
-        return date('Y-m-d H:i:s');
+        return date('Y-m-d');
+    }
+    
+    public function dateWithHours()
+    {
+        date_default_timezone_set('America/Sao_Paulo');
+        return date('Y-m-d h:i:s');
     }
 
     public function dateToday()

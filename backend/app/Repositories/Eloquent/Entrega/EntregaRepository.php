@@ -248,6 +248,13 @@ class EntregaRepository extends AbstractRepository implements EntregaRepositoryI
         if (!$dadosVenda) {
             return false;
         }
+        
+        if(isset($dados['add'])) {
+            $dadosItem->increment('qtd_produto', $dados['qtd_produto']);
+            $dadosItem->increment('qtd_disponivel', $dados['qtd_produto']);
+            $dadosVenda->increment('qtd_produtos', $dados['qtd_produto']);
+            return ['message' => 'Atualizado com sucesso!'];
+        }
 
         $configResult             = $dadosItem->preco_entrega * $dadosItem->qtd_produto;
         $dadosVenda->lucro        = $dadosVenda->lucro - ($dadosItem->lucro_entrega * $dadosItem->qtd_produto);
