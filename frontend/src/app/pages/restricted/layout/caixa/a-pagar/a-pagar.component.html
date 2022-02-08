@@ -101,7 +101,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form #form="ngForm" (ngSubmit)="onSubmit(form)" (keydown.enter)="$event.preventDefault()">
+                <form #form="ngForm" (ngSubmit)="onSubmit(form)" (keydown.enter)="onSubmit(form)">
                     <div class="modal-body">
                         <div class="card-body">
                             <div class="form-row">

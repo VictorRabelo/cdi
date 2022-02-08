@@ -96,7 +96,10 @@
               <td class="text-right">{{ item.preco_entrega | currency:'R$' }}</td>
               <td class="text-right">{{ item.lucro_entrega | currency:'R$' }}</td>
               <td class="text-right" *ngIf="entregaCurrent.status !== 'ok'">
-                <button class="btn btn-sm btn-primary mr-2" (click)="openItem(item.id)">
+                <button class="btn btn-sm btn-primary" (click)="openItem('add', item.id)">
+                  <i class="fas fa-plus"></i>
+                </button>
+                <button class="btn btn-sm btn-primary mr-2" (click)="openItem('alterar', item.id)">
                   <i class="fas fa-pen"></i>
                 </button>
                 <button class="btn btn-sm btn-danger" (click)="deleteItemConfirm(item)">

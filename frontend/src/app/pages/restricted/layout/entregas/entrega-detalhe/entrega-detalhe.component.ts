@@ -128,9 +128,15 @@ export class EntregaDetalheComponent extends ControllerBase {
     })
   }
 
-  openItem(item) {
+  openItem(crud, item) {
     const modalRef = this.modalCtrl.open(ModalProductDadosComponent, { size: 'md', backdrop: 'static' });
-    modalRef.componentInstance.data = {id:item, crud: 'Alterar', type: 'entregas'};
+    
+    if (crud == 'alterar') {
+      modalRef.componentInstance.data = {id:item, crud: 'Alterar', type: 'entregas'};
+    } else {
+      modalRef.componentInstance.data = {id:item, crud: 'Adicionar mais', type: 'entregas', add: true };
+    }
+
     modalRef.result.then(res => {
       this.getById(this.entregaCurrent.id_entrega);
     })

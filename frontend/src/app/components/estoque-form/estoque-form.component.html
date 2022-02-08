@@ -1,5 +1,5 @@
 <div class="modal-content">
-    <form #form="ngForm" (ngSubmit)="submit(form)" (keydown.enter)="$event.preventDefault()" class="card card-load mb-0"
+    <form #form="ngForm" (ngSubmit)="submit(form)" (keydown.enter)="submit(form)" class="card card-load mb-0"
       [ngClass]="{'card-load': loading}">
     
         <div class="modal-header">

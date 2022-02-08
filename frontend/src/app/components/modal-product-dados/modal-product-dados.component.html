@@ -25,13 +25,13 @@
           [(ngModel)]="dados.und" #und="ngModel" />
       </div>
 
-      <div class="col-sm-3 form-group">
+      <div class="col-sm-3 form-group" *ngIf="!data.add">
         <label>Valor Total:</label>
         <input type="text" readonly required currencyMask class="form-control" name="valor_total"
           [(ngModel)]="dados.valor_total" #valor_total="ngModel" />
       </div>
 
-      <div class="col-sm-3 form-group">
+      <div class="col-sm-3 form-group" *ngIf="!data.add">
         <label style="font-size: 13px;">*Preço de Venda:</label>
         <input type="text" required currencyMask class="form-control" name="preco"
           [(ngModel)]="dados.preco" #preco="ngModel"
