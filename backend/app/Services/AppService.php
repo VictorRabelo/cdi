@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\Entrega;
 use App\Models\EntregaItem;
 use App\Models\Movition;
+use App\Models\Produto;
+use App\Models\ProdutoVenda;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 
@@ -87,29 +89,24 @@ class AppService extends AbstractRepository implements AppResolverInterface
     }
     
     public function getAllItemAvailable($queryParams){
-        if (isset($queryParams['filterEntregas'])) {
-            return $this->getEntregasDisponiveis();
-        }
         
         $userId =  auth()->user()->id;
         
-        $entregas = Entrega::where('id_entrega', $queryParams['id_entrega'])->where('entregador_id', $userId)->where('status', 'pendente')->get();
+        $entrega = Entrega::where('id_entrega', $queryParams['id_entrega'])->where('entregador_id', $userId)->where('status', 'pendente')->first();
         
         $produtosDisponiveis = [];
         
-        foreach ($entregas as $item) {
-            $produtos = $item->entregasItens()->get();
+        $produtos = $entrega->entregasItens()->get();
+        
+        foreach ($produtos as $value) {
+            $product = $value->produto()->first();
+            $product->und = $value->qtd_disponivel;
+            $product->preco = $value->preco_entrega;
+            $product->unitario = $value->preco_entrega;
+            $product->data_pedido = $value->created_at;
 
-            foreach ($produtos as $value) {
-                $product = $value->produto()->first();
-                $product->und = $value->qtd_disponivel;
-                $product->preco = $value->preco_entrega;
-                $product->unitario = $value->preco_entrega;
-                $product->data_pedido = $value->created_at;
-
-                array_push($produtosDisponiveis, $product);
+            array_push($produtosDisponiveis, $product);
                 
-            }   
         }
         
         return $produtosDisponiveis;
@@ -119,20 +116,52 @@ class AppService extends AbstractRepository implements AppResolverInterface
         $userId =  auth()->user()->id;
         
         $date = $this->dateToday();
-        $dados = Entrega::with('entregador')->where('entregador_id', $userId)->whereBetween('created_at', [$date['inicio'], $date['fim']])->orderBy('id_entrega', 'desc')->get();
+        $dados = Entrega::with('entregador')->where('entregador_id', $userId)->where('status', 'pendente')->whereBetween('created_at', [$date['inicio'], $date['fim']])->orderBy('id_entrega', 'desc')->get();
         
         if (!$dados) {
             return $this->messages->error;
         }
-        
+
         foreach ($dados as $item) {
             $produtos = $item->entregasItens()->get();
-
             foreach ($produtos as $value) {
                 $item->qtd_disponiveis += $value->qtd_disponivel;
             }   
         }
+        
+        return $dados;
+    }
+    
+    public function getEntregasApp($queryParams) {
+        $userId =  auth()->user()->id;
+        
+        if(isset($queryParams['date']) && !is_null($queryParams['date'])) {
+            if($queryParams['date'] == 0){
+                $dados = Entrega::with('entregador')->where('entregador_id', $userId)->orderBy('id_entrega', 'desc')->get();
+            } else {
+                $date = $this->dateFilter($queryParams['date']);
+                $dados = Entrega::with('entregador')->where('entregador_id', $userId)->whereBetween('created_at', [$date['inicio'], $date['fim']])->orderBy('id_entrega', 'desc')->get();
+            }
 
+            if (!$dados) {
+                return $this->messages->error;
+            }
+
+        } else {
+            $date = $this->dateMonth();
+            $dados = Entrega::with('entregador')->where('entregador_id', $userId)->whereBetween('created_at', [$date['inicio'], $date['fim']])->orderBy('id_entrega', 'desc')->get();
+            if (!$dados) {
+                return $this->messages->error;
+            }
+        }
+        
+        foreach ($dados as $item) {
+            $produtos = $item->entregasItens()->get();
+            foreach ($produtos as $value) {
+                $item->qtd_disponiveis += $value->qtd_disponivel;
+            }   
+        }
+        
         return $dados;
     }
     
@@ -179,5 +208,31 @@ class AppService extends AbstractRepository implements AppResolverInterface
         }
 
         return true;
+    }
+
+    public function createItemEntregador($dados)
+    {
+        $dadosProduto = Produto::where('id_produto', $dados['produto_id'])->first();
+        $lucroProduto = $dados['preco_venda'] - $dadosProduto->unitario;
+        $dados['lucro_venda'] = $lucroProduto * $dados['qtd_venda'];
+        
+        $result = ProdutoVenda::create($dados);
+        if(!$result){
+            return ['message' => 'Falha ao procesar dados!', 'code' => 500];
+        }
+
+        $dadosVenda = Venda::where('id_venda', '=', $dados['venda_id'])->first();
+        if(!$dadosVenda){
+            return ['message' => 'Falha ao procesar dados!', 'code' => 500];
+        }
+
+        $total = $result->preco_venda * $result->qtd_venda;
+
+        $resultFinal = $dadosVenda->total_final? $dadosVenda->total_final + $total : 0 + $total;
+        $resultLucro = $dadosVenda->lucro + $result->lucro_venda;
+        $resultQtd   = $dadosVenda->qtd_produto + $result->qtd_venda;
+
+        $dadosVenda->update(['total_final' => $resultFinal, 'lucro' => $resultLucro, 'qtd_produto' =>  $resultQtd]);
+        return ['message' => 'Item cadastrado com sucesso!'];
     }
 }

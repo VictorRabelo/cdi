@@ -39,6 +39,13 @@ class EntregaRepository extends AbstractRepository implements EntregaRepositoryI
     public function index($queryParams)
     {
         if(isset($queryParams['app'])) {
+            if($queryParams['typeSearch'] == 'bau'){
+                return $this->baseApp->getEntregasApp($queryParams);
+            }
+               
+            if($queryParams['typeSearch'] == 'sales'){
+                return $this->baseApp->getEntregasDisponiveis();
+            }
             return $this->baseApp->getEntregasDisponiveis($queryParams);
         }
 

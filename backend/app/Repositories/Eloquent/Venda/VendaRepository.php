@@ -228,7 +228,11 @@ class VendaRepository extends AbstractRepository implements VendaRepositoryInter
     }
     
     public function createItem($dados){
-        $result = isset($dados['app'])? $this->createItemEntregador($dados):ProdutoVenda::create($dados);
+        if(isset($dados['app'])) {
+            return $this->baseApp->createItemEntregador($dados);
+        }
+        
+        $result = ProdutoVenda::create($dados);
         if(!$result){
             return ['message' => 'Falha ao procesar dados!', 'code' => 500];
         }

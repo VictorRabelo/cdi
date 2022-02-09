@@ -58,7 +58,7 @@
                         <div class="col-sm-4 form-group">
                             <label>*Und:</label>
                             <input type="number" required class="form-control" name="und"
-                                [(ngModel)]="dados.und" #und="ngModel" [disabled]="crud === 'alterar'"
+                                [(ngModel)]="dados.und" #und="ngModel"
                                 [ngClass]="{'is-invalid': !und.valid && (und.touched || form.submitted)}" />
                         </div>
                         <div class="col-sm-12 form-group">

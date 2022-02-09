@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Cliente;
 use App\Models\User;
+use App\Models\Entrega;
 use App\Models\Produto;
 use App\Models\Movition;
 use App\Models\ProdutoVenda;
@@ -45,6 +46,11 @@ class Venda extends Model
     public function vendedor() {
 
         return $this->hasOne(User::class, 'id', 'vendedor_id');
+    }
+    
+    public function entrega() {
+
+        return $this->hasOne(Entrega::class, 'id_entrega', 'entrega_id');
     }
 
     public function produto()

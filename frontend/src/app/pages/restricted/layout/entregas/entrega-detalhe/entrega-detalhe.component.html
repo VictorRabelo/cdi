@@ -7,12 +7,12 @@
           <i class="fa fa-arrow-left"></i>
         </button>
         Detalhes da entrega:
-        <span class="badge badge-success" *ngIf="entregaCurrent.status === 'ok'">Ok</span>
-        <span class="badge badge-warning" *ngIf="entregaCurrent.status === 'pendente'">Pendente</span>
+        <span class="badge badge-success" *ngIf="entregaCurrent.status === 'ok'">Finalizada</span>
+        <span class="badge badge-warning" *ngIf="entregaCurrent.status === 'pendente'">Na rua</span>
         <span class="badge badge-primary" *ngIf="!entregaCurrent.status">Aberta</span>
         <div class="float-right">
           <button type="button" class="btn btn-success mr-2" (click)="finishEntrega()" *ngIf="!entregaCurrent.status">
-            <i class="fas fa-check"></i> Finalizar
+            <i class="fas fa-check"></i> Lançar
           </button>
           <button type="button" class="btn btn-success mr-2" (click)="downloadRelatorio()" *ngIf="entregaCurrent.status == 'ok'">
             <i class="fas fa-print"></i> Relatório da entrega

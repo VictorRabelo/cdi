@@ -94,8 +94,8 @@
                     <td>{{ (!item.lucro)? '****':item.lucro | currency: 'R$' }}</td>
                     <td>
                       <div class="d-flex justify-content-center">
-                        <span class="badge badge-success" *ngIf="item.status === 'ok' ">Ok</span>
-                        <span class="badge badge-warning" *ngIf="item.status === 'pendente' ">Pendente</span>
+                        <span class="badge badge-success" *ngIf="item.status === 'ok' ">Finalizada</span>
+                        <span class="badge badge-warning" *ngIf="item.status === 'pendente' ">Na rua</span>
                         <span class="badge badge-primary" *ngIf="!item.status">Aberta</span>
                       </div>
                     </td>
