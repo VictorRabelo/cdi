@@ -87,11 +87,11 @@ class VendaController extends Controller
         }
     }
     
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
         try {
 
-            $res = $this->vendaRepository->deleteVenda($id);
+            $res = $this->vendaRepository->deleteVenda($id, $request->all());
 
             if ($res['code'] == 500) {
                 return response()->json(['response' => 'Erro de Servidor'], 500);

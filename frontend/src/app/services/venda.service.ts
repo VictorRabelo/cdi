@@ -41,8 +41,8 @@ export class VendaService {
         return this.http.put<any>(`${this.baseUrl}/vendas/${id}`, update);
     }
 
-    delete(id: number){
-        return this.http.delete<any>(`${this.baseUrl}/vendas/${id}`);
+    delete(id: number, queryParams: any = {}){
+        return this.http.delete<any>(`${this.baseUrl}/vendas/${id}`, { params: queryParams });
     }
     
     //itens

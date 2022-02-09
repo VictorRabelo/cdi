@@ -61,7 +61,7 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body table-responsive p-0" style="height: 100%;">
-                            <table class="table table-hover text-nowrap">
+                            <table class="table table-hover text-nowrap text-center">
                                 <thead>
                                     <tr>
                                         <th scope="col">Data</th>
@@ -83,8 +83,11 @@
                                         <td>{{ item.pago | currency: 'R$' }}</td>
                                         <td>{{ item.restante | currency: 'R$' }}</td>
                                         <td>
-                                            <button class="btn btn-success btn-sm" title="Ok" (click)="openConta(item)">
+                                            <button class="btn btn-success btn-sm mr-1" title="Ok" (click)="openConta(item)">
                                                 <i class="nav-icon fas fa-check"></i>
+                                            </button>
+                                            <button class="btn btn-outline-primary btn-sm ml-1" title="Relatório" (click)="downloadDetalhe(item.id_venda)">
+                                                <i class="nav-icon fas fa-file"></i>
                                             </button>
                                         </td>
                                     </tr>

@@ -69,6 +69,23 @@ class RelatorioController extends Controller
         }
     }
 
+    public function detalheAReceber($id)
+    {
+        try {
+
+            $res = $this->relatorioRepository->detalheAReceber($id);
+
+            if (isset($res->code) && $res->code == CodeStatusEnum::ERROR_SERVER) {
+                return response()->json(['message' => $res->message], $res->code);
+            }
+
+            return response()->json(['response' => $res], 200);
+
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
+        }
+    }
+    
     public function clientes()
     {
         try {

@@ -15,7 +15,7 @@ interface VendaRepositoryInterface extends CrudRepositoryInterface
 
     public function update($dados, $id);
 
-    public function deleteVenda($id);
+    public function deleteVenda($id, $params);
 
     public function finishVenda($dados);
 

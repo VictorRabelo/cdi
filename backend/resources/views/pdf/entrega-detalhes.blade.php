@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>Detelhes da entrega</title>
+        <title>Detalhes da entrega</title>
         <style>
             .page-break {
                 page-break-after: always;
@@ -43,7 +43,7 @@
     <body>
         <table class="customers">
             <tr>
-                <th colspan="5">Detelhes da entrega - {{date('d/m/Y', strtotime($dadosEntrega->updated_at))}}</th>
+                <th colspan="5">Detalhes da entrega - {{date('d/m/Y', strtotime($dadosEntrega->updated_at))}}</th>
             </tr>
             <tr>
                 <th>Entregador</th>

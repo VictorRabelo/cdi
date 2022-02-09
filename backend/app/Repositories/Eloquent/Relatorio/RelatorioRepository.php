@@ -6,6 +6,8 @@ use PDF;
 use App\Models\Cliente;
 use App\Models\Entrega;
 use App\Models\EntregaItem;
+use App\Models\ProdutoVenda;
+use App\Models\Movition;
 use App\Models\DespesaEntrega;
 use App\Models\Venda;
 use App\Repositories\Contracts\Relatorio\RelatorioRepositoryInterface;
@@ -170,7 +172,32 @@ class RelatorioRepository extends AbstractRepository implements RelatorioReposit
         $base = base64_encode($result);
     
         return ['file' => $base,'data' => $data_now];
-            
+    }
+
+    public function detalheAReceber($id)
+    {
+        $data_now = $this->dateNow();
         
+        $dadosVenda = Venda::where('id_venda', '=', $id)->leftJoin('clientes','clientes.id_cliente', '=', 'vendas.cliente_id')->select('clientes.name as cliente', 'vendas.*')->first();
+        if (!$dadosVenda) {
+            return false;
+        }
+        
+        $dadosProdutos = ProdutoVenda::with('produto')->where('venda_id', '=', $id)->orderBy('created_at', 'desc')->get();
+        if (!$dadosProdutos) {
+            return false;
+        }
+        
+        $dadosMovition = Movition::where('venda_id', '=', $id)->orderBy('data', 'desc')->get();
+        if ($dadosMovition == null) {
+            return false;
+        }
+        
+        $pdf = PDF::loadView('pdf.detalhe-areceber', compact('dadosVenda', 'dadosProdutos', 'dadosMovition'));
+        $result = $pdf->download($data_now.'.pdf');
+
+        $base = base64_encode($result);
+    
+        return ['file' => $base,'data' => $data_now];   
     }
 }

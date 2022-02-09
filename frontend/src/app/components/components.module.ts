@@ -2,8 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { MatTabsModule } from '@angular/material/tabs';
 import { MatStepperModule } from '@angular/material/stepper';
+import { MatTabsModule } from '@angular/material/tabs';
+
+import { UtilModule } from '@app/util/util.module';
 
 import { ClienteFormComponent } from './cliente-form/cliente-form.component';
 import { EstoqueFormComponent } from './estoque-form/estoque-form.component';
@@ -13,13 +15,13 @@ import { ModalProductDadosComponent } from './modal-product-dados/modal-product-
 import { ModalDebitarComponent } from './modal-debitar/modal-debitar.component';
 import { ModalDolarFormComponent } from './modal-dolar-form/modal-dolar-form.component';
 import { ModalAlterPasswordComponent } from './modal-alter-password/modal-alter-password.component';
+import { FilterFormComponent } from './filter-form/filter-form.component';
+import { TimerComponent } from './timer/timer.component';
+import { ModalMovitionComponent } from './modal-movition/modal-movition.component';
 
 import { NgxMaskModule } from 'ngx-mask';
 import { CurrencyMaskInputMode, NgxCurrencyModule } from 'ngx-currency';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
-import { ModalMovitionComponent } from './modal-movition/modal-movition.component';
-import { UtilModule } from '@app/util/util.module';
-import { FilterFormComponent } from './filter-form/filter-form.component';
 
 export const customCurrencyMaskConfig = {
   align: "right",
@@ -48,6 +50,7 @@ export const customCurrencyMaskConfig = {
     ModalDolarFormComponent,
     ModalAlterPasswordComponent,
     FilterFormComponent,
+    TimerComponent,
   ],
   imports: [
     CommonModule,
@@ -70,6 +73,7 @@ export const customCurrencyMaskConfig = {
     ModalDolarFormComponent,
     ModalAlterPasswordComponent,
     FilterFormComponent,
+    TimerComponent,
   ],
   entryComponents: [
     ClienteFormComponent,
@@ -82,6 +86,7 @@ export const customCurrencyMaskConfig = {
     ModalDolarFormComponent,
     ModalAlterPasswordComponent,
     FilterFormComponent,
+    TimerComponent,
   ],
 })
 export class ComponentsModule { }

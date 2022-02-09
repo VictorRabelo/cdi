@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ControllerBase } from '@app/controller/controller.base';
 import { VendaService } from '@app/services/venda.service';
+import { RelatorioService } from '@app/services/relatorio.service';
+import { ModalDebitarComponent } from '@app/components/modal-debitar/modal-debitar.component';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MessageService } from '@app/services/message.service';
@@ -11,7 +13,6 @@ import { SubSink } from 'subsink';
 
 declare let $: any;
 import 'bootstrap';
-import { ModalDebitarComponent } from '@app/components/modal-debitar/modal-debitar.component';
 
 @Component({
   selector: 'app-a-receber',
@@ -38,6 +39,7 @@ export class AReceberComponent extends ControllerBase {
     private modalCtrl: NgbModal,
     private router: Router,
     private service: VendaService,
+    private serviceRelatorio: RelatorioService,
     private message: MessageService,
     private spinner: NgxSpinnerService,
   ) { 
@@ -137,6 +139,18 @@ export class AReceberComponent extends ControllerBase {
     }, () => {
       this.spinner.hide();
     });
+  }
+  
+  downloadDetalhe(id){
+    this.loading = true;
+    this.sub.sink = this.serviceRelatorio.getVendaAReceber(id).subscribe(
+      (res: any) => {
+        this.downloadPDF(res.file, res.data, 'detalhes-areceber')
+      },
+      error => console.log(error),
+      ()=>{
+        this.loading = false;
+      })
   }
   
   ngOnDestroy() {

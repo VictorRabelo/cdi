@@ -125,7 +125,7 @@ class VendaRepository extends AbstractRepository implements VendaRepositoryInter
         return ['message' => 'Venda atualizada com sucesso!', 'code' => 200];
     }
 
-    public function deleteVenda($id)
+    public function deleteVenda($id, $params)
     {
         $dados = $this->model->findOrFail($id);
         
@@ -142,13 +142,13 @@ class VendaRepository extends AbstractRepository implements VendaRepositoryInter
                 return ['message' => 'Falha na movimentação do estoque', 'code' => 500];
             }
             
+            if(isset($params['extornarProduto']) && $params['extornarProduto']){
+                $dadoEstoque->increment('und', $item->qtd_venda);
+            }
+
             if ($dadoEstoque->und == 0) {
                 $dadoProduto->update(['status' => 'ok']);
-            } else {
-                if($dados->status == 'pendente'){
-                    $dadoEstoque->increment('und', $item->qtd_venda);
-                }
-            }
+            } 
 
             $item->delete();
         }

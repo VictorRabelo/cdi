@@ -23,6 +23,10 @@ export class RelatorioService {
         return this.http.get<any>(`${environment.apiUrl}/relatorios/entrega-detalhes/${id}`).pipe(map(res =>{ return res.response }));
     }
 
+    getVendaAReceber(id: number) {
+        return this.http.get<any>(`${environment.apiUrl}/relatorios/venda-areceber/${id}`).pipe(map(res =>{ return res.response }));
+    }
+    
     getEstoque() {
         return this.http.get<any>(`${environment.apiUrl}/relatorios/estoque`).pipe(map(res =>{ return res.response }));
     }

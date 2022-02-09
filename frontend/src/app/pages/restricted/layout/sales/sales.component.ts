@@ -112,26 +112,29 @@ export class SalesComponent implements OnInit, OnDestroy {
     this.router.navigate([`/restricted/vendas/${id}`]);
   }
 
-  deleteConfirm(item) {
+  deleteConfirm(id) {
     this.message.swal.fire({
       title: 'Atenção!',
       icon: 'warning',
-      html: `Deseja excluir essa venda ?`,
+      input: 'checkbox',
+      inputValue: 0,
+      inputPlaceholder: 'Voltar produtos para estoque ?',
+      html: `Deseja excluir essa venda ? `,
       confirmButtonText: 'Confirmar',
       cancelButtonText: 'Voltar',
       showCancelButton: true
     }).then(res => {
       if (res.isConfirmed) {
-        this.delete(item);
+        this.delete(id, { extornarProduto: res.value });
       }
     })
   }
 
-  delete(id){
+  delete(id, queryParams?: any) {
     this.loading = true;
     this.spinner.show();
 
-    this.service.delete(id).subscribe(res => {
+    this.service.delete(id, queryParams).subscribe(res => {
       if (res.message) {
         this.message.toastSuccess(res.message)
       }
