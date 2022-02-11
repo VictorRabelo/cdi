@@ -12,4 +12,7 @@ interface AppResolverInterface
     public function getAllItemAvailable($queryParams);
     public function getEntregasApp($queryParams);
     public function getEntregasDisponiveis();
+
+    public function postUser($request);
+    public function postDespesaEntrega($request);
 }

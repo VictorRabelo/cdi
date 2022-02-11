@@ -5,27 +5,14 @@
     <div class="container-fluid">
       <div class="row mb-2">
         
-        <div class="col-8">
+        <div class="col-9">
           <h1 class="m-0 text-title-entregas">Entregas / Mês {{ today | date:'MM' }}</h1>
         </div>
         
-        <div class="col-4">
-          <select class="form-control d-inline" name="date" [(ngModel)]="filters.date" (change)="getAll()">
-            <option selected value="" *ngIf="filters.date == ''">Aguarde...</option>
-            <option value="0">Todas</option>
-            <option value="01">Janeiro</option>
-            <option value="02">Fevereiro</option>
-            <option value="03">Março</option>
-            <option value="04">Abril</option>
-            <option value="05">Maio</option>
-            <option value="06">Junho</option>
-            <option value="07">Julho</option>
-            <option value="08">Agosto</option>
-            <option value="09">Setembro</option>
-            <option value="10">Outubro</option>
-            <option value="11">Novembro</option>
-            <option value="12">Dezembro</option>
-          </select>                     
+        <div class="col-3 text-right">
+          <button class="btn btn-primary btn-md" title="Filtro de Pesquisa" (click)="filterDate()">
+            <i class="fas fa-search"></i>
+          </button>           
         </div>
       </div><!-- /.row -->
     </div><!-- /.container-fluid -->
@@ -71,7 +58,7 @@
             </div>
             <!-- /.card-header -->
             <div class="card-body table-responsive p-0">
-              <table class="table table-hover text-nowrap">
+              <table class="table table-hover text-nowrap text-center">
                 <thead>
                   <tr>
                     <th scope="col">#ID</th>
@@ -88,16 +75,14 @@
                   <tr>
                     <th scope="row">{{ item.id_entrega }}</th>
                     <td>{{ (!item.entregador)?'Entregador não informado':item.entregador.name | titlecase }}</td>
-                    <td>{{ item.created_at }}</td>
+                    <td>{{ item.created_at | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
                     <td>{{ (!item.qtd_produtos)? '****':item.qtd_produtos }}</td>
                     <td>{{ (!item.total_final)? '****':item.total_final | currency: 'R$' }}</td>
                     <td>{{ (!item.lucro)? '****':item.lucro | currency: 'R$' }}</td>
                     <td>
-                      <div class="d-flex justify-content-center">
-                        <span class="badge badge-success" *ngIf="item.status === 'ok' ">Finalizada</span>
-                        <span class="badge badge-warning" *ngIf="item.status === 'pendente' ">Na rua</span>
-                        <span class="badge badge-primary" *ngIf="!item.status">Aberta</span>
-                      </div>
+                      <span class="badge badge-success" *ngIf="item.status === 'ok' ">Finalizada</span>
+                      <span class="badge badge-warning" *ngIf="item.status === 'pendente' ">Na rua</span>
+                      <span class="badge badge-primary" *ngIf="!item.status">Aberta</span>
                     </td>
                     <td>
                       <button class="btn btn-warning btn-sm mx-2" title="Editar" (click)="editVenda(item.id_entrega)">

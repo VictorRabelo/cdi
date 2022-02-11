@@ -39,7 +39,7 @@
                 vertical-align: middle;
             }
              
-            .margin {
+            hr {
                 margin: 20px 0px;
             }
             
@@ -63,8 +63,9 @@
                 <td>{{ 'R$ '.number_format($dadosVenda->total_final, 2, ',', '.') }}</td>
             </tr>
         </table>
+        
         <hr>
-        <div class="margin"></div>
+        
         <table class="customers">
             <tr>
                 <th colspan="5">Produtos da Venda</th>
@@ -88,8 +89,9 @@
                 </tr>
             @endforeach
         </table>
+        
         <hr>
-        <div class="margin"></div>
+        
         <table class="customers">
             <tr>
                 <th colspan="3">Registro de movimentações</th>

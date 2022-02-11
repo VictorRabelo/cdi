@@ -77,6 +77,12 @@ export class SaleFinishComponent implements OnInit {
   calcRestante() {
     this.dados.restante -= this.dados.debitar;
     this.dados.pago += this.dados.debitar;
+
+    if(this.dados.restante == 0) {
+      this.dados.status = 'pago';
+    } else {
+      this.dados.status = '';
+    }
   }
 
   configCalc(){

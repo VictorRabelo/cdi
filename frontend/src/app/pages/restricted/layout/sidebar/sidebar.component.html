@@ -73,13 +73,30 @@
             </p>
           </a>
         </li>
-        <li class="nav-item">
-          <a [routerLink]="['/restricted/entregas']" routerLinkActive="link-active" class="nav-link">
-            <i class="nav-icon fas fa-motorcycle"></i>
+        <li (click)="toggleSideBar(entregas)" class="nav-item" #entregas>
+          <a class="nav-link">
+            <i class="nav-icon fas fa-motorcycle" style="color: #c2c7d0;"></i>
             <p>
               Entregas
+              <i class="right fas fa-angle-left"></i>
             </p>
           </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a [routerLink]="['/restricted/entregas']" routerLinkActive="link-active" class="nav-link">
+                <i class="nav-icon far fa-circle"></i>
+                <p> Principais</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a [routerLink]="['/restricted/entregas/despesas']" routerLinkActive="link-active" class="nav-link">
+                <i class="nav-icon far fa-circle"></i>
+                <p>
+                  Despesas das entregas
+                </p>
+              </a>
+            </li>
+          </ul>
         </li>
         <li (click)="toggleSideBar(caixa)" class="nav-item" #caixa>
           <a class="nav-link">

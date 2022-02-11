@@ -3,19 +3,22 @@
 namespace App\Repositories\Eloquent\Relatorio;
 
 use PDF;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
+use App\Repositories\Contracts\Relatorio\RelatorioRepositoryInterface;
+use App\Repositories\Eloquent\AbstractRepository;
+
+use App\Utils\Messages;
+use App\Utils\Tools;
+
 use App\Models\Cliente;
 use App\Models\Entrega;
 use App\Models\EntregaItem;
 use App\Models\ProdutoVenda;
-use App\Models\Movition;
 use App\Models\DespesaEntrega;
+use App\Models\Movition;
 use App\Models\Venda;
-use App\Repositories\Contracts\Relatorio\RelatorioRepositoryInterface;
-use App\Repositories\Eloquent\AbstractRepository;
-use App\Utils\Messages;
-use App\Utils\Tools;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class RelatorioRepository extends AbstractRepository implements RelatorioRepositoryInterface
 {
@@ -96,16 +99,15 @@ class RelatorioRepository extends AbstractRepository implements RelatorioReposit
     {
         $data_now = $this->dateNow();
     
-        $datas = 0;
-    
-        $pdf = PDF::loadView('pdf.cliente', compact('datas'));
+        $sql = 'SELECT `produtos`.`name` as `nameProduto`, `produtos`.`path`, `produto_venda`.*, `vendas`.`entrega_id`, SUM(`produto_venda`.`qtd_venda`) as qtdTotal from `produto_venda` inner join `produtos` on `produtos`.`id_produto` = `produto_venda`.`produto_id` inner join `vendas` on `vendas`.`id_venda` = `produto_venda`.`venda_id` GROUP BY `produto_venda`.`produto_id`';
+        $products = DB::select($sql);
+
+        $pdf = PDF::loadView('pdf.vendidos', compact('products','data_now'));
         $result = $pdf->download($data_now.'.pdf');
     
         $base = base64_encode($result);
     
         return ['file' => $base,'data' => $data_now];
-            
-        
     }
 
     public function entregas()
@@ -146,10 +148,13 @@ class RelatorioRepository extends AbstractRepository implements RelatorioReposit
             return false;
         } 
         
-        $dadosVendas = Venda::with('produtos', 'cliente')->where('vendedor_id', $idEntregador)->whereBetween('created_at', [$today['inicio'], $today['fim']])->orderBy('id_venda', 'desc')->get();
+        $dadosVendas = Venda::with('produtos', 'cliente')->where('vendedor_id', $idEntregador)->where('entrega_id', '=', $id)->orderBy('id_venda', 'desc')->get();
         if (!$dadosVendas) {
             return false;
         } 
+        
+        $sql = 'SELECT `produtos`.`name` as `nameProduto`, `produtos`.`path`, `produto_venda`.*, `vendas`.`entrega_id`, SUM(`produto_venda`.`qtd_venda`) as qtdTotal from `produto_venda` inner join `produtos` on `produtos`.`id_produto` = `produto_venda`.`produto_id` inner join `vendas` on `vendas`.`id_venda` = `produto_venda`.`venda_id` where `vendas`.`entrega_id` = '.$id.' GROUP BY `produto_venda`.`produto_id`';
+        $products = DB::select($sql); 
         
         $dadosEntrega->qtd_disponiveis = 0;
 
@@ -166,7 +171,7 @@ class RelatorioRepository extends AbstractRepository implements RelatorioReposit
             $totalDespesa += $item->valor;
         }
         
-        $pdf = PDF::loadView('pdf.entrega-detalhes', compact('dadosEntrega', 'dadosProdutos', 'dadosVendas', 'despesaEntrega', 'data_now', 'totalDespesa'));
+        $pdf = PDF::loadView('pdf.entrega-detalhes', compact('dadosEntrega', 'dadosProdutos', 'dadosVendas', 'despesaEntrega', 'data_now', 'totalDespesa', 'products'));
         $result = $pdf->download($data_now.'.pdf');
 
         $base = base64_encode($result);

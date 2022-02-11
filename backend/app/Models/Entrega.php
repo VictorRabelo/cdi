@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Produto;
@@ -26,8 +27,8 @@ class Entrega extends Model
     protected $hidden = [];
 
     protected $casts = [
-        'updated_at' => 'datetime:d-m-Y',
-        'created_at' => 'datetime:d-m-Y',
+        'updated_at' => 'datetime:d-m-Y H:i:s',
+        'created_at' => 'datetime:d-m-Y H:i:s',
     ];
 
     public function entregador() {
@@ -43,5 +44,19 @@ class Entrega extends Model
     public function produtos()
     {
         return $this->belongsToMany(Produto::class, 'entrega_itens', 'entrega_id', 'produto_id')->orderBy('created_at', 'desc');
+    }
+
+    public function getCreatedAtAttribute($value)
+    {
+        return Carbon::createFromTimestamp(strtotime($value))
+            ->timezone('America/Sao_Paulo')
+            ->toDateTimeString();
+    }
+    
+    public function getUpdatedAtAttribute($value)
+    {
+        return Carbon::createFromTimestamp(strtotime($value))
+            ->timezone('America/Sao_Paulo')
+            ->toDateTimeString();
     }
 }

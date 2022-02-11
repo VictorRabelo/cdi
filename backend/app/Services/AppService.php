@@ -34,10 +34,7 @@ class AppService extends AbstractRepository implements AppResolverInterface
      */
     protected $tools = Tools::class;
 
-    /**
-     * @var ApiCdiResolverInterface
-     */
-    protected $baseApi = ApiCdiResolverInterface::class;
+    private $baseApi = 'https://api.casadoimportadogo.com/api/v1';
 
     public function getVendas($queryParams, $date){
         
@@ -98,15 +95,18 @@ class AppService extends AbstractRepository implements AppResolverInterface
         
         $produtos = $entrega->entregasItens()->get();
         
-        foreach ($produtos as $value) {
-            $product = $value->produto()->first();
-            $product->und = $value->qtd_disponivel;
-            $product->preco = $value->preco_entrega;
-            $product->unitario = $value->preco_entrega;
-            $product->data_pedido = $value->created_at;
-
-            array_push($produtosDisponiveis, $product);
+        foreach ($produtos as $key => $value) {
+            if ($value->qtd_disponivel == 0) {
+                unset($produtos[$key]);
+            } else {
+                $product = $value->produto()->first();
+                $product->und = $value->qtd_disponivel;
+                $product->preco = $value->preco_entrega;
+                $product->unitario = $value->preco_entrega;
+                $product->data_pedido = $value->created_at;
                 
+                array_push($produtosDisponiveis, $product);
+            }
         }
         
         return $produtosDisponiveis;
@@ -234,5 +234,29 @@ class AppService extends AbstractRepository implements AppResolverInterface
 
         $dadosVenda->update(['total_final' => $resultFinal, 'lucro' => $resultLucro, 'qtd_produto' =>  $resultQtd]);
         return ['message' => 'Item cadastrado com sucesso!'];
+    }
+
+    public function postUser($request) {
+        $response = Http::post($this->baseApi.'/users', [
+            'email' => $request['email'],
+            'login' => $request['login'],
+            'name' => $request['name'],
+            'password' => $request['password'],
+            'role' => $request['role'],
+            'api' => true
+        ]);
+        
+        return $response->json();
+    }
+    
+    public function postDespesaEntrega($request) {
+        $response = Http::post($this->baseApi.'/despesas-entrega', [
+            'entregador' => $request['entregador_id']?$request['entregador_id']:Auth::user()->id,
+            'valor' => $request['valor'],
+            'descricao' => $request['descricao'],
+            'api' => true
+        ]);
+        
+        return $response->json();
     }
 }

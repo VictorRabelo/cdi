@@ -1,7 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { FilterFormComponent } from '@app/components/filter-form/filter-form.component';
 import { EntregaService } from '@app/services/entrega.service';
 import { MessageService } from '@app/services/message.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { SubSink } from 'subsink';
 
@@ -26,6 +28,7 @@ export class EntregasComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
+    private modalCtrl: NgbModal,
     private service: EntregaService,
     private message: MessageService,
     private spinner: NgxSpinnerService,
@@ -38,6 +41,18 @@ export class EntregasComponent implements OnInit, OnDestroy {
   getStart(){
     this.loading = true;
     this.getAll();
+  }
+
+  filterDate() {
+    const modalRef = this.modalCtrl.open(FilterFormComponent, { size: 'sm', backdrop: 'static' });
+    modalRef.result.then(res => {
+      if(res.date){
+        this.filters.date = res.date;
+  
+        this.loading = true;
+        this.getAll();
+      }
+    })
   }
 
   getAll() {

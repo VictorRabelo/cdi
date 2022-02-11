@@ -66,7 +66,7 @@
             </div>
             <!-- /.card-header -->
             <div class="card-body table-responsive p-0">
-              <table class="table table-hover text-nowrap">
+              <table class="table table-hover text-nowrap text-center">
                 <thead>
                   <tr>
                     <th scope="col">#ID</th>
@@ -86,17 +86,15 @@
                     <th scope="row">{{ item.id_venda }}</th>
                     <td>{{ (!item.cliente)?'Cliente não informado':item.cliente.name | titlecase }}</td>
                     <td>{{ item.vendedor.name | titlecase }}</td>
-                    <td>{{ item.created_at }}</td>
+                    <td>{{ item.created_at | date : 'dd/MM/yyyy HH:mm:ss' }}</td>
                     <td>{{ (!item.pagamento)?'****':item.pagamento | titlecase }}</td>
                     <td>{{ (!item.total_final)? '****':item.total_final | currency: 'R$' }}</td>
                     <td>{{ (!item.pago)? '****':item.pago | currency: 'R$' }}</td>
                     <td>{{ (!item.lucro)? '****':item.lucro | currency: 'R$' }}</td>
                     <td>
-                      <div class="d-flex justify-content-center">
-                        <span class="badge badge-success" *ngIf="item.status === 'pago' ">Pago</span>
-                        <span class="badge badge-warning" *ngIf="item.status === 'pendente' ">Pendente</span>
-                        <span class="badge badge-primary" *ngIf="!item.status">Aberta</span>
-                      </div>
+                      <span class="badge badge-success" *ngIf="item.status === 'pago' ">Pago</span>
+                      <span class="badge badge-warning" *ngIf="item.status === 'pendente' ">Pendente</span>
+                      <span class="badge badge-primary" *ngIf="!item.status">Aberta</span>
                     </td>
                     <td>
                       <button class="btn btn-warning btn-sm mx-2" title="Editar" (click)="editVenda(item.id_venda)">

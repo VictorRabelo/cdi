@@ -34,7 +34,12 @@
                 vertical-align: middle;
             }
             
-            .margin {
+            img {
+                width: 50px;
+                height: 50px;
+            }
+
+            hr {
                 margin: 20px 0px;
             }
 
@@ -61,18 +66,19 @@
                     {{ $dadosEntrega->status }}
                 </td>
             </tr>
+        </table>
+
+        <hr>
+
+        <table class="customers">
             <tr>
-                <td colspan="5">
-                    <hr>
-                </td>
-            </tr>
-            <tr>
-                <th colspan="5">Produtos da entrega</th>
+                <th colspan="6">Produtos da entrega</th>
             </tr>
             <tr>
                 <th>#COD</th>
                 <th>Qtd.</th>
                 <th>Foto</th>
+                <th>Produto</th>
                 <th>Valor</th>
                 <th>Lucro</th>
             </tr>
@@ -80,14 +86,46 @@
                 <tr>
                     <td>#{{ $data->produto->id_produto }}</td>
                     <td>{{ $data->qtd_produto }}</td>
+                    <td>
+                        <img src="{{ $data->produto->path }}" alt="Produto">
+                    </td>
                     <td>{{ $data->produto->name }}</td>
                     <td>{{ 'R$ '.number_format($data->preco_entrega, 2, ',', '.') }}</td>
                     <td>{{ 'R$ '.number_format($data->lucro_entrega, 2, ',', '.') }}</td>
                 </tr>
             @endforeach
         </table>
+        
         <hr>
-        <div class="margin"></div>
+        
+        <table class="customers">
+            <tr>
+                <th colspan="3">Qtd. Vendidas</th>
+            </tr>
+            @if (count($products) > 0)  
+                <tr>
+                    <th>Foto</th>
+                    <th>Produto</th>
+                    <th>Qtd. Vendida</th>
+                </tr>
+                @foreach ($products as $item)
+                    <tr>
+                        <td>
+                            <img src="{{ $item->path }}" alt="Produto">
+                        </td>
+                        <td>{{ $item->nameProduto }}</td>
+                        <td>{{ $item->qtdTotal }}</td>
+                    </tr>
+                @endforeach
+            @else
+                <tr>
+                    <th colspan="3">Não há produtos vendidos!</th>
+                </tr>
+            @endif
+        </table>
+        
+        <hr>
+
         <table class="customers">
             <tr>
                 <th colspan="6">Vendas - {{ $dadosEntrega->entregador }} - {{date('d/m/Y', strtotime($data_now))}}</th>
@@ -121,8 +159,9 @@
                 </tr>
             @endif
         </table>
+        
         <hr>
-        <div class="margin"></div>
+        
         <table class="customers">
             <tr>
                 <th colspan="4">Despesas do entregador - {{ $dadosEntrega->entregador }} - {{date('d/m/Y', strtotime($data_now))}} -> {{ 'R$ '.number_format($totalDespesa, 2, ',', '.') }}</th>

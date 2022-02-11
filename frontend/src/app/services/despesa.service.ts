@@ -9,30 +9,32 @@ import { map } from 'rxjs/operators';
 })
 export class DespesaService {
     
+    baseUrl = environment.apiUrl;
+    
     constructor(private http: HttpClient) { }
 
     getAll() {
-        return this.http.get<any>(`${environment.apiUrl}/despesas`);
+        return this.http.get<any>(`${this.baseUrl}/despesas`);
     }
     
     getMovimentacao() {
-        return this.http.get<any>(`${environment.apiUrl}/despesas/movimentacao`).pipe(map(res =>{ return res.entity }));
+        return this.http.get<any>(`${this.baseUrl}/despesas/movimentacao`).pipe(map(res =>{ return res.entity }));
     }
 
     getById(id: number) {
-        return this.http.get<any>(`${environment.apiUrl}/despesas/${id}`).pipe(map(res =>{ return res.entity }));
+        return this.http.get<any>(`${this.baseUrl}/despesas/${id}`).pipe(map(res =>{ return res.entity }));
     }
 
     store(store: any){
-        return this.http.post<any>(`${environment.apiUrl}/despesas`, store);
+        return this.http.post<any>(`${this.baseUrl}/despesas`, store);
     }
 
     update(update: any){
-        return this.http.put<any>(`${environment.apiUrl}/despesas/${update.id}`, update);
+        return this.http.put<any>(`${this.baseUrl}/despesas/${update.id}`, update);
     }
 
     delete(id: number){
-        return this.http.delete<any>(`${environment.apiUrl}/despesas/${id}`);
+        return this.http.delete<any>(`${this.baseUrl}/despesas/${id}`);
     }
 
 }

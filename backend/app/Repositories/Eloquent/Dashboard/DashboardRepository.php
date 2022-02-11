@@ -27,7 +27,7 @@ class DashboardRepository extends AbstractRepository implements DashboardReposit
     */
     protected $modelCliente = Cliente::class;
     
-    public function getVendasDia()
+    public function getVendasDia($request)
     {
         if (isset($request['app'])) { 
             $id = auth()->user()->id;
@@ -46,7 +46,7 @@ class DashboardRepository extends AbstractRepository implements DashboardReposit
 
     }
 
-    public function getVendasMes()
+    public function getVendasMes($request)
     {
         if (isset($request['app'])) { 
             $id = auth()->user()->id;
@@ -65,11 +65,10 @@ class DashboardRepository extends AbstractRepository implements DashboardReposit
         return $count;
     }
 
-    public function getVendasTotal()
+    public function getVendasTotal($request)
     {
         if (isset($request['app'])) { 
             $id = auth()->user()->id;
-            
             $dados = Venda::where('vendedor_id', $id)->get();
             
             $count = $dados->count();
@@ -111,7 +110,7 @@ class DashboardRepository extends AbstractRepository implements DashboardReposit
         return $count;
     }
 
-    public function getProdutosEstoque()
+    public function getProdutosEstoque($request)
     {
         if (isset($request['app'])) { 
             $userId =  auth()->user()->id;

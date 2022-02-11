@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Enums\CodeStatusEnum;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Repositories\Contracts\Dashboard\DashboardRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -16,11 +17,11 @@ class DashboardController extends Controller
         $this->dashboardRepository = $dashboardRepository;
     }
     
-    public function getVendasDia()
+    public function getVendasDia(Request $request)
     {
         try {
 
-            $res = $this->dashboardRepository->getVendasDia();
+            $res = $this->dashboardRepository->getVendasDia($request->all());
 
             return response()->json($res, 200);
 
@@ -29,11 +30,11 @@ class DashboardController extends Controller
         }
     }
     
-    public function getVendasMes()
+    public function getVendasMes(Request $request)
     {
         try {
 
-            $res = $this->dashboardRepository->getVendasMes();
+            $res = $this->dashboardRepository->getVendasMes($request->all());
 
             return response()->json($res, 200);
 
@@ -42,11 +43,11 @@ class DashboardController extends Controller
         }
     }
     
-    public function getVendasTotal()
+    public function getVendasTotal(Request $request)
     {
         try {
 
-            $res = $this->dashboardRepository->getVendasTotal();
+            $res = $this->dashboardRepository->getVendasTotal($request->all());
 
             return response()->json($res, 200);
 
@@ -91,11 +92,11 @@ class DashboardController extends Controller
         }
     }
 
-    public function getProdutosEstoque()
+    public function getProdutosEstoque(Request $request)
     {
         try {
 
-            $res = $this->dashboardRepository->getProdutosEstoque();
+            $res = $this->dashboardRepository->getProdutosEstoque($request->all());
 
             return response()->json($res, 200);
             

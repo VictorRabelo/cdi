@@ -1,31 +1,26 @@
-<!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
+    
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0">Contas a Pagar</h1>
-                </div><!-- /.col -->
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <!--  
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Dashboard v1</li>
-                        -->
-                    </ol>
-                </div><!-- /.col -->
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content-header -->
+                <div class="col-9">
+                    <h1 class="m-0">Despesas das Entregas</h1>
+                </div>
 
-    <!-- Main content -->
+                <div class="col-3 text-right">
+                    <button class="btn btn-primary btn-md" title="Filtro de Pesquisa" (click)="filterDate()">
+                      <i class="fas fa-search"></i>
+                    </button>           
+                </div>
+            </div>
+        </div>
+    </div>
+
     <section class="content">
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-4 ml-auto">
-                    <label class="text-danger d-block">Saldo a pagar:</label>
+            <div class="row text-right">
+                <div class="col-4 col-md-3 ml-auto">
+                    <label class="text-danger">Saldo a pagar: </label>
                     <span class="pl-2">{{ saldo | currency: 'R$' }}</span>
                 </div>
             </div>
@@ -50,11 +45,12 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- /.card-header -->
+                        
                         <div class="card-body table-responsive p-0" style="height: 100%;">
                             <table class="table table-hover text-nowrap text-center">
                                 <thead>
                                     <tr>
+                                        <th scope="col">Entregador</th>
                                         <th scope="col">Data</th>
                                         <th scope="col">Valor</th>
                                         <th scope="col">Descrição</th>
@@ -63,11 +59,12 @@
                                 </thead>
                                 <tbody *ngFor="let despesa of despesas | filter:term">
                                     <tr>
+                                        <td>{{ despesa.entregador.name }}</td>
                                         <td>{{ despesa.data }}</td>
                                         <td>{{ despesa.valor | currency: 'R$' }}</td>
                                         <td>{{ despesa.descricao }}</td>
                                         <td>
-                                            <button class="btn btn-danger btn-sm" title="Excluir" (click)="delete(despesa.id_despesa)">
+                                            <button class="btn btn-danger btn-sm" title="Excluir" (click)="delete(despesa.id_despesaEntrega)">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </td>
@@ -75,15 +72,15 @@
                                 </tbody>
                                 <tbody *ngIf=" despesas.length == 0 ">
                                     <tr class="text-center">
-                                        <td colspan="4">Não há Contas a Pagar no momento</td>
+                                        <td colspan="5">Não há despesas no momento!</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <!-- /.card-body -->
+                        
                         <div class="card-loader" *ngIf="loading"><i class="fas fa-sync-alt anim-rotate"></i></div>
                     </div>
-                  <!-- /.card -->
+                    
                 </div>
             </div>
         </div>
@@ -96,7 +93,7 @@
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Conta a pagar</h4>
+                    <h4 class="modal-title">Registrar despesa</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -106,8 +103,13 @@
                         <div class="card-body">
                             <div class="form-row">
                                 <div class="form-group col-12">
-                                    <label for="data" class="fieldset">Data:</label>
-                                    <input type="date" class="form-control" id="data" name="data" ngModel>
+                                    <label for="entregador_login" class="fieldset">*Entregador:</label>
+                                    <select required class="form-control" 
+                                        name="entregador_login" ngModel #entregador_login="ngModel"
+                                        [ngClass]="{'is-invalid': !entregador_login.valid && (entregador_login.touched || form.submitted)}">
+                                        <option value="">Selecione um entregador</option>
+                                        <option *ngFor="let item of entregadores" [value]="item.login">{{ item.name | titlecase }}</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="form-row">

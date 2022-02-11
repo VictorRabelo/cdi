@@ -20,11 +20,11 @@ class DespesaEntregaController extends Controller
         $this->codeStatus = $codeStatus;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         try {
 
-            $res = $this->despesaRepository->index();
+            $res = $this->despesaRepository->index($request->all());
 
             if (empty($res)) {
                 return response()->json(['message' => 'Erro de servidor!',], 500);

@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+
 use App\Models\Cliente;
 use App\Models\User;
 use App\Models\Entrega;
 use App\Models\Produto;
 use App\Models\Movition;
 use App\Models\ProdutoVenda;
-
 class Venda extends Model
 {
     protected $table = 'vendas';
@@ -34,8 +35,8 @@ class Venda extends Model
     protected $hidden = [];
 
     protected $casts = [
-        'updated_at' => 'datetime:d-m-Y',
-        'created_at' => 'datetime:d-m-Y',
+        'updated_at' => 'datetime:d-m-Y H:i:s',
+        'created_at' => 'datetime:d-m-Y H:i:s',
     ];
 
     public function cliente()
@@ -43,16 +44,16 @@ class Venda extends Model
         return $this->hasOne(Cliente::class, 'id_cliente', 'cliente_id');
     }
 
-    public function vendedor() {
-
+    public function vendedor() 
+    {
         return $this->hasOne(User::class, 'id', 'vendedor_id');
     }
-    
-    public function entrega() {
 
+    public function entrega() 
+    {
         return $this->hasOne(Entrega::class, 'id_entrega', 'entrega_id');
     }
-
+    
     public function produto()
     {
         return $this->belongsTo(ProdutoVenda::class, 'id_venda', 'venda_id')->orderBy('created_at', 'desc');
@@ -71,5 +72,19 @@ class Venda extends Model
     public function movition()
     {
         return $this->hasMany(Movition::class, 'id_movition', 'venda_id');
+    }
+
+    public function getCreatedAtAttribute($value)
+    {
+        return Carbon::createFromTimestamp(strtotime($value))
+            ->timezone('America/Sao_Paulo')
+            ->toDateTimeString();
+    }
+    
+    public function getUpdatedAtAttribute($value)
+    {
+        return Carbon::createFromTimestamp(strtotime($value))
+            ->timezone('America/Sao_Paulo')
+            ->toDateTimeString();
     }
 }

@@ -15,6 +15,7 @@ import { MovitionComponent } from './movition/movition.component';
 import { EntregaDetalheComponent } from './entregas/entrega-detalhe/entrega-detalhe.component';
 import { Role } from '@app/models/role';
 import { AuthGuard } from '@app/guards/auth.guard';
+import { EntregasDespesasComponent } from './entregas/entregas-despesas/entregas-despesas.component';
 
 const routes: Routes = [
   
@@ -35,6 +36,7 @@ const routes: Routes = [
   {
     path: 'entregas', children: [
       { path: '', component: EntregasComponent},
+      { path: 'despesas', component: EntregasDespesasComponent},
       { path: ':id', component: EntregaDetalheComponent},
     ], data: { animation: 'EntregasPage' }
   },
