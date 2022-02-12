@@ -68,6 +68,20 @@ export class EntregaDetalheComponent extends ControllerBase {
     });
   }
 
+  confirmEntrega() {
+    this.message.swal.fire({
+      title: 'Entrega pronta para a rua?',
+      icon: 'question',
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Voltar',
+      showCancelButton: true
+    }).then(res => {
+      if (res.isConfirmed) {
+        this.finishEntrega();
+      }
+    })
+  }
+
   finishEntrega() {
     if(this.entregaCurrent.itens.length == 0){
       this.message.toastError('Está sem produtos!');
@@ -142,6 +156,20 @@ export class EntregaDetalheComponent extends ControllerBase {
     })
   }
 
+  confirmBaixa() {
+    this.message.swal.fire({
+      title: 'Tudo certo para dar baixa na entrega?',
+      icon: 'question',
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Voltar',
+      showCancelButton: true
+    }).then(res => {
+      if (res.isConfirmed) {
+        this.darBaixa();
+      }
+    })
+  }
+  
   darBaixa(){
     this.loading = true;
 

@@ -180,7 +180,7 @@
                     <mat-tab label="Valores totais">
                         <div class="row" *ngIf="dados.tipo !== ''" [@enterAnimation]>
                             <div class="form-group col-sm-3">
-                                <label for="preco" class="fieldset">Preço de venda</label>
+                                <label for="preco" class="fieldset">Preço sugerido</label>
                                 <input type="text" class="form-control" id="preco" name="preco" 
                                     currencyMask [(ngModel)]="dados.preco" #preco="ngModel" required>
                             </div>
