@@ -38,7 +38,7 @@ export class EntregasComponent implements OnInit, OnDestroy {
     this.getStart();
   }
 
-  getStart(){
+  getStart(): void {
     this.loading = true;
     this.getAll();
   }
@@ -60,7 +60,6 @@ export class EntregasComponent implements OnInit, OnDestroy {
       this.dataSource = res.entregas;
       this.totalVendas = res.totalVendas;
       this.today = res.data;
-      this.filters.date = res.mounth;
 
     },error =>{
       

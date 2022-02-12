@@ -25,7 +25,7 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
     /**
      * @var AppResolverInterface
      */
-    protected $baseApi = AppResolverInterface::class;
+    protected $baseApp = AppResolverInterface::class;
 
     public function index()
     {

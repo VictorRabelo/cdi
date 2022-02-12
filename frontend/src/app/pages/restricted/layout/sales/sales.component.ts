@@ -66,11 +66,6 @@ export class SalesComponent implements OnInit, OnDestroy {
       this.recebido = res.pago;
       this.lucro = res.lucro;
       this.today = res.data;
-      
-      if(!this.filters.date) {
-
-        this.filters.date = res.mounth;
-      }
 
     },error =>{
       

@@ -59,7 +59,7 @@
                                 </thead>
                                 <tbody *ngFor="let despesa of despesas | filter:term">
                                     <tr>
-                                        <td>{{ despesa.entregador.name }}</td>
+                                        <td>{{ (!despesa.entregador.name)?'Entregador não informado':despesa.entregador.name }}</td>
                                         <td>{{ despesa.data }}</td>
                                         <td>{{ despesa.valor | currency: 'R$' }}</td>
                                         <td>{{ despesa.descricao }}</td>

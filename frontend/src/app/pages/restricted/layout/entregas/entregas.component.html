@@ -1,12 +1,10 @@
-<!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
-  <!-- Content Header (Page header) -->
   <div class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
         
         <div class="col-9">
-          <h1 class="m-0 text-title-entregas">Entregas / Mês {{ today | date:'MM' }}</h1>
+          <h1 class="m-0 text-title-entregas">Entregas - {{ today | date:'MM/yy' }}</h1>
         </div>
         
         <div class="col-3 text-right">
@@ -14,12 +12,10 @@
             <i class="fas fa-search"></i>
           </button>           
         </div>
-      </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
+      </div>
+    </div>
   </div>
-  <!-- /.content-header -->
-
-  <!-- Main content -->
+  
   <section class="content">
     <div class="container-fluid">
       <!-- <div class="row text-right">

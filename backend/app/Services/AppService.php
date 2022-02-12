@@ -2,21 +2,21 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Auth;
+
+use App\Repositories\Eloquent\AbstractRepository;
+use App\Resolvers\AppResolverInterface;
+
+use App\Utils\Messages;
+use App\Utils\Tools;
+
 use App\Models\Entrega;
 use App\Models\EntregaItem;
 use App\Models\Movition;
 use App\Models\Produto;
 use App\Models\ProdutoVenda;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Auth;
-
-use App\Repositories\Eloquent\AbstractRepository;
 use App\Models\Venda;
-use App\Resolvers\ApiCdiResolverInterface;
-use App\Resolvers\AppResolverInterface;
-use App\Utils\Messages;
-use App\Utils\Tools;
-
 class AppService extends AbstractRepository implements AppResolverInterface
 {
     /**

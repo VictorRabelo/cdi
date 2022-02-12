@@ -37,7 +37,7 @@ class Tools
         return $total;
     }
 
-    public function calculoVenda($dados)
+    public function calculoVenda($dados, $date = null)
     {
         $totalVendas = Venda::select(DB::raw('sum(total_final) as total'))->get();
 
