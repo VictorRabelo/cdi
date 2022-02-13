@@ -238,6 +238,8 @@ Route::group(['prefix' =>'/v1'], function() {
         
         Route::get('/vendidos','Relatorio\RelatorioController@vendidos')->middleware(['auth:api', 'scope:admin']);
         
+        Route::get('/catalogo','Relatorio\RelatorioController@catalogo')->middleware(['auth:api', 'scope:admin']);
+
         Route::get('/entregas','Relatorio\RelatorioController@entregas')->middleware(['auth:api', 'scope:admin']);
         
         Route::get('/entrega-detalhes/{id}','Relatorio\RelatorioController@entregaDetalhes')->middleware(['auth:api', 'scope:admin']);

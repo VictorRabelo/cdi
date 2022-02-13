@@ -110,6 +110,23 @@ class RelatorioRepository extends AbstractRepository implements RelatorioReposit
         return ['file' => $base,'data' => $data_now];
     }
 
+    public function catalogo()
+    {
+        $data_now = $this->dateNow();
+    
+        $sql = 'SELECT * from `produtos` WHERE `produtos`.`status` = "ok" GROUP BY `produtos`.`categoria_id`, `produtos`.`name` ORDER BY `produtos`.`name` ASC';
+        $products = DB::select($sql);
+        
+        $pdf = PDF::loadView('pdf.catalogo', compact('products', 'data_now'));
+        $result = $pdf->download($data_now.'.pdf');
+    
+        $base = base64_encode($result);
+    
+        return ['file' => $base,'data' => $data_now];
+            
+        
+    }
+
     public function entregas()
     {
         $data_now = $this->dateNow();

@@ -27,6 +27,10 @@ export class RelatorioService {
         return this.http.get<any>(`${environment.apiUrl}/relatorios/venda-areceber/${id}`).pipe(map(res =>{ return res.response }));
     }
     
+    getCatalogo() {
+        return this.http.get<any>(`${environment.apiUrl}/relatorios/catalogo`).pipe(map(res =>{ return res.response }));
+    }
+    
     getEstoque() {
         return this.http.get<any>(`${environment.apiUrl}/relatorios/estoque`).pipe(map(res =>{ return res.response }));
     }

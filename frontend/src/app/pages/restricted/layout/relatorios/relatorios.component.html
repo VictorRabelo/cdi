@@ -27,14 +27,6 @@
             <div class="row">
                 <div class="col">
                     <div class="card card-default">
-                        <!-- 
-                        <div class="card-header">
-                          <h3 class="card-title">
-                            <i class="fas fa-bullhorn"></i>
-                            Callouts
-                          </h3>
-                        </div>
-                        /.card-header -->
                         <div class="card-body">
                           <div class="callout callout-danger">
                             <button type="button" (click)="downloadVendas()" class="btn btn-danger">
@@ -63,6 +55,12 @@
                           <div class="callout callout-danger">
                             <button type="button" (click)="downloadEntregas()" class="btn btn-danger">
                               Relatórios de Entregas 
+                              <i class="ml-2 fas fa-file-download"></i>
+                            </button>
+                          </div>
+                          <div class="callout callout-info">
+                            <button type="button" (click)="downloadCatalogo()" class="btn btn-info">
+                              Produtos em Catálogo
                               <i class="ml-2 fas fa-file-download"></i>
                             </button>
                           </div>

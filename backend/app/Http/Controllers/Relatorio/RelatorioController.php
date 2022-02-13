@@ -136,4 +136,21 @@ class RelatorioController extends Controller
             return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
         }
     }
+
+    public function catalogo()
+    {
+        try {
+
+            $res = $this->relatorioRepository->catalogo();
+
+            if (isset($res->code) && $res->code == CodeStatusEnum::ERROR_SERVER) {
+                return response()->json(['message' => $res->message], $res->code);
+            }
+
+            return response()->json(['response' => $res], 200);
+
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
+        }
+    }
 }
