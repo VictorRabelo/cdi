@@ -95,6 +95,12 @@ export class SalesComponent implements OnInit, OnDestroy {
   createVenda() {
     this.loading = true;
     this.service.store({}).subscribe(res => {
+      if(res.message) {
+        this.message.toastError(res.message);
+        this.loading = false;
+        return false;
+      };
+      
       this.router.navigate([`/restricted/vendas/${res.id_venda}`]);
     }, error =>{
       this.loading = false;
