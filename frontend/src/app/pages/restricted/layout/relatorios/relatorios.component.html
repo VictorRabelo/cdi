@@ -59,10 +59,20 @@
                             </button>
                           </div>
                           <div class="callout callout-info">
-                            <button type="button" (click)="downloadCatalogo()" class="btn btn-info">
-                              Produtos em Catálogo
-                              <i class="ml-2 fas fa-file-download"></i>
-                            </button>
+                            <div class="row">
+                              <div class="col-9">
+                                <button type="button" (click)="downloadCatalogo()" class="btn btn-info d-inline">
+                                  Produtos em Catálogo
+                                  <i class="ml-2 fas fa-file-download"></i>
+                                </button>
+                              </div>
+                              <div class="col-3">
+                                <select required class="form-control d-inline" name="categoria_id" [(ngModel)]="dados.categoria_id">
+                                  <option value="">Selecione uma categoria</option>
+                                  <option *ngFor="let item of categories" [value]="item.id_categoria">{{ item.categoria | titlecase }} / {{ item.subcategoria | titlecase }}</option>
+                                </select>
+                              </div>
+                            </div>
                           </div>
                         </div>
                         <!-- /.card-body -->

@@ -27,8 +27,8 @@ export class RelatorioService {
         return this.http.get<any>(`${environment.apiUrl}/relatorios/venda-areceber/${id}`).pipe(map(res =>{ return res.response }));
     }
     
-    getCatalogo() {
-        return this.http.get<any>(`${environment.apiUrl}/relatorios/catalogo`).pipe(map(res =>{ return res.response }));
+    getCatalogo(queryParams: any = {}) {
+        return this.http.get<any>(`${environment.apiUrl}/relatorios/catalogo`, { params: queryParams }).pipe(map(res =>{ return res.response }));
     }
     
     getEstoque() {

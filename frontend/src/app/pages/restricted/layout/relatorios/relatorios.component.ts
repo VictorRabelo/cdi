@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { ControllerBase } from '@app/controller/controller.base';
+import { CategoriaService } from '@app/services/categoria.service';
 import { RelatorioService } from '@app/services/relatorio.service';
 
 import { MessageService } from 'primeng/api';
@@ -20,7 +21,13 @@ export class RelatoriosComponent extends ControllerBase {
 
   loading = false;
 
+  categories: any = {};
+  dados: any = {
+    categoria_id: ''
+  };
+
   constructor(
+    private categoriaService: CategoriaService,
     private relatorioService: RelatorioService
   ) { 
 
@@ -28,6 +35,24 @@ export class RelatoriosComponent extends ControllerBase {
   }
 
   ngOnInit() {
+    this.getStart()
+  }
+  
+  getStart(){
+    this.loading = true;
+    this.getAllCategorias()
+  }
+
+  getAllCategorias() {
+    this.sub.sink = this.categoriaService.getAll().subscribe(
+      (res: any) => {
+        this.categories = res;
+        this.loading = false;
+      },
+      error => {
+        this.loading = false;
+        console.log(error)
+      })
   }
 
   downloadVendas(){
@@ -92,7 +117,7 @@ export class RelatoriosComponent extends ControllerBase {
 
   downloadCatalogo(){
     this.loading = true;
-    this.sub.sink = this.relatorioService.getCatalogo().subscribe(
+    this.sub.sink = this.relatorioService.getCatalogo(this.dados).subscribe(
       (res: any) => {
         this.downloadPDF(res.file, res.data, 'catalago')
       },
