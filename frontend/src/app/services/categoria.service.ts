@@ -14,6 +14,14 @@ export class CategoriaService {
     return this.http.get<any>(`${environment.apiUrl}/categorias`).pipe(map(res =>{ return res.response }));
   }
 
+  categoria(): Promise<any> {
+    return this.http.get<any>(`${environment.apiUrl}/categorias/categoria`).toPromise();
+  }
+
+  subcategoria(): Promise<any> {
+    return this.http.get<any>(`${environment.apiUrl}/categorias/subcategoria`).toPromise();
+  }
+
   getById(id: number) {
     return this.http.get<any>(`${environment.apiUrl}/categorias/${id}`).pipe(map(res =>{ return res.response }));
   }

@@ -18,6 +18,21 @@ import { ModalAlterPasswordComponent } from './modal-alter-password/modal-alter-
 import { FilterFormComponent } from './filter-form/filter-form.component';
 import { TimerComponent } from './timer/timer.component';
 import { ModalMovitionComponent } from './modal-movition/modal-movition.component';
+import { FormaPagamentoFormComponent } from './forma-pagamento-form/forma-pagamento-form.component';
+import { TableComponent } from './table/table.component';
+
+// PrimeNG
+import { ToastModule } from 'primeng/toast';
+import { FileUploadModule } from 'primeng/fileupload';
+import { RippleModule } from 'primeng/ripple';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { TableModule } from 'primeng/table';
+import { CardModule } from 'primeng/card';
+import { ToolbarModule } from 'primeng/toolbar';
+import { TooltipModule } from 'primeng/tooltip';
+import { AccordionModule } from 'primeng/accordion';
+import { AutoCompleteModule } from 'primeng-lts/autocomplete';
 
 import { NgxMaskModule } from 'ngx-mask';
 import { CurrencyMaskInputMode, NgxCurrencyModule } from 'ngx-currency';
@@ -51,11 +66,26 @@ export const customCurrencyMaskConfig = {
     ModalAlterPasswordComponent,
     FilterFormComponent,
     TimerComponent,
+    FormaPagamentoFormComponent,
+    TableComponent,
   ],
   imports: [
     CommonModule,
     FormsModule,
     UtilModule,
+
+    ToastModule,
+    FileUploadModule,
+    RippleModule,
+    ProgressSpinnerModule,
+    ProgressBarModule,
+    TableModule,
+    CardModule,
+    ToolbarModule,
+    TooltipModule,
+    AccordionModule,
+    AutoCompleteModule,
+
     MatTabsModule,
     Ng2SearchPipeModule,
     MatStepperModule,
@@ -74,6 +104,8 @@ export const customCurrencyMaskConfig = {
     ModalAlterPasswordComponent,
     FilterFormComponent,
     TimerComponent,
+    FormaPagamentoFormComponent,
+    TableComponent,
   ],
   entryComponents: [
     ClienteFormComponent,
@@ -87,6 +119,8 @@ export const customCurrencyMaskConfig = {
     ModalAlterPasswordComponent,
     FilterFormComponent,
     TimerComponent,
+    FormaPagamentoFormComponent,
+    TableComponent,
   ],
 })
 export class ComponentsModule { }

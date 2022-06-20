@@ -71,9 +71,11 @@
             <th>Qtd.</th>
             <th>Foto</th>
             <th>Produto</th>
-            <th class="text-right">Valor</th>
-            <th class="text-right">Lucro</th>
-            <th class="text-right" *ngIf="!vendaCurrent.status">Ação</th>
+            <th>Lucro Total</th>
+            <th>Lucro Unit.</th>
+            <th>Valor Unit.</th>
+            <th>Valor Total</th>
+            <th *ngIf="!vendaCurrent.status">Ação</th>
           </thead>
           <tbody>
             <tr *ngFor="let item of vendaCurrent.itens;">
@@ -83,9 +85,11 @@
                 <async-image url="{{ item.produto.path }}"></async-image>
               </td>
               <td>{{ item.produto.name | titlecase }}</td>
-              <td class="text-right">{{ item.preco_venda | currency:'R$' }}</td>
-              <td class="text-right">{{ item.lucro_venda | currency:'R$' }}</td>
-              <td class="text-right" *ngIf="!vendaCurrent.status">
+              <td>{{ item.lucro_total | currency:'R$' }}</td>
+              <td>{{ item.lucro_venda | currency:'R$' }}</td>
+              <td>{{ item.preco_venda | currency:'R$' }}</td>
+              <td>{{ item.total_venda | currency:'R$' }}</td>
+              <td *ngIf="!vendaCurrent.status">
                 <button class="btn btn-sm btn-primary mr-2" (click)="openItem(item.id)">
                   <i class="fas fa-pen"></i>
                 </button>
@@ -97,7 +101,7 @@
           </tbody>
           <tbody *ngIf="vendaCurrent.itens.length == 0">
             <tr class="text-center">
-              <td colspan="7">Não há itens no momento</td>
+              <td colspan="9">Não há itens no momento</td>
             </tr>
           </tbody>
         </table>

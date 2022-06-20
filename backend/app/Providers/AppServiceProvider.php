@@ -30,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind('App\Repositories\Contracts\Relatorio\RelatorioRepositoryInterface','App\Repositories\Eloquent\Relatorio\RelatorioRepository');
         $this->app->bind('App\Repositories\Contracts\Venda\VendaRepositoryInterface','App\Repositories\Eloquent\Venda\VendaRepository');
         $this->app->bind('App\Repositories\Contracts\Entrega\EntregaRepositoryInterface','App\Repositories\Eloquent\Entrega\EntregaRepository');
+        $this->app->bind('App\Repositories\Contracts\FormaPagamento\FormaPagamentoRepositoryInterface','App\Repositories\Eloquent\FormaPagamento\FormaPagamentoRepository');
         $this->app->bind('App\Resolvers\AppResolverInterface','App\Services\AppService');
     }
     

@@ -1,0 +1,64 @@
+<form #form="ngForm" (ngSubmit)="submit(form)" (keydown.enter)="submit(form)" class="card card-load mb-0">
+
+    <div class="modal-header">
+      <h4>{{ crud | titlecase }} Forma de Pagamento</h4>
+      <button type="button" class="close" aria-label="Close" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+      
+    <div class="modal-body">
+        <div class="row">
+  
+            <div class="col-sm-12 form-group">
+                <label for="descricao">{{ crud == 'alterar'? '':'*' }}Descrição</label>
+                <input type="text" required class="form-control" name="descricao" 
+                    [(ngModel)]="dados.descricao" #descricao="ngModel"
+                    [ngClass]="{'is-invalid': !descricao.valid && (descricao.touched || form.submitted)}" />
+            </div>
+            
+            <div class="col-6 form-group">
+                <label for="taxa">Taxa</label>
+                <input currencyMask type="text" class="form-control" name="taxa" 
+                    [(ngModel)]="dados.taxa" #taxa="ngModel"
+                    [options]="{ suffix: ' %' }"
+                    [ngClass]="{'is-invalid': !taxa.valid && (taxa.touched || form.submitted)}" />
+            </div>
+            
+            <div class="col-6 form-group">
+                <label for="parcelamento">Parcelamento</label>
+                <input type="number" class="form-control" name="parcelamento" 
+                    [(ngModel)]="dados.parcelamento" #parcelamento="ngModel"
+                    [ngClass]="{'is-invalid': !parcelamento.valid && (parcelamento.touched || form.submitted)}" />
+            </div>
+            
+            <div class="col-sm-12 form-group">
+                <label for="observacao">Observação</label>
+                <input type="text" class="form-control" name="observacao" 
+                [(ngModel)]="dados.observacao" #observacao="ngModel"
+                [ngClass]="{'is-invalid': !observacao.valid && (observacao.touched || form.submitted)}" />
+            </div>
+            
+            <div class="col-sm-12 form-group">
+                <label for="status">{{ crud == 'alterar'? '':'*' }}Status:</label>
+                <select required class="form-control" name="status" [(ngModel)]="dados.status" #status="ngModel"
+                    [ngClass]="{'is-invalid': !status.valid && (status.touched || form.submitted)}">
+                        <option value="ativo">Ativo</option>
+                        <option value="inativo">Inativo</option>
+                </select>
+            </div>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="close()">Voltar</button>
+      <button type="submit" class="btn btn-success" [disabled]="loading">
+        <div class="spinner-border text-danger" role="status" *ngIf="loading">
+          <span class="sr-only">Loading...</span>
+        </div>
+        <span *ngIf="!loading">Salvar</span>
+      </button>
+    </div>
+  
+    <div class="card-loader" *ngIf="loading"><i class="fas fa-sync-alt anim-rotate"></i></div>
+</form>  

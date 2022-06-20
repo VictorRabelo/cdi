@@ -116,7 +116,7 @@ export class ModalProductDadosComponent implements OnInit {
     this.dados.lucro_venda = this.dados.preco - this.dados.valor_total;
 
     this.serviceEntrega.createItem(this.dados).subscribe(res => {
-      this.message.toastSuccess();
+      (res.code == 500)? this.message.toastError(res.message) : this.message.toastSuccess();
       this.close(res);
     }, error => {
       console.log(error)

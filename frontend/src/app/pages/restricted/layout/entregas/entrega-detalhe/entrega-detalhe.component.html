@@ -56,7 +56,7 @@
           <input type="number" readonly class="form-control" [(ngModel)]="entregaCurrent.qtd_disponiveis">
         </div>
         <div class="col-sm-2 form-group">
-          <button class="btn btn-primary btn-debitar" (click)="confirmBaixa()">
+          <button class="btn btn-primary btn-debitar" (click)="confirmBaixa()" [disabled]="loading">
             <i class="fas fa-money-bill"></i> Dar Baixa
           </button>
         </div>
@@ -98,7 +98,7 @@
               <td>{{ item.preco_entrega | currency:'R$' }}</td>
               <td>{{ item.lucro_entrega | currency:'R$' }}</td>
               <td *ngIf="entregaCurrent.status !== 'ok'">
-                <button class="btn btn-sm btn-primary" (click)="openItem('add', item.id)">
+                <button class="btn btn-sm btn-primary" (click)="openItem('add', item.id)" *ngIf="entregaCurrent.status == 'pendente' ">
                   <i class="fas fa-plus"></i>
                 </button>
                 <button class="btn btn-sm btn-warning mx-1" (click)="openItem('alterar', item.id)">

@@ -16,6 +16,7 @@ import { EntregaDetalheComponent } from './entregas/entrega-detalhe/entrega-deta
 import { Role } from '@app/models/role';
 import { AuthGuard } from '@app/guards/auth.guard';
 import { EntregasDespesasComponent } from './entregas/entregas-despesas/entregas-despesas.component';
+import { FormasPagamentosComponent } from './formas-pagamentos/formas-pagamentos.component';
 
 const routes: Routes = [
   
@@ -52,6 +53,8 @@ const routes: Routes = [
   {path: 'relatorios', component: RelatoriosComponent, data: { animation: 'RelatoriosPage' }},
       
   {path: 'categorias', component: CategoriasComponent, data: { animation: 'CategoriasPage' }},
+  
+  {path: 'formas-pagamentos', component: FormasPagamentosComponent, data: { animation: 'FormasPagamentosPage' }},
 
   {
     path: 'movimentacao', children: [

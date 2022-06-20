@@ -12,6 +12,9 @@ import { HomeComponent } from "./home/home.component";
 import { FooterComponent } from './footer/footer.component';
 
 import { EstoqueComponent } from './estoque/estoque.component';
+import { UsersComponent } from './users/users.component';
+import { EntregasDespesasComponent } from './entregas/entregas-despesas/entregas-despesas.component';
+import { FormasPagamentosComponent } from './formas-pagamentos/formas-pagamentos.component';
 import { ClientesComponent } from './clientes/clientes.component';
 import { RelatoriosComponent } from './relatorios/relatorios.component';
 import { FornecedoresComponent } from './fornecedores/fornecedores.component';
@@ -40,8 +43,6 @@ import { CurrencyMaskInputMode, NgxCurrencyModule } from "ngx-currency";
 import { NgxIziToastModule } from 'ngx-izitoast';
 import { DataTablesModule } from 'angular-datatables';
 import { NgbDropdownModule, NgbModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
-import { UsersComponent } from './users/users.component';
-import { EntregasDespesasComponent } from './entregas/entregas-despesas/entregas-despesas.component';
  
 export const customCurrencyMaskConfig = {
     align: "left",
@@ -104,6 +105,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     EntregaDetalheComponent,
     EntregasDespesasComponent,
     MovitionComponent,
+    FormasPagamentosComponent,
 
   ],
   entryComponents: [

@@ -21,7 +21,8 @@
     ],
     "paths": {
       "@app/*": ["src/app/*"],
-      "@env/*": ["src/environments/*"]
+      "@env/*": ["src/environments/*"],
+      "primeng/*": ["node_modules/primeng-lts/*"]
     }
   },
   "angularCompilerOptions": {

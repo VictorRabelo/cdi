@@ -21,9 +21,12 @@ export class RelatoriosComponent extends ControllerBase {
 
   loading = false;
 
-  categories: any = {};
+  categoria: any[] = [];
+  subcategoria: any[] = [];
+
   dados: any = {
-    categoria_id: ''
+    categoria: '',
+    subcategoria: ''
   };
 
   constructor(
@@ -43,16 +46,11 @@ export class RelatoriosComponent extends ControllerBase {
     this.getAllCategorias()
   }
 
-  getAllCategorias() {
-    this.sub.sink = this.categoriaService.getAll().subscribe(
-      (res: any) => {
-        this.categories = res;
-        this.loading = false;
-      },
-      error => {
-        this.loading = false;
-        console.log(error)
-      })
+  async getAllCategorias() {
+    this.categoria = await this.categoriaService.categoria();
+    this.subcategoria = await this.categoriaService.subcategoria();
+    
+    this.loading = false;
   }
 
   downloadVendas(){

@@ -21,6 +21,7 @@ export class ModalPessoalComponent implements OnInit {
   @Input() type: string;
 
   term: string;
+  title: string;
 
   constructor(
     private modalCtrl: NgbModal,
@@ -32,6 +33,12 @@ export class ModalPessoalComponent implements OnInit {
     if (this.type) {
       this.service.setEndPoint(this.type);    
       this.listing();
+    }
+
+    if (this.type == 'users') {
+      this.title = 'Usuários';
+    } else {
+      this.title = this.type;
     }
   }
 

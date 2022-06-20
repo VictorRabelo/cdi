@@ -3,7 +3,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Lista de {{ title | titlecase }}</h1>
+                    <h1 class="m-0">Formas de Pagamentos</h1>
                 </div>
             </div>
         </div>
@@ -18,7 +18,7 @@
                         <div class="card-header">
                             <div class="card-title">
                                 <button type="button" class="btn btn-primary mr-2" (click)="openForm('cadastrar')">
-                                    <i class="fas fa-plus"></i> Novo Cliente
+                                    <i class="fas fa-plus"></i>
                                 </button>
                             </div>
                             <div class="card-tools">
@@ -39,29 +39,35 @@
                                 <thead>
                                     <tr>
                                         <th scope="col">#ID</th>
-                                        <th scope="col">Nome</th>
-                                        <th scope="col">Telefone</th>
+                                        <th scope="col">Descrição</th>
+                                        <th scope="col">Taxa</th>
+                                        <th scope="col">Parcelamento</th>
+                                        <th scope="col">Observação</th>
+                                        <th scope="col">Status</th>
                                         <th scope="col">Ação</th>
                                     </tr>
                                 </thead>
-                                <tbody *ngFor="let cliente of dados | filter:term">
+                                <tbody *ngFor="let dados of dataSource | filter:term">
                                     <tr>
-                                        <th scope="row">#{{ cliente.id_cliente }}</th>
-                                        <td>{{ cliente.name }}</td>
-                                        <td>{{ cliente.telefone | mask: '(00) 00000-0000' }}</td>
+                                        <th scope="row">#{{ dados.id }}</th>
+                                        <td>{{ dados.descricao }}</td>
+                                        <td>{{ (dados.taxa)?dados.taxa: '***' }}</td>
+                                        <td>{{ (dados.parcelamento)?dados.parcelamento: '***' }}</td>
+                                        <td>{{ (dados.observacao)?dados.observacao: '***' }}</td>
+                                        <td>{{ dados.status }}</td>
                                         <td>
-                                            <button class="btn btn-warning btn-sm mr-3" title="Editar" (click)="openForm('alterar', cliente.id_cliente)">
+                                            <button class="btn btn-warning btn-sm mr-3" title="Editar" (click)="openForm('alterar', dados.id)">
                                                 <i class="nav-icon fas fa-edit"></i>
                                             </button>
-                                            <button class="btn btn-danger btn-sm" title="Excluir" (click)="delete(cliente.id_cliente)">
+                                            <button class="btn btn-danger btn-sm" title="Excluir" (click)="delete(dados.id)">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </td>
                                     </tr>
                                 </tbody>
-                                <tbody *ngIf="dados.length == 0">
-                                    <tr>
-                                        <td colspan="4">Não há Clientes no momento</td>
+                                <tbody *ngIf="dataSource.length == 0">
+                                    <tr class="text-center">
+                                        <td colspan="7">Não há formas de pagamentos no momento</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -74,6 +80,4 @@
             </div>
         </div>
     </section>
-    <!-- /.content -->
-    <p-toast position="bottom-center" key="bc"></p-toast>
 </div>

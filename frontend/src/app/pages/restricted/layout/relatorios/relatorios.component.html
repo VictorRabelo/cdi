@@ -29,47 +29,53 @@
                     <div class="card card-default">
                         <div class="card-body">
                           <div class="callout callout-danger">
-                            <button type="button" (click)="downloadVendas()" class="btn btn-danger">
+                            <button type="button" (click)="downloadVendas()" [disabled]="loading" class="btn btn-danger">
                               Relatórios de Vendas 
                               <i class="ml-2 fas fa-file-download"></i>
                             </button>
                           </div>
                           <div class="callout callout-info">
-                            <button type="button" (click)="downloadEstoque()" class="btn btn-info">
+                            <button type="button" (click)="downloadEstoque()" [disabled]="loading" class="btn btn-info">
                               Produtos em Estoque 
                               <i class="ml-2 fas fa-file-download"></i>
                             </button>
                           </div>
                           <div class="callout callout-warning">
-                            <button type="button" (click)="downloadClientes()" class="btn btn-warning">
+                            <button type="button" (click)="downloadClientes()" [disabled]="loading" class="btn btn-warning">
                               Melhores Clientes 
                               <i class="ml-2 fas fa-file-download"></i>
                             </button>
                           </div>
                           <div class="callout callout-success">
-                            <button type="button" (click)="downloadVendidos()" class="btn btn-success">
+                            <button type="button" (click)="downloadVendidos()" [disabled]="loading" class="btn btn-success">
                               Produtos mais Vendidos 
                               <i class="ml-2 fas fa-file-download"></i>
                             </button>
                           </div>
                           <div class="callout callout-danger">
-                            <button type="button" (click)="downloadEntregas()" class="btn btn-danger">
+                            <button type="button" (click)="downloadEntregas()" [disabled]="loading" class="btn btn-danger">
                               Relatórios de Entregas 
                               <i class="ml-2 fas fa-file-download"></i>
                             </button>
                           </div>
                           <div class="callout callout-info">
                             <div class="row">
-                              <div class="col-9">
-                                <button type="button" (click)="downloadCatalogo()" class="btn btn-info d-inline">
+                              <div class="col-6">
+                                <button type="button" (click)="downloadCatalogo()" [disabled]="loading" class="btn btn-info d-inline">
                                   Produtos em Catálogo
                                   <i class="ml-2 fas fa-file-download"></i>
                                 </button>
                               </div>
                               <div class="col-3">
-                                <select required class="form-control d-inline" name="categoria_id" [(ngModel)]="dados.categoria_id">
+                                <select required class="form-control d-inline" name="categoria" [(ngModel)]="dados.categoria">
                                   <option value="">Selecione uma categoria</option>
-                                  <option *ngFor="let item of categories" [value]="item.id_categoria">{{ item.categoria | titlecase }} / {{ item.subcategoria | titlecase }}</option>
+                                  <option *ngFor="let item of categoria" [value]="item.categoria">{{ item.categoria | titlecase }}</option>
+                                </select>
+                              </div>
+                              <div class="col-3">
+                                <select required class="form-control d-inline" name="subcategoria" [(ngModel)]="dados.subcategoria">
+                                  <option value="">Selecione uma Subcategoria</option>
+                                  <option *ngFor="let item of subcategoria" [value]="item.subcategoria">{{ item.subcategoria | titlecase }}</option>
                                 </select>
                               </div>
                             </div>

@@ -1,7 +1,7 @@
 <div class="modal-content">
   <div class="card mb-0" [ngClass]="{'card-load': loading}">
     <div class="modal-header">
-      <h4 class="title-card-header-cutsom">Pesquisar {{ type | titlecase }}</h4>
+      <h4 class="title-card-header-cutsom">Pesquisar {{ title | titlecase }}</h4>
       <button type="button" class="close" aria-label="Close" (click)="close()">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -22,33 +22,33 @@
 
       <div class="table-responsive p-0" style="height: 100%;">
         <table class="table table-head-fixed text-nowrap">
-            <thead>
-                <tr>
-                    <th scope="col">Nome</th>
-                    <th scope="col">Telefone</th>
-                    <th scope="col">Ação</th>
-                </tr>
-            </thead>
-            <tbody *ngFor="let item of dataSource | filter:term">
-                <tr>
-                    <td *ngIf="this.type !== 'fornecedores'">{{ item.name }}</td>
-                    <td *ngIf="this.type == 'fornecedores'">{{ item.fornecedor }}</td>
-                    <td>{{ item.telefone | mask: '(00) 0 0 0000-0000' }}</td>
-                    <td class="text-center" width="10%">
-                      <button type="button" class="btn btn-sm btn-primary" (click)="close(item)">
-                        <i class="fas fa-check"></i>
-                      </button>
-                    </td>
-                </tr>
-            </tbody>
-            <tbody *ngIf="dataSource == {}">
-                <tr>
-                    <td colspan="10">Não há dados no momento</td>
-                </tr>
-            </tbody>
-        </table>
-      </div>
+          <thead>
+            <tr>
+              <th scope="col">Nome</th>
+              <th scope="col" *ngIf="this.type !== 'users' ">Telefone</th>
+              <th scope="col">Ação</th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let item of dataSource | filter:term">
+            <tr>
+              <td *ngIf="this.type !== 'fornecedores'">{{ item.name }}</td>
+              <td *ngIf="this.type == 'fornecedores'">{{ item.fornecedor }}</td>
+              <td *ngIf="this.type !== 'users' ">{{ item.telefone | mask: '(00) 0 0 0000-0000' }}</td>
+              <td class="text-center" width="10%">
+                <button type="button" class="btn btn-sm btn-primary" (click)="close(item)">
+                  <i class="fas fa-check"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="dataSource == {}">
+            <tr>
+              <td colspan="3">Não há dados no momento</td>
+            </tr>
+          </tbody>
+      </table>
     </div>
-    <div class="card-loader" *ngIf="loading"><i class="fas fa-sync-alt anim-rotate"></i></div>
   </div>
+  <div class="card-loader" *ngIf="loading"><i class="fas fa-sync-alt anim-rotate"></i></div>
+</div>
 </div>
