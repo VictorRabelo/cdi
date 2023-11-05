@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { MovitionService } from '@app/services/movition.service';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MessageService } from 'src/app/services/message.service';
 import { VendaService } from 'src/app/services/venda.service';
@@ -10,7 +11,7 @@ import { VendaService } from 'src/app/services/venda.service';
 })
 export class SaleFinishComponent implements OnInit {
 
-  dados: any = {};
+  dados: any = {caixa: ''};
 
   loading: boolean = false;
   validVenda: boolean = true;
@@ -18,21 +19,24 @@ export class SaleFinishComponent implements OnInit {
   @Input() data: any;
   @Input() type: any;
 
+  tiposCaixas: any[] = [];
+
   constructor(
     private ref: ChangeDetectorRef,
     private activeModal: NgbActiveModal,
     private service: VendaService,
+    private moveService: MovitionService,
     private message: MessageService,
   ) { }
 
   ngOnInit(): void {
+    this.getTiposCaixas();
     
     if (!this.data) {
       this.close();
     }
     
     this.dados = this.data;
-
   }
 
   close(params = undefined) {
@@ -90,4 +94,9 @@ export class SaleFinishComponent implements OnInit {
     this.dados.pago -= this.dados.debitar;
   }
 
+  getTiposCaixas() {
+    this.moveService.getAllItem().subscribe(res => {
+      this.tiposCaixas = res;
+    },error =>console.log(error));
+  }
 }

@@ -69,7 +69,11 @@ class VendaRepository extends AbstractRepository implements VendaRepositoryInter
             }
         }
         
-        return $this->tools->calculoVenda($dados);
+        if(!isset($date)) {
+            $date = null;
+        }
+        
+        return $this->tools->calculoVenda($dados, $date);
     }
     
     public function show($id){
@@ -83,15 +87,25 @@ class VendaRepository extends AbstractRepository implements VendaRepositoryInter
             return false;
         }
 
+        $dadosVenda->total_final = 0;
+        $dadosVenda->lucro = 0;
+        $dadosVenda->qtd_produto = 0;
+        
         foreach ($dadosProdutos as $item) {
-            $item->id_estoque = $item->produto->estoque()->first()->id_estoque;
-            $item->preco_venda *= $item->qtd_venda;
-            $item->lucro_venda *= $item->qtd_venda;
             
-            if($dadosVenda->lucro == 0) {
-                $dadosVenda->lucro += $item->lucro_venda;
-            }
+            $item->id_estoque = $item->produto->estoque()->first()->id_estoque;
+            $item->total_venda = $item->preco_venda * $item->qtd_venda;
+            $item->lucro_total = $item->lucro_venda * $item->qtd_venda;
+            
+            $dadosVenda->total_final += $item->total_venda;
+            $dadosVenda->qtd_produto += $item->qtd_venda;
+            $dadosVenda->lucro += $item->lucro_total;
+            
         }
+        
+        $dadosVenda->save();
+        // if( $dadosVenda->status != 'pago') {
+        // }
         
         return ['dadosVenda' => $dadosVenda, 'dadosProdutos' => $dadosProdutos];
     }
@@ -99,7 +113,17 @@ class VendaRepository extends AbstractRepository implements VendaRepositoryInter
     public function create($dados)
     {
         $dados['vendedor_id'] = $this->userLogado()->id;
-        return $this->store($dados);
+        
+        $date = $this->dateToday();
+        
+        $query = Venda::where('vendedor_id', $dados['vendedor_id'])->where('status', null)->whereBetween('created_at', [$date['inicio'], $date['fim']])->first();
+        
+        if(is_null($query)){
+            return $this->store($dados);
+        }
+        
+        return ['message' => 'Já existe uma venda criada em aberto', 'code' => 500];
+        
     }
 
     public function update($dados, $id)
@@ -144,20 +168,23 @@ class VendaRepository extends AbstractRepository implements VendaRepositoryInter
                 return ['message' => 'Falha na movimentação do estoque', 'code' => 500];
             }
             
-            if(isset($params['extornarProduto']) && $params['extornarProduto']){
-                if(isset($params['extornarProduto']) && $params['extornarProduto']){
-                    if(is_null($dados->entrega_id)){
-                        $dadoEstoque->increment('und', $item->qtd_venda);
-                    } else {
-                        $entregaItem =  EntregaItem::where('entrega_id', $entrega->id_entrega)->where('produto_id', $item['produto_id'])->first();
-                        $entregaItem->increment('qtd_disponivel', $item->qtd_venda);
-                    }
+            if($dados->status !== null && isset($params['extornarProduto']) && $params['extornarProduto']){
+                
+                
+                if(is_null($dados->entrega_id)){
+                    
+                    $dadoEstoque->increment('und', $item->qtd_venda);
+                    
+                } else {
+                    
+                    $entregaItem =  EntregaItem::where('entrega_id', $entrega->id_entrega)->where('produto_id', $item['produto_id'])->first();
+                    $entregaItem->increment('qtd_disponivel', $item->qtd_venda);
+                }
+                
+                if ($dadoEstoque->und > 0) {
+                    $dadoProduto->update(['status' => 'ok']);
                 }
             }
-
-            if ($dadoEstoque->und == 0) {
-                $dadoProduto->update(['status' => 'ok']);
-            } 
 
             $item->delete();
         }
@@ -237,6 +264,7 @@ class VendaRepository extends AbstractRepository implements VendaRepositoryInter
     }
     
     public function createItem($dados){
+        
         if(isset($dados['app'])) {
             return $this->baseApp->createItemEntregador($dados);
         }
@@ -246,18 +274,6 @@ class VendaRepository extends AbstractRepository implements VendaRepositoryInter
             return ['message' => 'Falha ao procesar dados!', 'code' => 500];
         }
 
-        $dadosVenda = Venda::where('id_venda', '=', $dados['venda_id'])->first();
-        if(!$dadosVenda){
-            return ['message' => 'Falha ao procesar dados!', 'code' => 500];
-        }
-
-        $total = $result->preco_venda * $result->qtd_venda;
-
-        $resultFinal = $dadosVenda->total_final? $dadosVenda->total_final + $total : 0 + $total;
-        $resultLucro = $dadosVenda->lucro + ($result->lucro_venda * $result->qtd_venda);
-        $resultQtd   = $dadosVenda->qtd_produto + $result->qtd_venda;
-
-        $dadosVenda->update(['total_final' => $resultFinal, 'lucro' => $resultLucro, 'qtd_produto' =>  $resultQtd]);
         return ['message' => 'Item cadastrado com sucesso!'];  
     }
 
@@ -272,26 +288,11 @@ class VendaRepository extends AbstractRepository implements VendaRepositoryInter
             return false;
         }
 
-        $configResult            = $dadosItem->preco_venda * $dadosItem->qtd_venda;
-        $dadosVenda->lucro       = $dadosVenda->lucro - ($dadosItem->lucro_venda*$dadosItem->qtd_venda);
-        $dadosVenda->total_final = $dadosVenda->total_final - $configResult;
-        $dadosVenda->qtd_produto = $dadosVenda->qtd_produto - $dadosItem->qtd_venda;
-
-
-        $dadosItem->update(['preco_venda' => $dados['preco_venda'], 'qtd_venda' => $dados['qtd_venda']]);
+        $dadosItem->update(['preco_venda' => $dados['preco_venda'], 'qtd_venda' => $dados['qtd_venda'], 'lucro_venda' => $dados['lucro_venda']]);
         if(!$dadosItem){
             return false;
         }
         
-        $resultFinal = $dadosVenda->total_final + ($dadosItem->preco_venda * $dadosItem->qtd_venda);
-        $resultLucro = $dadosVenda->lucro + ($dadosItem->lucro_venda * $dadosItem->qtd_venda);
-        $resultQtd   = $dadosVenda->qtd_produto + $dadosItem->qtd_venda;
-
-        $dadosVenda->update(['total_final' => $resultFinal, 'lucro' => $resultLucro, 'qtd_produto' =>  $resultQtd]);
-        if(!$dadosVenda){
-            return false;
-        }
-
         return ['message' => 'Atualizado com sucesso!'];
     }
     
@@ -300,17 +301,6 @@ class VendaRepository extends AbstractRepository implements VendaRepositoryInter
         if (!$dados) {
             return false;
         }
-        
-        $dadosVenda = Venda::where('id_venda', '=', $dados['venda_id'])->first();
-        if (!$dadosVenda) {
-            return false;
-        }
-
-        $resultFinal = $dadosVenda->total_final - ($dados->preco_venda * $dados->qtd_venda);
-        $resultLucro = $dadosVenda->lucro - ($dados->lucro_venda * $dados->qtd_venda);
-        $resultQtd   = $dadosVenda->qtd_produto - $dados->qtd_venda;
-
-        $dadosVenda->update(['total_final' => $resultFinal, 'lucro' => $resultLucro, 'qtd_produto' =>  $resultQtd]);
         
         if(!$dados->delete()) {
             return false;

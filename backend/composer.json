@@ -9,9 +9,10 @@
     "license": "MIT",
     "require": {
         "php": "^7.2.5",
-        "barryvdh/laravel-dompdf": "^0.9.0",
         "coderello/laravel-passport-social-grant": "^3.0",
         "doctrine/dbal": "^2.10",
+        "dompdf/dompdf": "^2.0",
+        "elibyy/tcpdf-laravel": "^10.0",
         "facebook/graph-sdk": "^5.7",
         "facebook/php-sdk-v4": "^5.7",
         "fideloper/proxy": "^4.2",
@@ -19,13 +20,9 @@
         "guzzlehttp/guzzle": "^6.3",
         "laravel/framework": "^7.0",
         "laravel/passport": "^9.2",
-        "laravel/socialite": "^4.4",
         "laravel/tinker": "^2.0",
-        "potelo/gu-payment": "2.15.1",
-        "socialiteproviders/facebook": "^1.0",
-        "socialiteproviders/google": "^3.0",
-        "spatie/flysystem-dropbox": "^1.2",
-        "vimeo/laravel": "^5.5"
+        "spatie/browsershot": "^3.57",
+        "tecnickcom/tcpdf": "^6.6"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

@@ -77,6 +77,8 @@ Route::group(['prefix' =>'/v1'], function() {
     Route::group(['prefix' =>'/categorias'], function() {
         
         Route::get('/','Categoria\CategoriaController@index')->middleware(['auth:api', 'scope:admin']);
+        Route::get('/categoria','Categoria\CategoriaController@categoria')->middleware(['auth:api', 'scope:admin']);
+        Route::get('/subcategoria','Categoria\CategoriaController@subcategoria')->middleware(['auth:api', 'scope:admin']);
         Route::get('/{id}','Categoria\CategoriaController@show')->middleware(['auth:api', 'scope:admin']);
         
         Route::post('/','Categoria\CategoriaController@store')->middleware(['auth:api', 'scope:admin']);
@@ -148,6 +150,18 @@ Route::group(['prefix' =>'/v1'], function() {
         Route::delete('/{id}','Venda\VendaController@destroy')->middleware(['auth:api', 'scope:admin']);
     });
     
+    Route::group(['prefix' =>'/forma-pagamento'], function() {
+        
+        Route::get('/','FormaPagamento\FormaPagamentoController@index')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
+        
+        Route::post('/','FormaPagamento\FormaPagamentoController@store')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
+        
+        Route::put('/{id}','FormaPagamento\FormaPagamentoController@update')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
+        
+        Route::delete('/{id}','FormaPagamento\FormaPagamentoController@destroy')->middleware(['auth:api', 'scope:admin']);
+
+    });
+    
     Route::group(['prefix' =>'/entregas'], function() {
         
         Route::group(['prefix' =>'/item'], function() {
@@ -177,7 +191,7 @@ Route::group(['prefix' =>'/v1'], function() {
         Route::get('/movimentacao','DespesaEntrega\DespesaEntregaController@movimentacao')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
         Route::get('/{id}','DespesaEntrega\DespesaEntregaController@show')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
         
-        Route::post('/','DespesaEntrega\DespesaEntregaController@store')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
+        Route::post('/','DespesaEntrega\DespesaEntregaController@store');
         
         Route::put('/{id}','DespesaEntrega\DespesaEntregaController@update')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
         
@@ -212,8 +226,16 @@ Route::group(['prefix' =>'/v1'], function() {
 
     });
     
-    Route::group(['prefix' =>'/movition'], function() {
-        
+    Route::group(['prefix' =>'/caixa'], function() {
+        Route::group(['prefix' =>'/tipos'], function() {
+            Route::get('/','Movition\MovitionController@getAllItem')->middleware(['auth:api', 'scope:admin,entregador,vendedor']);
+            Route::get('/{id}','Movition\MovitionController@getItemById')->middleware(['auth:api', 'scope:admin']);
+            Route::post('/','Movition\MovitionController@storeItem')->middleware(['auth:api', 'scope:admin']);
+            Route::put('/{id}','Movition\MovitionController@updateItem')->middleware(['auth:api', 'scope:admin']);
+            Route::delete('/{id}','Movition\MovitionController@destroyItem')->middleware(['auth:api', 'scope:admin']);
+
+        });
+
         Route::get('/','Movition\MovitionController@index')->middleware(['auth:api', 'scope:admin']);
         Route::get('/geral','Movition\MovitionController@geral')->middleware(['auth:api', 'scope:admin']);
         Route::get('/eletronico','Movition\MovitionController@eletronico')->middleware(['auth:api', 'scope:admin']);
@@ -226,7 +248,7 @@ Route::group(['prefix' =>'/v1'], function() {
         
         Route::delete('/{id}','Movition\MovitionController@destroy')->middleware(['auth:api', 'scope:admin']);
 
-    });
+    }); 
     
     Route::group(['prefix' =>'/relatorios'], function() {
         
@@ -239,7 +261,7 @@ Route::group(['prefix' =>'/v1'], function() {
         Route::get('/vendidos','Relatorio\RelatorioController@vendidos')->middleware(['auth:api', 'scope:admin']);
         
         Route::get('/catalogo','Relatorio\RelatorioController@catalogo')->middleware(['auth:api', 'scope:admin']);
-
+        
         Route::get('/entregas','Relatorio\RelatorioController@entregas')->middleware(['auth:api', 'scope:admin']);
         
         Route::get('/entrega-detalhes/{id}','Relatorio\RelatorioController@entregaDetalhes')->middleware(['auth:api', 'scope:admin']);

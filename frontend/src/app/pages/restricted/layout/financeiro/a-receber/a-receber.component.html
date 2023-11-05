@@ -1,0 +1,111 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Contas a Receber</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <!--  
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item active">Dashboard v1</li>
+                        -->
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-4">
+                    <label class="text-danger text-indicator">Saldo a Receber:</label>
+                    <span>{{ saldoReceber | currency: 'R$' }}</span>
+                </div>
+                <div class="col-4">
+                    <label class="text-danger text-indicator">Saldo Pago:</label>
+                    <span>{{ saldoPago | currency: 'R$' }}</span>
+                </div>
+                <div class="col-4">
+                    <label class="text-danger text-indicator">Total Restante:</label>
+                    <span>{{ totalRestante | currency: 'R$' }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card" [ngClass]="{'card-load': loading}">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <button type="button" class="btn btn-primary btn-sm" (click)="add()">
+                                    <i class="fas fa-plus" title="Nova Venda"></i>
+                                </button>
+                            </div>
+                            <div class="card-tools">
+                                <div class="input-group input-group-sm inputSearch">
+                                    <input type="text" name="term" class="form-control float-right" [(ngModel)]="term"
+                                        placeholder="Pesquisar...">
+
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <i class="fas fa-search"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0" style="height: 100%;">
+                            <table class="table table-hover text-nowrap text-center">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Data</th>
+                                        <th scope="col">Nome</th>
+                                        <th scope="col">Telefone</th>
+                                        <th scope="col">Pendente</th>
+                                        <th scope="col">Total</th>
+                                        <th scope="col">Pago</th>
+                                        <th scope="col">Restante</th>
+                                        <th scope="col">Ação</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody *ngFor="let item of dataSource | filter:term">
+                                    <tr>
+                                        <td>{{ item.created_at }}</td>
+                                        <td>{{ item.nameCliente }}</td>
+                                        <td>{{ item.telefoneCliente | mask: '(00) 00000-0000' }}</td>
+                                        <td>{{ item.pagamento }}</td>
+                                        <td>{{ item.total_final | currency: 'R$' }}</td>
+                                        <td>{{ item.pago | currency: 'R$' }}</td>
+                                        <td>{{ item.restante | currency: 'R$' }}</td>
+                                        <td>
+                                            <button class="btn btn-success btn-sm mr-1" title="Ok" (click)="openConta(item)">
+                                                <i class="nav-icon fas fa-check"></i>
+                                            </button>
+                                            <button class="btn btn-outline-primary btn-sm ml-1" title="Relatório" (click)="downloadDetalhe(item.id_venda)">
+                                                <i class="nav-icon fas fa-file"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody *ngIf="dataSource.length == 0 ">
+                                    <tr class="text-center">
+                                        <td colspan="6">Não há Contas a receber no momento</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                        <div class="card-loader" *ngIf="loading"><i class="fas fa-sync-alt anim-rotate"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

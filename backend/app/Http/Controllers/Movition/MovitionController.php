@@ -74,4 +74,92 @@ class MovitionController extends Controller
             return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
         }
     }
+
+    // Tipos de caixas
+    public function getAllItem()
+    {
+        try {
+            $res = $this->movitionRepository->getAllItem();
+            
+            if (!$res) {
+                return response()->json(['message' => 'Falha ao processar o produto!'], 500);
+            }
+            
+            return response()->json($res, 200);
+
+
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
+        }
+    }
+
+    public function getItemById($id)
+    {
+
+        try {
+            $res = $this->movitionRepository->getItemById($id);
+            
+            if (!$res) {
+                return response()->json(['message' => 'Falha ao processar o produto!'], 500);
+            }
+            
+            return response()->json($res, 200);
+
+
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
+        }
+    }
+    
+    public function storeItem(Request $request)
+    {   
+        try {
+            $dados = $request->all();
+            $res = $this->movitionRepository->createItem($dados);
+
+            if (isset($res['code']) && $res['code'] == 500) {
+                return response()->json($res, 500);
+            }
+
+            return response()->json(['response' => $res], 200);
+
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
+        }
+    }
+
+    public function updateItem(Request $request, $id)
+    {
+        try {
+            $dados = $request->all();
+
+            $res = $this->movitionRepository->updateItem($dados, $id);
+
+            if (isset($res->code) && $res->code == CodeStatusEnum::ERROR_SERVER) {
+                return response()->json(['message' => $res->message], $res->code);
+            }
+
+            return response()->json($res, 200);
+            
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
+        }
+    }
+
+    public function destroyItem($id)
+    {
+        try {
+
+            $res = $this->movitionRepository->deleteItem($id);
+
+            if (!$res) {
+                return response()->json(['response' => 'Erro de Servidor'], 500);
+            }
+
+            return response()->json($res, 200);
+            
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
+        }
+    }
 }

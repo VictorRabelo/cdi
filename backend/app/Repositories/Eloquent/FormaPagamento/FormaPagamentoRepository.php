@@ -16,17 +16,12 @@ class FormaPagamentoRepository extends AbstractRepository implements FormaPagame
 
     public function index()
     {
-        return $this->model->orderBy('name', 'asc')->get();
+        return $this->model->orderBy('descricao', 'asc')->get();
     }
     
     public function create($dados)
     {
-        $dados = $this->model->where('telefone', $dados['telefone'])->first();
-
-        if($dados){
-            return false;
-        }
-
+        
         return $this->store($dados);
     }
 }

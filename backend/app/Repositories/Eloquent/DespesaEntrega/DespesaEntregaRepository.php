@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Models\DespesaEntrega;
 use App\Models\ProdutoVenda;
+use App\Models\User;
 use App\Repositories\Contracts\DespesaEntrega\DespesaEntregaRepositoryInterface;
 use App\Repositories\Eloquent\AbstractRepository;
 use App\Resolvers\AppResolverInterface;
@@ -23,7 +24,7 @@ class DespesaEntregaRepository extends AbstractRepository implements DespesaEntr
     /**
      * @var AppResolverInterface
      */
-    protected $baseApi = AppResolverInterface::class;
+    protected $baseApp = AppResolverInterface::class;
 
     /**
      * @var Tools
@@ -42,7 +43,7 @@ class DespesaEntregaRepository extends AbstractRepository implements DespesaEntr
                 if($queryParams['date'] == 0){
                     $dados = $this->model->with('entregador')->orderBy('created_at', 'desc')->get();
                 } else {
-                    $date = $this->dateFilter($queryParams['date']);
+                    $date = $this->filterDate($queryParams['date']);
                     $dados = $this->model->with('entregador')->whereBetween('created_at', [$date['inicio'], $date['fim']])->orderBy('created_at', 'desc')->get();
                 }
 
@@ -69,8 +70,8 @@ class DespesaEntregaRepository extends AbstractRepository implements DespesaEntr
             if($queryParams['date'] == 0){
                 $dados = $this->model->with('entregador')->where('entregador_id', $id)->orderBy('created_at', 'desc')->get();
             } else {
-                $date = $this->dateFilter($queryParams['date']);
-                $dados = $this->model->with('entregador')->whereBetween('created_at', [$date['inicio'], $date['fim']])->orderBy('created_at', 'desc')->get();
+                $date = $this->filterDate($queryParams['date']);
+                $dados = $this->model->with('entregador')->where('entregador_id', $id)->whereBetween('created_at', [$date['inicio'], $date['fim']])->orderBy('created_at', 'desc')->get();
             }
 
             if (!$dados) {
@@ -79,7 +80,7 @@ class DespesaEntregaRepository extends AbstractRepository implements DespesaEntr
 
         } else {
             $date = $this->dateToday();
-            $dados = $this->model->with('entregador')->whereBetween('created_at', [$date['inicio'], $date['fim']])->orderBy('created_at', 'desc')->get();
+            $dados = $this->model->with('entregador')->where('entregador_id', $id)->whereBetween('created_at', [$date['inicio'], $date['fim']])->orderBy('created_at', 'desc')->get();
             if (!$dados) {
                 return $this->messages->error;
             }
@@ -107,20 +108,22 @@ class DespesaEntregaRepository extends AbstractRepository implements DespesaEntr
 
     public function create($dados)
     {
-        $dados['valor'] =  $dados['valor'] / 2;
-
         if(!isset($dados['api'])){
-            $resp = $this->baseApi->postDespesaEntrega($dados);
+            $resp = $this->baseApp->postDespesaEntrega($dados);
         }
+        
+        $dados['entregador_id'] = User::where('login', $dados['entregador_login'])->first()->id;
+        
+        
+        $dados['valor'] =  $dados['valor'] / 2;
 
         if (!isset($dados['data'])) {
             $dados['data'] = $this->dateNow();
         }
-        $dados['entregador_id'] = auth()->user()->id;
 
         $res = DespesaEntrega::create($dados);
 
-        if (!$res->save()) {
+        if (!$res) {
             return ['message' => 'Falha ao cadastrar despesa!', 'code' => 500];
         }
 

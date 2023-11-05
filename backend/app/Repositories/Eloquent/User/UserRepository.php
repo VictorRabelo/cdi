@@ -35,7 +35,7 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
     public function create($dados)
     {
         if(!isset($dados['api'])){
-            $resp = $this->baseApi->postUser($dados);
+            $resp = $this->baseApp->postUser($dados);
         }
 
         $dados['password'] = Hash::make($dados['password']);

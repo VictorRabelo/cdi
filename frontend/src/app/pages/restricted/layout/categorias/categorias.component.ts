@@ -7,6 +7,7 @@ import { MessageService } from 'primeng/api';
 import { SubSink } from 'subsink';
 import { ClienteFormComponent } from '@app/components/cliente-form/cliente-form.component';
 import { CategoriaService } from '@app/services/categoria.service';
+import { Column } from '@app/models/Column';
 
 @Component({
   selector: 'app-categorias',
@@ -15,13 +16,12 @@ import { CategoriaService } from '@app/services/categoria.service';
   providers: [ MessageService ]
 })
 export class CategoriasComponent extends ControllerBase {
-  
   private sub = new SubSink();
 
   loading: boolean = false;
-  loadingDelete: boolean = false;
 
   dados: any = [];
+  columns: Column[];
 
   title: string = 'categorias';
   term: string;
@@ -35,10 +35,16 @@ export class CategoriasComponent extends ControllerBase {
   }
 
   ngOnInit() {
+    this.columns = [
+      { field: 'id_categoria', header: '#ID', id: 'id_categoria', sortIcon: true, crud: false, mask: 'none' },
+      { field: 'categoria', header: 'Categorira', id: 'id_categoria', sortIcon: true, crud: false, mask: 'none' },
+      { field: 'subcategoria', header: 'Subcategoria', id: 'id_categoria', sortIcon: true, crud: false, mask: 'none' },
+      { field: 'action', header: ' ', id: 'id_categoria', sortIcon: false, crud: true, mask: 'none' },
+    ];
     this.getAll();
   }
 
-  openForm(crud, item = undefined){
+  openForm(crud: any, item: any = undefined){
     const modalRef = this.modalCtrl.open(ClienteFormComponent, { size: 'sm', backdrop: 'static' });
     modalRef.componentInstance.data = item;
     modalRef.componentInstance.crud = crud;
@@ -60,9 +66,17 @@ export class CategoriasComponent extends ControllerBase {
       },error => console.log(error))
   }
 
-  delete(id){
+  crudInTable(res: any){
+    if(res.crud == 'delete'){
+      this.delete(res.id)
+    } else {
+      this.openForm(res.crud, res.id)
+    }
+  }
+  
+  delete(id: any){
     
-    this.loadingDelete = true;
+    this.loading = true;
 
     this.service.delete(id).subscribe(
       (res: any) => {
@@ -71,7 +85,7 @@ export class CategoriasComponent extends ControllerBase {
       error => console.log(error),
       () => {
         this.messageService.add({key: 'bc', severity:'success', summary: 'Sucesso', detail: 'Excluido com Sucesso!'});
-        this.loadingDelete = false;
+        this.loading = false;
       }
     );
   }
@@ -79,5 +93,4 @@ export class CategoriasComponent extends ControllerBase {
   ngOnDestroy(){
     this.sub.unsubscribe();
   }
-
 }

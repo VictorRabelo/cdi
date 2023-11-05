@@ -6,6 +6,7 @@ use App\Enums\CodeStatusEnum;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 
 use App\Repositories\Contracts\Relatorio\RelatorioRepositoryInterface;
 
@@ -28,7 +29,10 @@ class RelatorioController extends Controller
                 return response()->json(['message' => $res->message], $res->code);
             }
 
-            return response()->json(['response' => $res], 200);
+            return response($res, 200, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="relatorio.pdf"'
+            ]);
 
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
@@ -136,18 +140,21 @@ class RelatorioController extends Controller
             return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
         }
     }
-
-    public function catalogo()
+    
+    public function catalogo(Request $request)
     {
         try {
 
-            $res = $this->relatorioRepository->catalogo();
+            $res = $this->relatorioRepository->catalogo($request->all());
 
             if (isset($res->code) && $res->code == CodeStatusEnum::ERROR_SERVER) {
                 return response()->json(['message' => $res->message], $res->code);
             }
 
-            return response()->json(['response' => $res], 200);
+            return response($res, 200, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="relatorio.pdf"'
+            ]);
 
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);

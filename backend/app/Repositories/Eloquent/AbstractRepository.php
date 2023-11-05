@@ -95,7 +95,7 @@ abstract class AbstractRepository
     {
         date_default_timezone_set('America/Sao_Paulo');
         $date_start = date($date.'-01'.' '.'00:00');
-        $date_end = date($date.'-t'.' '.'23:59');
+        $date_end = date('Y-m-t'.' '.'23:59', strtotime($date));
         return ['inicio' => $date_start, 'fim' => $date_end];
     }
     

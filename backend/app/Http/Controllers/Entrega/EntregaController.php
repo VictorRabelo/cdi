@@ -186,7 +186,7 @@ class EntregaController extends Controller
                 return response()->json($res, 500);
             }
 
-            return response()->json(['response' => $res], 200);
+            return response()->json($res, 200);
 
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);

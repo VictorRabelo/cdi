@@ -12,7 +12,7 @@ class Despesa extends Model
     public $timestamps = true;
     
     protected $fillable = [
-        'data', 'valor', 'descricao', 'tipo',
+        'data', 'valor', 'descricao', 'tipo', 'despesa',
     ];
 
     protected $hidden = [];

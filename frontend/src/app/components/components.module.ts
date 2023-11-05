@@ -2,11 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { MatStepperModule } from '@angular/material/stepper';
-import { MatTabsModule } from '@angular/material/tabs';
-
+// Modules
 import { UtilModule } from '@app/util/util.module';
 
+// Components
 import { ClienteFormComponent } from './cliente-form/cliente-form.component';
 import { EstoqueFormComponent } from './estoque-form/estoque-form.component';
 import { ModalPessoalComponent } from './modal-pessoal/modal-pessoal.component';
@@ -34,9 +33,15 @@ import { TooltipModule } from 'primeng/tooltip';
 import { AccordionModule } from 'primeng/accordion';
 import { AutoCompleteModule } from 'primeng-lts/autocomplete';
 
+// Material/Angular
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatTabsModule } from '@angular/material/tabs';
+
+// Plugs
 import { NgxMaskModule } from 'ngx-mask';
 import { CurrencyMaskInputMode, NgxCurrencyModule } from 'ngx-currency';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
+import { TiposFormComponent } from './tipos-form/tipos-form.component';
 
 export const customCurrencyMaskConfig = {
   align: "right",
@@ -68,6 +73,7 @@ export const customCurrencyMaskConfig = {
     TimerComponent,
     FormaPagamentoFormComponent,
     TableComponent,
+    TiposFormComponent
   ],
   imports: [
     CommonModule,
@@ -106,6 +112,7 @@ export const customCurrencyMaskConfig = {
     TimerComponent,
     FormaPagamentoFormComponent,
     TableComponent,
+    TiposFormComponent
   ],
   entryComponents: [
     ClienteFormComponent,
@@ -121,6 +128,7 @@ export const customCurrencyMaskConfig = {
     TimerComponent,
     FormaPagamentoFormComponent,
     TableComponent,
+    TiposFormComponent
   ],
 })
 export class ComponentsModule { }

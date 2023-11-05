@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Lista de {{ title | titlecase }}</h1>
+                    <h1 class="m-0">Lista de Fornecedores</h1>
                 </div>
             </div>
         </div>
@@ -16,62 +16,16 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <div class="card" [ngClass]="{'card-load': loading}">
-                        <div class="card-header">
-                            <div class="card-title">
-                                <button type="button" class="btn btn-primary mr-2" (click)="openForm('cadastrar')">
-                                    <i class="fas fa-plus"></i> Novo Fornecedor
-                                </button>
-                            </div>
-                            <div class="card-tools">
-                                <div class="input-group input-group-sm inputSearch">
-                                    <input type="text" name="table_search" class="form-control float-right" [(ngModel)]="term" placeholder="Pesquisar...">
-                
-                                    <div class="input-group-append">
-                                        <div class="input-group-text">
-                                            <i class="fas fa-search"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /.card-header -->
-                        <div class="card-body table-responsive p-0" style="height: 100%;">
-                            <table class="table table-hover text-nowrap">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#ID</th>
-                                        <th scope="col">Nome do Fornecedor</th>
-                                        <th scope="col">Telefone</th>
-                                        <th scope="col">Ação</th>
-                                    </tr>
-                                </thead>
-                                <tbody *ngFor="let dado of dados | filter:term">
-                                    <tr>
-                                        <th scope="row">#{{ dado.id_fornecedor }}</th>
-                                        <td>{{ dado.fornecedor }}</td>
-                                        <td>{{ dado.telefone | mask: '(00) 00000-0000' }}</td>
-                                        <td>
-                                            <button class="btn btn-warning btn-sm mr-3" title="Editar" (click)="openForm('alterar', dado.id_fornecedor)">
-                                                <i class="nav-icon fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-danger btn-sm" title="Excluir" (click)="delete(dado.id_fornecedor)">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                                <tbody *ngIf="dados.length == 0">
-                                    <tr>
-                                        <td colspan="4">Não há Fornecedores no momento</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="card-loader" *ngIf="loading"><i class="fas fa-sync-alt anim-rotate"></i></div>
-                        <!-- /.card-body -->
-                    </div>
-                  <!-- /.card -->
+                    <app-table 
+                        [cols]="columns" 
+                        [data]="dados"
+                        [module]="'fornecedor'"
+                        [rows]="15"
+                        [globalFields]="['id_fornecedor', 'fornecedor', 'telefone']"
+                        [loading]="loading"
+                        [filter]="false"
+                        (crudTable)="crudInTable($event)"
+                    ></app-table>
                 </div>
             </div>
         </div>

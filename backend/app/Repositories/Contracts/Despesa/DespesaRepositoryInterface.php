@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 interface DespesaRepositoryInterface extends CrudRepositoryInterface
 {
-    public function index();
+    public function index($queryParams);
     
     public function movimentacao();
     

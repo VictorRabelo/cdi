@@ -7,6 +7,7 @@ import { MessageService } from 'primeng/api';
 
 import { SubSink } from 'subsink';
 import { ClienteFormComponent } from '@app/components/cliente-form/cliente-form.component';
+import { Column } from '@app/models/Column';
 
 @Component({
   selector: 'app-fornecedores',
@@ -19,9 +20,9 @@ export class FornecedoresComponent extends ControllerBase {
   private sub = new SubSink();
 
   loading: boolean = false;
-  loadingDelete: boolean = false;
 
   dados: any = [];
+  columns: Column[];
 
   title: string = 'fornecedores';
   term: string;
@@ -35,10 +36,16 @@ export class FornecedoresComponent extends ControllerBase {
   }
 
   ngOnInit() {
+    this.columns = [
+      { field: 'id_fornecedor', header: '#ID', id: 'id_fornecedor', sortIcon: true, crud: false, mask: 'none' },
+      { field: 'fornecedor', header: 'Nome', id: 'id_fornecedor', sortIcon: true, crud: false, mask: 'none' },
+      { field: 'telefone', header: 'Telefone', id: 'id_fornecedor', sortIcon: true, crud: false, mask: 'phone' },
+      { field: 'action', header: ' ', id: 'id_fornecedor', sortIcon: false, crud: true, mask: 'none' },
+    ];
     this.getAll();
   }
 
-  openForm(crud, item = undefined){
+  openForm(crud: any, item: any = undefined){
     const modalRef = this.modalCtrl.open(ClienteFormComponent, { size: 'sm', backdrop: 'static' });
     modalRef.componentInstance.data = item;
     modalRef.componentInstance.crud = crud;
@@ -60,9 +67,17 @@ export class FornecedoresComponent extends ControllerBase {
       },error => console.log(error))
   }
 
-  delete(id){
+  crudInTable(res: any){
+    if(res.crud == 'delete'){
+      this.delete(res.id)
+    } else {
+      this.openForm(res.crud, res.id)
+    }
+  }
+  
+  delete(id: any){
     
-    this.loadingDelete = true;
+    this.loading = true;
 
     this.fornecedorService.delete(id).subscribe(
       (res: any) => {
@@ -71,7 +86,7 @@ export class FornecedoresComponent extends ControllerBase {
       error => console.log(error),
       () => {
         this.messageService.add({key: 'bc', severity:'success', summary: 'Sucesso', detail: 'Excluido com Sucesso!'});
-        this.loadingDelete = false;
+        this.loading = false;
       }
     );
   }
@@ -79,5 +94,4 @@ export class FornecedoresComponent extends ControllerBase {
   ngOnDestroy(){
     this.sub.unsubscribe();
   }
-
 }

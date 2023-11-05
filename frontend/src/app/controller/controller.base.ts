@@ -1,4 +1,4 @@
-import { OnInit, AfterContentInit, AfterViewInit, OnDestroy, OnChanges, Injectable } from '@angular/core';
+import { OnInit, AfterContentInit, AfterViewInit, SimpleChanges, OnDestroy, OnChanges, Injectable } from '@angular/core';
 
 import { Role } from '@app/models/role';
 
@@ -24,7 +24,7 @@ export class ControllerBase implements OnInit, AfterContentInit, AfterViewInit, 
         });
     }
 
-    ngOnChanges(){
+    ngOnChanges(changes: SimpleChanges){
 
     }
     
@@ -107,5 +107,12 @@ export class ControllerBase implements OnInit, AfterContentInit, AfterViewInit, 
           bytes[i] = ascii;
         }
         return bytes;
+    }
+
+    getDate(): string {
+        const date = new Date().toISOString().split('T');
+        const hours = date[1].split('.');
+
+        return `${date[0]}`;
     }
 }

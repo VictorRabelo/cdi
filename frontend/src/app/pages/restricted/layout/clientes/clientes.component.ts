@@ -7,6 +7,7 @@ import { MessageService } from 'primeng/api';
 
 import { SubSink } from 'subsink';
 import { ClienteFormComponent } from '@app/components/cliente-form/cliente-form.component';
+import { Column } from '@app/models/Column';
 
 @Component({
   selector: 'app-clientes',
@@ -18,9 +19,10 @@ export class ClientesComponent extends ControllerBase {
   
   private sub = new SubSink();
 
-  loading: boolean = false;
+  isLoading: boolean = false;
 
   dados: any = [];
+  columns: Column[];
 
   title: string = 'clientes';
   term: string;
@@ -34,10 +36,16 @@ export class ClientesComponent extends ControllerBase {
   }
 
   ngOnInit() {
+    this.columns = [
+      { field: 'id_cliente', header: '#ID', id: 'id_cliente', sortIcon: true, crud: false, mask: 'none' },
+      { field: 'name', header: 'Nome', id: 'id_cliente', sortIcon: true, crud: false, mask: 'none' },
+      { field: 'telefone', header: 'Telefone', id: 'id_cliente', sortIcon: true, crud: false, mask: 'phone' },
+      { field: 'action', header: ' ', id: 'id_cliente', sortIcon: false, crud: true, mask: 'none' },
+    ];
     this.getAll();
   }
 
-  openForm(crud, item = undefined){
+  openForm(crud: any, item: any = undefined){
     const modalRef = this.modalCtrl.open(ClienteFormComponent, { size: 'sm', backdrop: 'static' });
     modalRef.componentInstance.data = item;
     modalRef.componentInstance.crud = crud;
@@ -50,18 +58,25 @@ export class ClientesComponent extends ControllerBase {
     })
   }
 
+  crudInTable(res: any){
+    if(res.crud == 'delete'){
+      this.delete(res.id)
+    } else {
+      this.openForm(res.crud, res.id)
+    }
+  }
+  
   getAll(){
-    this.loading = true;
+    this.isLoading = true;
     this.sub.sink = this.clienteService.getAll().subscribe(
       (res: any) => {
-        this.loading = false;
+        this.isLoading = false;
         this.dados = res;
       },error => console.log(error))
   }
 
-  delete(id){
-    
-    this.loading = true;
+  delete(id: any){
+    this.isLoading = true;
 
     this.clienteService.delete(id).subscribe(
       (res: any) => {
@@ -70,7 +85,7 @@ export class ClientesComponent extends ControllerBase {
       error => console.log(error),
       () => {
         this.messageService.add({key: 'bc', severity:'success', summary: 'Sucesso', detail: 'Excluido com Sucesso!'});
-        this.loading = false;
+        this.isLoading = false;
       }
     );
   }

@@ -1,9 +1,11 @@
+import { HttpParams } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { ControllerBase } from '@app/controller/controller.base';
 import { CategoriaService } from '@app/services/categoria.service';
 import { RelatorioService } from '@app/services/relatorio.service';
+import { environment } from '@env/environment';
 
 import { MessageService } from 'primeng/api';
 
@@ -113,16 +115,15 @@ export class RelatoriosComponent extends ControllerBase {
       })
   }
 
-  downloadCatalogo(){
-    this.loading = true;
-    this.sub.sink = this.relatorioService.getCatalogo(this.dados).subscribe(
-      (res: any) => {
-        this.downloadPDF(res.file, res.data, 'catalago')
-      },
-      error => console.log(error),
-      ()=>{
-        this.loading = false;
-      })
+  downloadCatalogo() {
+    const queryParams = new HttpParams()
+      .set('categoria', this.dados.categoria)
+      .set('subcategoria', this.dados.subcategoria);
+    const url = `${environment.webUrl}/catalogo?${queryParams.toString()}`;
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('target', '_blank');
+    link.click();
   }
   
   ngOnDestroy(){

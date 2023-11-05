@@ -1,5 +1,6 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { ControllerBase } from '@app/controller/controller.base';
+import { MovitionService } from '@app/services/movition.service';
 
 declare let $: any;
 
@@ -10,12 +11,16 @@ declare let $: any;
   encapsulation: ViewEncapsulation.None
 })
 export class SidebarComponent extends ControllerBase {
+  tiposCaixas: any[] = [];
 
-  constructor() { 
+  constructor(
+    private service: MovitionService
+  ) { 
     super();
   }
 
   ngOnInit() {
+    this.getTiposCaixas();
     $(function () {
       $('[data-toggle="tooltip"]').tooltip()
     })
@@ -44,5 +49,11 @@ export class SidebarComponent extends ControllerBase {
     document.body.classList.remove('sidebar-open');
     document.body.classList.add('sidebar-closed');
     document.body.classList.add('sidebar-collapse');
+  }
+
+  getTiposCaixas() {
+    this.service.getAllItem().subscribe(res => {
+      this.tiposCaixas = res;
+    },error =>console.log(error));
   }
 }

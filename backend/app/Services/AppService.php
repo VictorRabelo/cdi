@@ -8,15 +8,16 @@ use Illuminate\Support\Facades\Auth;
 use App\Repositories\Eloquent\AbstractRepository;
 use App\Resolvers\AppResolverInterface;
 
-use App\Utils\Messages;
-use App\Utils\Tools;
-
 use App\Models\Entrega;
 use App\Models\EntregaItem;
 use App\Models\Movition;
 use App\Models\Produto;
 use App\Models\ProdutoVenda;
 use App\Models\Venda;
+
+use App\Utils\Messages;
+use App\Utils\Tools;
+
 class AppService extends AbstractRepository implements AppResolverInterface
 {
     /**
@@ -33,8 +34,6 @@ class AppService extends AbstractRepository implements AppResolverInterface
      * @var Tools
      */
     protected $tools = Tools::class;
-
-    private $baseApi = 'https://api.casadoimportadogo.com/api/v1';
 
     public function getVendas($queryParams, $date){
         
@@ -53,7 +52,11 @@ class AppService extends AbstractRepository implements AppResolverInterface
             $dados = Venda::with('produto', 'cliente', 'vendedor')->where('vendedor_id', $userId)->whereBetween('created_at', [$date['inicio'], $date['fim']])->orderBy('id_venda', 'desc')->get();
         }
         
-        return $this->tools->calculoVenda($dados);
+        if(!isset($date)) {
+            $date = null;
+        }
+        
+        return $this->tools->calculoVenda($dados, $date);
     }
 
     public function finishSale($dados){
@@ -115,8 +118,8 @@ class AppService extends AbstractRepository implements AppResolverInterface
     public function getEntregasDisponiveis() {
         $userId =  auth()->user()->id;
         
-        $date = $this->dateToday();
-        $dados = Entrega::with('entregador')->where('entregador_id', $userId)->where('status', 'pendente')->whereBetween('created_at', [$date['inicio'], $date['fim']])->orderBy('id_entrega', 'desc')->get();
+        // $date = $this->dateToday()->whereBetween('created_at', [$date['inicio'], $date['fim']]);
+        $dados = Entrega::with('entregador')->where('entregador_id', $userId)->where('status', 'pendente')->orderBy('id_entrega', 'desc')->get();
         
         if (!$dados) {
             return $this->messages->error;
@@ -139,7 +142,7 @@ class AppService extends AbstractRepository implements AppResolverInterface
             if($queryParams['date'] == 0){
                 $dados = Entrega::with('entregador')->where('entregador_id', $userId)->orderBy('id_entrega', 'desc')->get();
             } else {
-                $date = $this->dateFilter($queryParams['date']);
+                $date = $this->filterDate($queryParams['date']);
                 $dados = Entrega::with('entregador')->where('entregador_id', $userId)->whereBetween('created_at', [$date['inicio'], $date['fim']])->orderBy('id_entrega', 'desc')->get();
             }
 
@@ -213,8 +216,7 @@ class AppService extends AbstractRepository implements AppResolverInterface
     public function createItemEntregador($dados)
     {
         $dadosProduto = Produto::where('id_produto', $dados['produto_id'])->first();
-        $lucroProduto = $dados['preco_venda'] - $dadosProduto->unitario;
-        $dados['lucro_venda'] = $lucroProduto * $dados['qtd_venda'];
+        $dados['lucro_venda'] = $dados['preco_venda'] - $dadosProduto->valor_total;
         
         $result = ProdutoVenda::create($dados);
         if(!$result){
@@ -237,7 +239,9 @@ class AppService extends AbstractRepository implements AppResolverInterface
     }
 
     public function postUser($request) {
-        $response = Http::post($this->baseApi.'/users', [
+        $baseApi = 'https://api.littletreesgo.com/api/v1';
+        
+        $response = Http::post($baseApi.'/users', [
             'email' => $request['email'],
             'login' => $request['login'],
             'name' => $request['name'],
@@ -250,8 +254,10 @@ class AppService extends AbstractRepository implements AppResolverInterface
     }
     
     public function postDespesaEntrega($request) {
-        $response = Http::post($this->baseApi.'/despesas-entrega', [
-            'entregador' => $request['entregador_id']?$request['entregador_id']:Auth::user()->id,
+        $baseApi = 'https://api.littletreesgo.com/api/v1';
+        
+        $response = Http::post($baseApi.'/despesas-entrega', [
+            'entregador_login' => $request['entregador_login'],
             'valor' => $request['valor'],
             'descricao' => $request['descricao'],
             'api' => true

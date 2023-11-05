@@ -20,15 +20,34 @@ export class MovitionService {
             params = params.append('date', queryParams.date);
         }
 
-        return this.http.get<any>(`${environment.apiUrl}/movition`, { params: params });
+        return this.http.get<any>(`${this.base_url}/caixa`, { params: params });
     }
     
     store(store: any){
-        return this.http.post<any>(`${environment.apiUrl}/movition`, store);
+        return this.http.post<any>(`${this.base_url}/caixa`, store);
     }
 
     delete(id: number){
-        return this.http.delete<any>(`${environment.apiUrl}/movition/${id}`);
+        return this.http.delete<any>(`${this.base_url}/caixa/${id}`);
     }
 
+    //Tipos de caixa
+    getAllItem() {
+        return this.http.get<any>(`${this.base_url}/caixa/tipos`);
+    }
+    
+    getItemById(id: any) {
+        return this.http.get<any>(`${this.base_url}/caixa/tipos/${id}`);
+    }
+    
+    createItem(dados: any) {
+        return this.http.post<any>(`${this.base_url}/caixa/tipos`, dados);
+    }
+
+    updateItem(id: any, dados: any) {
+        return this.http.put<any>(`${this.base_url}/caixa/tipos/${id}`, dados);
+    }
+    deleteItem(id: any) {
+        return this.http.delete<any>(`${this.base_url}/caixa/tipos/${id}`);
+    }
 }

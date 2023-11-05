@@ -104,6 +104,41 @@
             </li>
           </ul>
         </li>
+        <li (click)="toggleSideBar(financeiro)" class="nav-item" #financeiro>
+          <a class="nav-link">
+            <i class="nav-icon fas fa-dollar-sign" style="color: #c2c7d0;"></i>
+            <p>
+              Financeiro
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a [routerLink]="['/restricted/financeiro/despesas']" routerLinkActive="link-active" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Despesas</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a [routerLink]="['/restricted/financeiro/caixa-dolar']" routerLinkActive="link-active" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Dolar</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a [routerLink]="['/restricted/financeiro/a-pagar']" routerLinkActive="link-active" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Contas a pagar</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a [routerLink]="['/restricted/financeiro/a-receber']" routerLinkActive="link-active" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Contas a receber</p>
+              </a>
+            </li>
+          </ul>
+        </li>
         <li (click)="toggleSideBar(caixa)" class="nav-item" #caixa>
           <a class="nav-link">
             <i class="nav-icon fas fa-cash-register"></i>
@@ -113,34 +148,19 @@
             </p>
           </a>
           <ul class="nav nav-treeview">
+            <ng-container *ngIf="tiposCaixas.length > 0">
+              <li class="nav-item" *ngFor="let item of tiposCaixas">
+                <a [routerLink]="['/restricted/caixa', item.tipo]" routerLinkActive="link-active" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>{{ item.tipo | titlecase}}</p>
+                </a>
+              </li>
+            </ng-container>
+            
             <li class="nav-item">
-              <a [routerLink]="['/restricted/caixa/a-pagar']" routerLinkActive="link-active" class="nav-link">
+              <a [routerLink]="['/restricted/caixa/tipos']" routerLinkActive="link-active" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Contas a pagar</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a [routerLink]="['/restricted/caixa/a-receber']" routerLinkActive="link-active" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Contas a receber</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a [routerLink]="['/restricted/caixa/caixa-dolar']" routerLinkActive="link-active" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Dolar</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a [routerLink]="['/restricted/movimentacao/eletronico']" routerLinkActive="link-active" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Eletrônicos</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a [routerLink]="['/restricted/movimentacao/geral']" routerLinkActive="link-active" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Geral</p>
+                <p>Tipos</p>
               </a>
             </li>
           </ul>

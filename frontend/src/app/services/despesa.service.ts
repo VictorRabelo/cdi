@@ -13,8 +13,8 @@ export class DespesaService {
     
     constructor(private http: HttpClient) { }
 
-    getAll() {
-        return this.http.get<any>(`${this.baseUrl}/despesas`);
+    getAll(queryParams: any = {}) {
+        return this.http.get<any>(`${this.baseUrl}/despesas`, {params: queryParams});
     }
     
     getMovimentacao() {

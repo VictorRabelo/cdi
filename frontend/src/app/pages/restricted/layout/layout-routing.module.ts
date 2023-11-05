@@ -11,7 +11,7 @@ import { HomeComponent } from './home/home.component';
 import { RelatoriosComponent } from './relatorios/relatorios.component';
 import { SalesComponent } from './sales/sales.component';
 import { SaleDetalheComponent } from './sales/sale-detalhe/sale-detalhe.component';
-import { MovitionComponent } from './movition/movition.component';
+import { CaixaComponent } from './caixa/caixa.component';
 import { EntregaDetalheComponent } from './entregas/entrega-detalhe/entrega-detalhe.component';
 import { Role } from '@app/models/role';
 import { AuthGuard } from '@app/guards/auth.guard';
@@ -19,62 +19,65 @@ import { EntregasDespesasComponent } from './entregas/entregas-despesas/entregas
 import { FormasPagamentosComponent } from './formas-pagamentos/formas-pagamentos.component';
 
 const routes: Routes = [
-  
-  {path: '', pathMatch: 'full', redirectTo: 'home'},
-      
-  {path: 'home', component: HomeComponent, data: { animation: 'HomePage' }},
+
+  { path: '', pathMatch: 'full', redirectTo: 'home' },
+
+  { path: 'home', component: HomeComponent, data: { animation: 'HomePage' } },
 
   {
-    path: 'vendas', 
+    path: 'vendas',
     canActivate: [AuthGuard],
     data: { roles: [Role.admin, Role.vendedor], animation: 'VendasPage' },
     children: [
-      { path: '', component: SalesComponent},
-      { path: ':id', component: SaleDetalheComponent},
+      { path: '', component: SalesComponent },
+      { path: ':id', component: SaleDetalheComponent },
     ]
   },
 
   {
     path: 'entregas', children: [
-      { path: '', component: EntregasComponent},
-      { path: 'despesas', component: EntregasDespesasComponent},
-      { path: ':id', component: EntregaDetalheComponent},
+      { path: '', component: EntregasComponent },
+      { path: 'despesas', component: EntregasDespesasComponent },
+      { path: ':id', component: EntregaDetalheComponent },
     ], data: { animation: 'EntregasPage' }
   },
-      
-  {path: 'estoque', component: EstoqueComponent, data: { animation: 'EstoquePage' }},
-      
-  {path: 'clientes', component: ClientesComponent, canActivate: [AuthGuard], data: { roles: [Role.admin, Role.vendedor], animation: 'ClientesPage' }},
 
-  {path: 'usuarios', component: UsersComponent, data: { animation: 'UsuariosPage' }},
+  { path: 'estoque', component: EstoqueComponent, data: { animation: 'EstoquePage' } },
 
-  {path: 'fornecedores', component: FornecedoresComponent, data: { animation: 'FornecedoresPage' }},
+  { path: 'clientes', component: ClientesComponent, canActivate: [AuthGuard], data: { roles: [Role.admin, Role.vendedor], animation: 'ClientesPage' } },
 
-  {path: 'relatorios', component: RelatoriosComponent, data: { animation: 'RelatoriosPage' }},
-      
-  {path: 'categorias', component: CategoriasComponent, data: { animation: 'CategoriasPage' }},
-  
-  {path: 'formas-pagamentos', component: FormasPagamentosComponent, data: { animation: 'FormasPagamentosPage' }},
+  { path: 'usuarios', component: UsersComponent, data: { animation: 'UsuariosPage' } },
+
+  { path: 'fornecedores', component: FornecedoresComponent, data: { animation: 'FornecedoresPage' } },
+
+  { path: 'relatorios', component: RelatoriosComponent, data: { animation: 'RelatoriosPage' } },
+
+  { path: 'categorias', component: CategoriasComponent, data: { animation: 'CategoriasPage' } },
+
+  { path: 'formas-pagamentos', component: FormasPagamentosComponent, data: { animation: 'FormasPagamentosPage' } },
 
   {
+    path: 'caixa', children: [
+      { path: ':id', component: CaixaComponent }
+    ], data: { animation: 'CaixaPage' }
+  },
+  
+  {
     path: 'movimentacao', children: [
-      { path: 'geral', component: MovitionComponent,},
-      { path: 'eletronico', component: MovitionComponent },
-      { path: 'historico', component: MovitionComponent },
-    ],
-    data: { animation: 'MovimentacaoPage' }
+      { path: 'historico', component: CaixaComponent }
+    ], data: { animation: 'CaixaPage' }
   },
 
-  {path: 'caixa', loadChildren: () => import('./caixa/caixa.module').then(m => m.CaixaModule), data: { animation: 'CaixaPage' }},
-  
+  { path: 'financeiro', loadChildren: () => import('./financeiro/financeiro.module').then(m => m.FinanceiroModule), data: { animation: 'FinanceiroPage' } },
+
 ];
-  
+
 @NgModule({
-    imports: [
-      RouterModule.forChild(routes)
-    ],
-    exports: [
-      RouterModule
-    ]
+  imports: [
+    RouterModule.forChild(routes)
+  ],
+  exports: [
+    RouterModule
+  ]
 })
-export class LayoutRoutingModule {}
+export class LayoutRoutingModule { }

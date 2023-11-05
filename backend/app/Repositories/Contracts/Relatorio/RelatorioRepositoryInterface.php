@@ -11,7 +11,7 @@ interface RelatorioRepositoryInterface extends CrudRepositoryInterface
     public function clientes();
     public function estoque();
     public function vendidos();
-    public function catalogo();
+    public function catalogo($queryParams);
     public function entregas();
     public function entregaDetalhes($id);
     public function detalheAReceber($id);

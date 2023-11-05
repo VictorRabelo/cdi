@@ -38,8 +38,7 @@
         <label class="fieldset">*Caixa:</label>
         <select class="custom-select custom-select-sm" name="status" [(ngModel)]="dados.status">
           <option value="">Selecione um Caixa</option>
-          <option value="geral">Geral</option>
-          <option value="eletronico">Eletrônico</option>
+          <option [value]="item.tipo" *ngFor="let item of tiposCaixas">{{ item.tipo | titlecase }}</option>
         </select>
       </div>
 
@@ -48,7 +47,7 @@
   
   <div class="modal-footer">
     <button type="button" class="btn btn-secondary" (click)="close()">Voltar</button>
-    <button type="submit" class="btn btn-success" [disabled]="loading">
+    <button type="submit" class="btn btn-success" [disabled]="!form.valid || loading">
       <div class="spinner-border text-danger" role="status" *ngIf="loading">
         <span class="sr-only">Loading...</span>
       </div>

@@ -1,13 +1,13 @@
 <div class="card" [ngClass]="{ 'card-load': loading }">
     <p-toolbar styleClass="p-mb-4">
         <ng-template pTemplate="left">
-            <button pButton pRipple label="Nova DRE" icon="pi pi-plus" class="p-mr-2" (click)="openForm('cadastrar')"></button>
+            <button pButton pRipple label="Novo {{ module | titlecase }}" icon="pi pi-plus" class="p-mr-2" (click)="crudOnTable('cadastrar')"></button>
         </ng-template>
 
         <ng-template pTemplate="right">
             <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()" class="p-button-success mx-2"  pTooltip="XLS" tooltipPosition="bottom"></button>
             <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()" class="p-button-warning mr-2" pTooltip="PDF" tooltipPosition="bottom"></button>
-            <button type="button" pButton pRipple icon="pi pi-filter" (click)="openFilter()" class="p-button-info mr-2" pTooltip="Filtro de Pesquisa" tooltipPosition="bottom"></button>
+            <button type="button" pButton pRipple icon="pi pi-filter" (click)="openFilter()" class="p-button-info mr-2" pTooltip="Filtro de Pesquisa" tooltipPosition="bottom" *ngIf="filter"></button>
             <div class="input-group input-group-sm inputSearch">
                 <input
                     pInputText 
@@ -28,14 +28,15 @@
     </p-toolbar>
 
     <p-table #dt 
+        id="table-component"
         [columns]="cols" 
-        [value]="dataSource"
-        [rows]="10" 
+        [value]="data"
+        [rows]="rows" 
         [paginator]="true" 
-        [globalFilterFields]="['investidorErpNome','valor', 'dtcompra', 'dtinvest']"
+        [globalFilterFields]="globalFields"
         [rowHover]="true" 
         dataKey="id"
-        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}" 
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords}" 
         [showCurrentPageReport]="true">
         <ng-template pTemplate="header" let-columns>
             <tr>
@@ -47,18 +48,50 @@
         </ng-template>
         <ng-template pTemplate="body" let-item let-columns="columns">
             <tr>
-                <td *ngFor="let col of columns">
-                    {{item[col.field]}}
-                    <div *ngIf="col.status">
-                        <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-warning mr-2" (click)="openForm('alterar', item[col.id])"></button>
-                        <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="delete(item[col.id])"></button>
-                    </div>
+                <td  *ngFor="let col of columns">
+                    <!-- Sem formatação -->
+                    <span *ngIf="!col.crud && col.mask == 'none'">
+                        {{ (!item[col.field])? 'Não informado':item[col.field] }}
+                    </span>
+                    <!-- Com mask para celular / telefone -->
+                    <span *ngIf="!col.crud && col.mask == 'phone'">
+                        {{ (!item[col.field])? 'Não informado':item[col.field] | mask: '(00) 00000-0000':'(000) 000-0000' }}
+                    </span>
+                    <!-- Com mask para dinheiro brasileiro -->
+                    <span *ngIf="!col.crud && col.mask == 'brl'">
+                        {{ (!item[col.field])? 'Não informado':item[col.field] | currency: 'R$' }}
+                    </span>
+                    <!-- Com mask para dinheiro americano -->
+                    <span *ngIf="!col.crud && col.mask == 'usd'">
+                        {{ (!item[col.field])? 'Não informado':item[col.field] | currency: '$' }}
+                    </span>
+                    <!-- Fromatação Title Case -->
+                    <span *ngIf="!col.crud && col.mask == 'title-case'">
+                        {{ (!item[col.field])? 'Não informado':item[col.field] | titlecase }}
+                    </span>
+                    <!-- Imagem na tabela -->
+                    <span *ngIf="!col.crud && col?.withImagem">
+                        <async-image [url]="item[col.field]"></async-image>
+                    </span>
+                    <!-- Imagem na tabela -->
+                    <span *ngIf="!col.crud && col?.roleStatus">
+                        <span *ngFor="let itemStatus of col?.roleStatus">
+                            <span [class]="'badge badge-'+itemStatus.color" *ngIf="item[col.field] == itemStatus.value">
+                                {{ itemStatus.field }}
+                            </span>
+                        </span>
+                    </span>
+                    <!-- Botões do CRUD -->
+                    <span *ngIf="col.crud">
+                        <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-warning mr-2" (click)="crudOnTable('alterar', item[col.id])"></button>
+                        <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="crudOnTable('delete', item[col.id])"></button>
+                    </span>
                 </td>
             </tr>
         </ng-template>
-        <ng-template *ngIf="dataSource.length == 0">
+        <ng-template *ngIf="data.length == 0">
             <tr class="text-center">
-                <td colspan="col.lenght">Não há informação no momento</td>
+                <td colspan="col.lenght">Não informado at the moment</td>
             </tr>
         </ng-template>
     </p-table>

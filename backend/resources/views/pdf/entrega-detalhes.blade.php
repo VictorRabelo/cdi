@@ -48,19 +48,17 @@
     <body>
         <table class="customers">
             <tr>
-                <th colspan="5">Detalhes da entrega - {{date('d/m/Y', strtotime($dadosEntrega->updated_at))}}</th>
+                <th colspan="4">Detalhes da entrega - {{date('d/m/Y', strtotime($dadosEntrega->updated_at))}}</th>
             </tr>
             <tr>
                 <th>Entregador</th>
                 <th>Qtd. de Produtos</th>
-                <th>Lucro</th>
-                <th>Valor Total</th>
+                <th>Valor Total Sugerido</th>
                 <th>Status</th>
             </tr>
             <tr>
                 <td>{{ $dadosEntrega->entregador }}</td>
                 <td>{{ $dadosEntrega->qtd_produtos }}</td>
-                <td>{{ 'R$ '.number_format($dadosEntrega->lucro, 2, ',', '.') }}</td>
                 <td>{{ 'R$ '.number_format($dadosEntrega->total_final, 2, ',', '.') }}</td>
                 <td style="color: #fff;" bgcolor="{{($dadosEntrega->status !== 'ok')?'#0000ff':'#008000'}}">
                     {{ $dadosEntrega->status }}
@@ -80,7 +78,6 @@
                 <th>Foto</th>
                 <th>Produto</th>
                 <th>Valor</th>
-                <th>Lucro</th>
             </tr>
             @foreach ($dadosProdutos as $data)
                 <tr>
@@ -91,7 +88,6 @@
                     </td>
                     <td>{{ $data->produto->name }}</td>
                     <td>{{ 'R$ '.number_format($data->preco_entrega, 2, ',', '.') }}</td>
-                    <td>{{ 'R$ '.number_format($data->lucro_entrega, 2, ',', '.') }}</td>
                 </tr>
             @endforeach
         </table>
@@ -111,7 +107,7 @@
                 @foreach ($products as $item)
                     <tr>
                         <td>
-                            <img src="{{ $item->path }}" alt="Produto">
+                            <img src="{{ storage_path('app/public/'.$item->path) }}" alt="Produto">
                         </td>
                         <td>{{ $item->nameProduto }}</td>
                         <td>{{ $item->qtdTotal }}</td>
@@ -135,9 +131,9 @@
                     <th>Cliente</th>
                     <th>Qtd</th>
                     <th>Produtos</th>
-                    <th>Valor Pago</th>
                     <th>Valor Vendido</th>
                     <th>Lucro</th>
+                    <th>Pagamento</th>
                 </tr>
                 @foreach ($dadosVendas as $data)
                     <tr>
@@ -148,9 +144,9 @@
                                 <span>{{ $value->name }}<span><br>
                             @endforeach
                         </td>
-                        <td>{{ 'R$ '.number_format($data->pago, 2, ',', '.') }}</td>
                         <td>{{ 'R$ '.number_format($data->total_final, 2, ',', '.') }}</td>
                         <td>{{ 'R$ '.number_format($data->lucro, 2, ',', '.') }}</td>
+                        <td>{{ $data->pagamento }}</td>
                     </tr>
                 @endforeach    
             @else

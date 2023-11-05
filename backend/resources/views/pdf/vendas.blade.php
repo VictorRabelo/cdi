@@ -53,20 +53,26 @@
                 <th>Valor Vendido</th>
                 <th>Lucro</th>
             </tr>
-            @foreach ($datas as $data)
+            @if (count($datas) > 0)
+                @foreach ($datas as $data)
+                    <tr>
+                        <td>{{ isset($data->cliente['name'])?$data->cliente['name']:'Cliente não informado' }}</td>
+                        <td>{{ $data->qtd_produto }}</td>
+                        <td>
+                            @foreach ($data->produtos as $value)
+                                <span>{{ $value->name }}<span><br>
+                            @endforeach
+                        </td>
+                        <td>{{ 'R$ '.number_format($data->pago, 2, ',', '.') }}</td>
+                        <td>{{ 'R$ '.number_format($data->total_final, 2, ',', '.') }}</td>
+                        <td>{{ 'R$ '.number_format($data->lucro, 2, ',', '.') }}</td>
+                    </tr>
+                @endforeach
+            @else
                 <tr>
-                    <td>{{ $data->cliente['name']?$data->cliente['name']:'Cliente não informado' }}</td>
-                    <td>{{ $data->qtd_produto }}</td>
-                    <td>
-                        @foreach ($data->produtos as $value)
-                            <span>{{ $value->name }}<span><br>
-                        @endforeach
-                    </td>
-                    <td>{{ 'R$ '.number_format($data->pago, 2, ',', '.') }}</td>
-                    <td>{{ 'R$ '.number_format($data->total_final, 2, ',', '.') }}</td>
-                    <td>{{ 'R$ '.number_format($data->lucro, 2, ',', '.') }}</td>
+                    <th colspan="2">Não há vendas no momento!</th>
                 </tr>
-            @endforeach
+            @endif
             
         </table>
     </body>

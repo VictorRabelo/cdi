@@ -84,8 +84,8 @@
                 <tbody *ngFor="let item of dataSource | filter:term">
                   <tr>
                     <th scope="row">{{ item.id_venda }}</th>
-                    <td>{{ (!item.cliente)?'Cliente não informado':item.cliente.name | titlecase }}</td>
-                    <td>{{ item.vendedor.name | titlecase }}</td>
+                    <td>{{ (!item.cliente)? 'Cliente não informado':item.cliente.name | titlecase }}</td>
+                    <td>{{ (!item.vendedor)? '****' : item.vendedor.name | titlecase }}</td>
                     <td>{{ item.created_at }}</td>
                     <td>{{ (!item.pagamento)?'****':item.pagamento | titlecase }}</td>
                     <td>{{ (!item.total_final)? '****':item.total_final | currency: 'R$' }}</td>

@@ -58,10 +58,10 @@
             @foreach ($products as $item)
                 <tr>
                     <td>
-                        <img src="{{ $item->path }}" alt="Produto">
+                        <img src="{{ storage_path('app/public/'.$item->path) }}" alt="Produto">
                     </td>
-                    <td>{{ $data->nameProduto }}</td>
-                    <td>{{ $data->qtdTotal }}</td>
+                    <td>{{ $item->nameProduto }}</td>
+                    <td>{{ $item->qtdTotal }}</td>
                 </tr>
             @endforeach
         </table>

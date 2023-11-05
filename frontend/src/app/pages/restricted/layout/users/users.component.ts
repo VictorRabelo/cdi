@@ -7,6 +7,7 @@ import { MessageService } from 'primeng/api';
 import { SubSink } from 'subsink';
 import { ClienteFormComponent } from '@app/components/cliente-form/cliente-form.component';
 import { UserService } from '@app/services/user.service';
+import { Column } from '@app/models/Column';
 
 @Component({
   selector: 'app-users',
@@ -18,9 +19,11 @@ export class UsersComponent extends ControllerBase {
   
   private sub = new SubSink();
 
-  loading: boolean = false;
+  isLoading: boolean = false;
 
   dados: any = [];
+
+  columns: Column[];
 
   title: string = 'users';
   term: string;
@@ -34,10 +37,18 @@ export class UsersComponent extends ControllerBase {
   }
 
   ngOnInit() {
+    this.columns = [
+      { field: 'id', header: '#ID', id: 'id', sortIcon: true, crud: false, mask: 'none' },
+      { field: 'name', header: 'Nome', id: 'id', sortIcon: true, crud: false, mask: 'none' },
+      { field: 'email', header: 'Email', id: 'id', sortIcon: true, crud: false, mask: 'none' },
+      { field: 'login', header: 'Login', id: 'id', sortIcon: true, crud: false, mask: 'none' },
+      { field: 'action', header: ' ', id: 'id', sortIcon: false, crud: true, mask: 'none' },
+    ];
+
     this.getAll();
   }
 
-  openForm(crud, item = undefined){
+  openForm(crud: any, item: any = undefined){
     const modalRef = this.modalCtrl.open(ClienteFormComponent, { size: 'sm', backdrop: 'static' });
     modalRef.componentInstance.data = item;
     modalRef.componentInstance.crud = crud;
@@ -51,17 +62,24 @@ export class UsersComponent extends ControllerBase {
   }
 
   getAll(){
-    this.loading = true;
+    this.isLoading = true;
     this.sub.sink = this.service.getAll().subscribe(
       (res: any) => {
-        this.loading = false;
+        this.isLoading = false;
         this.dados = res;
       },error => console.log(error))
   }
 
-  delete(id){
-    
-    this.loading = true;
+  crudInTable(res: any){
+    if(res.crud == 'delete'){
+      this.delete(res.id)
+    } else {
+      this.openForm(res.crud, res.id)
+    }
+  }
+
+  delete(id: any){
+    this.isLoading = true;
 
     this.service.delete(id).subscribe(
       (res: any) => {
@@ -69,8 +87,8 @@ export class UsersComponent extends ControllerBase {
       },
       error => console.log(error),
       () => {
-        this.messageService.add({key: 'bc', severity:'success', summary: 'Sucesso', detail: 'Excluido com Sucesso!'});
-        this.loading = false;
+        this.messageService.add({key: 'bc', severity:'success', summary: 'Sucesso', detail: 'Deletado!'});
+        this.isLoading = false;
       }
     );
   }
@@ -78,5 +96,4 @@ export class UsersComponent extends ControllerBase {
   ngOnDestroy(){
     this.sub.unsubscribe();
   }
-
 }

@@ -1,154 +1,161 @@
 <!DOCTYPE html>
-<html lang="pt-br">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>Catálogo de Produtos Casa do Importado</title>
-        <style>
-            @page {
-                margin: 5px 0cm;
-            }
+<html>
 
-            @page {
-                margin: 0cm 0cm;
-            }
+<head>
+    <meta charset="utf-8">
+    <title>Catálogo - Casa do Importado</title>
+    <style type="text/css">
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
 
-            /** Define now the real margins of every page in the PDF **/
-            body {
-                margin-top: 2cm;
-                margin-left: 2cm;
-                margin-right: 2cm;
-                margin-bottom: 2cm;
-            }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-            /** Define the header rules **/
-            header {
-                position: fixed;
-                top: 0cm;
-                left: 0cm;
-                right: 0cm;
-                height: 2cm;
-                /** Extra personal styles **/
-                text-align: center;
-                line-height: 1.5cm;
-            }
+        .empty-message {
+            margin: 0 auto;
+        }
 
-            /** Define the footer rules **/
-            footer {
-                position: fixed; 
-                bottom: 0cm; 
-                left: 0cm; 
-                right: 0cm;
-                height: 1cm;
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-                /** Extra personal styles **/
-                text-align: center;
-                line-height: 0.8cm;
-                font-size: 15pt;
-                border-top: 1px solid  #5D6975;
-                background: url({{ storage_path('app/public/appImgs/dimension.png') }});
-            }
+        .info-header {
+            font-size: 9pt;
+            text-align: end;
+        }
 
-            .page-break {
-                page-break-before: always;
-            }
+        .logo {
+            display: flex;
+            align-items: center;
+        }
 
-            img {
-                width: 130px;
-                height: 130px;
-            }
+        .logo img {
+            height: 60px;
+        }
 
-            #logo {
-                float: left;
-            }
-            
-            #contato {
-                float: right;
-            }
-            
-            #logo img {
-                width: 100px;
-                height: 100px;
-            }
+        .logo .info-company {
+            font-size: 9pt;
+            margin-left: 10px;
+            font-weight: bold;
+        }
 
-            h1 {
-                border-top: 1px solid  #5D6975;
-                border-bottom: 1px solid  #5D6975;
-                color: #5D6975;
-                font-size: 2.0em;
-                line-height: 1.4em;
-                font-weight: normal;
-                text-align: center;
-                padding: 8px 0px;
-                margin: 0 0 20px 0;
-                background: url({{ storage_path('app/public/appImgs/dimension.png') }});
-            }
-            .customers {
-                margin: 20px 0px;
-                font-family: Arial, Helvetica, sans-serif;
-                border-collapse: collapse;
-                border-spacing: 0;
-                width: 100%;
-            }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-            .customers tr:nth-child(2n-1) td {
-                background: #F5F5F5;
-            }
+        .catalog-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
 
-            .customers td, .customers th {
-                padding: 12px;
-            }
+        .product {
+            width: calc(33.33% - 10px);
+            max-width: 300px;
+            margin-bottom: 30px;
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: .25rem;
+            box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075);
+            display: flex;
+            flex-direction: column;
+            padding: 6px 0px;
+        }
 
-            .customers th {
-                padding-top: 10px;
-                padding-bottom: 10px;
-                background-color: #343a40;
-                color: white;
-            }
-             
-            th,td {
-                text-align: center;
-                font-size: 15pt;
-                align-items: center;
-                vertical-align: middle;
-            }
-             
-            hr {
-                margin: 20px 0px;
-            }
-        </style>
-    </head>
-    <body>
-        <header>
-            <div id="logo">
-                <img src="{{ storage_path('app/public/appImgs/logo-cdi.png') }}" alt="Produto">
+        .product .product-img {
+            width: 100%;
+            height: 130px;
+            overflow: hidden;
+        }
+
+        .product img {
+            width: 100%;
+            height: 130px;
+            object-fit: contain;
+            border-top-left-radius: .25rem;
+            border-top-right-radius: .25rem;
+        }
+
+        .product .card-body {
+            padding: 5px;
+        }
+
+        .product .product-info {
+            margin-top: auto;
+            text-align: center;
+        }
+
+        .product .product-info h3 {
+            margin: 0 0 .75rem;
+            font-size: 1.25rem;
+        }
+
+        .product .product-info .price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #dc3545;
+        }
+    </style>
+
+    <script type="text/javascript">
+        window.onload = function() {
+            window.print();
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <img src="{{ url('storage/appImgs/logo-preto.png') }}" alt="Logo">
+                <div class="info-company">
+                    <p>@casadoimportadogo</p>
+                    <p>cdigoiania@outlook.com</p>
+                    <p>(62) 98298-3642</p>
+                </div>
             </div>
-            <h1>Catálogo - Casa do Importado</h1>
-        </header>
-
-        <footer>
-            @casadoimportadogo | (62) 98298-3642 | casadoimportadogo@outlook.com
-        </footer>
-
-        <table class="customers">
-            @if (count($products) > 0)    
-                @foreach ($products as $item)
-                    <tr>
-                        <td>
-                            <img src="{{ storage_path('app/public/'.$item->path) }}" alt="Produto">
-                        </td>
-                        <td>
-                            <h3>{{ $item->name }}</h3>
-                            <p>{{ 'R$ '.number_format($item->preco, 2, ',', '.') }}</p>
-                        </td>
-                    </tr>
-                @endforeach    
+            <div class="info-header">
+                <p>- Os preços podem sofrer alterações sem prévio aviso.</p>
+                <p>- Os valores não incluem I.V.A.</p>
+            </div>
+        </div>
+        <div class="catalog-container">
+            @if (count($products) > 0)
+            @foreach ($products as $item)
+            <div class="product">
+                <div class="product-img">
+                    <img src="{{ url('/storage/'.$item->path) }}" alt="Produto">
+                </div>
+                <div class="product-info">
+                    <h3>{{ $item->name }}</h3>
+                    <span class="price">{{ 'R$ '.number_format($item->preco, 2, ',', '.') }}</span>
+                </div>
+            </div>
+            @endforeach
             @else
-                <tr>
-                    <th colspan="2">Não há produtos no momento!</th>
-                </tr>
+            <div class="empty-message">
+                <h3>Sem produtos no momento!<h3>
+            </div>
             @endif
-        </table>
-    </body>
+        </div>
+    </div>
+</body>
+
 </html>

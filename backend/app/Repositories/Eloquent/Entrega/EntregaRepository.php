@@ -6,6 +6,7 @@ use App\Enums\CodeStatusVendaEnum;
 use App\Models\Entrega;
 use App\Models\EntregaItem;
 use App\Models\Estoque;
+use App\Models\Produto;
 use App\Repositories\Contracts\Entrega\EntregaRepositoryInterface;
 use App\Repositories\Eloquent\AbstractRepository;
 use App\Resolvers\AppResolverInterface;
@@ -38,28 +39,27 @@ class EntregaRepository extends AbstractRepository implements EntregaRepositoryI
 
     public function index($queryParams)
     {
-        if(isset($queryParams['app'])) {
-            if($queryParams['typeSearch'] == 'bau'){
+        if (isset($queryParams['app'])) {
+            if ($queryParams['typeSearch'] == 'bau') {
                 return $this->baseApp->getEntregasApp($queryParams);
             }
-               
-            if($queryParams['typeSearch'] == 'sales'){
+
+            if ($queryParams['typeSearch'] == 'sales') {
                 return $this->baseApp->getEntregasDisponiveis();
             }
         }
 
-        if(isset($queryParams['date'])) {
-            if($queryParams['date'] == 0){
+        if (isset($queryParams['date'])) {
+            if ($queryParams['date'] == 0) {
                 $dados = $this->model->with('entregador')->orderBy('id_entrega', 'desc')->get();
             } else {
-                $date = $this->dateFilter($queryParams['date']);
+                $date = $this->filterDate($queryParams['date']);
                 $dados = $this->model->with('entregador')->whereBetween('created_at', [$date['inicio'], $date['fim']])->orderBy('id_entrega', 'desc')->get();
             }
 
             if (!$dados) {
                 return $this->messages->error;
             }
-
         } else {
             $date = $this->dateMonth();
             $dados = $this->model->with('entregador')->whereBetween('created_at', [$date['inicio'], $date['fim']])->orderBy('id_entrega', 'desc')->get();
@@ -67,14 +67,14 @@ class EntregaRepository extends AbstractRepository implements EntregaRepositoryI
                 return $this->messages->error;
             }
         }
-        
+
         $lucro = 0;
         $totalMensal = 0;
         $pago = 0;
 
         $dataSource = [];
         foreach ($dados as $item) {
-            
+
             $lucro += $item->lucro;
             $totalMensal += $item->total_final;
 
@@ -85,30 +85,46 @@ class EntregaRepository extends AbstractRepository implements EntregaRepositoryI
             'entregas'     => $dataSource,
             'totalMensal'  => $totalMensal,
             'lucro'        => $lucro,
-            'data'         => isset($date['inicio'])? $date['inicio']:date('Y-m-d'),
-            'mounth'       => isset($queryParams['date'])? $queryParams['date']:date('m'),
+            'data'         => isset($date['inicio']) ? $date['inicio'] : date('Y-m-d'),
+            'mounth'       => isset($queryParams['date']) ? $queryParams['date'] : date('m'),
         ];
     }
-    
-    public function show($id){
-        $dadosEntrega = $this->model->where('id_entrega', '=', $id)->leftJoin('users','users.id', '=', 'entregas.entregador_id')->select('users.name as entregador', 'entregas.*')->first();
+
+    public function show($id)
+    {
+        $dadosEntrega = $this->model->where('id_entrega', '=', $id)->leftJoin('users', 'users.id', '=', 'entregas.entregador_id')->select('users.name as entregador', 'entregas.*')->first();
         if (!$dadosEntrega) {
             return false;
         }
-        
+
         $dadosProdutos = EntregaItem::with('produto')->where('entrega_id', '=', $id)->orderBy('created_at', 'desc')->get();
         if (!$dadosProdutos) {
             return false;
         }
 
-        $dadosEntrega->qtd_disponiveis = 0;
+        $qtdDisponiveis = 0;
+        $dadosEntrega->total_final = 0;
+        $dadosEntrega->lucro = 0;
+        $dadosEntrega->qtd_produtos = 0;
 
         foreach ($dadosProdutos as $item) {
+
             $item->id_estoque = $item->produto->estoque()->first()->id_estoque;
             $item->preco_entrega *= $item->qtd_produto;
             $item->lucro_entrega *= $item->qtd_produto;
-            $dadosEntrega->qtd_disponiveis += $item->qtd_disponivel;
+
+            $qtdDisponiveis += $item->qtd_disponivel;
+
+            $dadosEntrega->lucro += $item->lucro_entrega;
+            $dadosEntrega->qtd_produtos += $item->qtd_produto;
+            $dadosEntrega->total_final += $item->preco_entrega;
         }
+
+        if ($dadosEntrega->status != 'ok') {
+            $dadosEntrega->save();
+        }
+
+        $dadosEntrega->qtd_disponiveis = $qtdDisponiveis;
 
         return ['dadosEntrega' => $dadosEntrega, 'dadosProdutos' => $dadosProdutos];
     }
@@ -136,12 +152,11 @@ class EntregaRepository extends AbstractRepository implements EntregaRepositoryI
     public function deleteEntrega($id)
     {
         $dados = $this->model->findOrFail($id);
-        
+
         if (empty($dados)) {
             return ['message' => 'Falha na movimentação do estoque', 'code' => 500];
-
         }
-        
+
         foreach ($dados->entregasItens()->get() as $item) {
             $dadoProduto = $item->produto()->first();
             $dadoEstoque = $dadoProduto->estoque()->first();
@@ -149,13 +164,13 @@ class EntregaRepository extends AbstractRepository implements EntregaRepositoryI
             if (!$dadoEstoque) {
                 return ['message' => 'Falha na movimentação do estoque', 'code' => 500];
             }
-            
-            if ($dadoEstoque->und == 0) {
+
+            if (!is_null($dados->status) && $dados->qtd_disponivel > 0) {
+                $dadoEstoque->increment('und', $item->qtd_disponivel);
+            }
+
+            if ($dadoEstoque->und > 0) {
                 $dadoProduto->update(['status' => 'ok']);
-            } else {
-                if($dados->status == 'pendente'){
-                    $dadoEstoque->increment('und', $item->qtd_produto);
-                }
             }
 
             $item->delete();
@@ -164,7 +179,6 @@ class EntregaRepository extends AbstractRepository implements EntregaRepositoryI
         $dados->delete();
 
         return ['message' => 'Deletado com sucesso!', 'code' => 200];
-
     }
 
     public function finishEntrega($dados)
@@ -177,15 +191,15 @@ class EntregaRepository extends AbstractRepository implements EntregaRepositoryI
         if (!$dadosEntrega) {
             return ['message' => 'Falha ao procurar venda ', 'code' => 500];
         }
-        
-        $dados['status'] = 'pendente'; 
-        
+
+        $dados['status'] = 'pendente';
+
         $dadosEntrega->fill($dados);
-        
-        if(!$dadosEntrega->save()){
+
+        if (!$dadosEntrega->save()) {
             return ['message' => 'Falha ao cadastrar venda', 'code' => 500];
         }
-        
+
         if (!$this->movimentacaoEstoque($dados['itens'])) {
             return ['message' => 'Falha na movimentação do estoque', 'code' => 500];
         }
@@ -194,121 +208,157 @@ class EntregaRepository extends AbstractRepository implements EntregaRepositoryI
     }
 
     // Item 
-    public function getAllItem($queryParams){
+    public function getAllItem($queryParams)
+    {
         if (isset($queryParams['app'])) {
             return $this->baseApp->getAllItemAvailable($queryParams);
         }
     }
-    
-    public function getItemById($id){
+
+    public function getItemById($id)
+    {
         $dados = EntregaItem::where('id', '=', $id)->first();
         if (!$dados) {
             return false;
         }
-        
+
         $produto = $dados->produto()->first();
         $dados->produto = $produto;
         $dados->produto->estoque = $produto->estoque()->first();
-        
+
         return $dados;
     }
 
-    public function createItem($dados){
+    public function createItem($dados)
+    {
+        $itensEntrega = EntregaItem::where('entrega_id', $dados['entrega_id'])->where('produto_id', $dados['id_produto'])->first();
+        if ($itensEntrega) {
+            return ['message' => 'Produto já cadastrado!', 'code' => 500];
+        }
+
         $dados['qtd_produto']    = $dados['qtd_venda'];
         $dados['qtd_disponivel'] = $dados['qtd_produto'];
         $dados['lucro_entrega']  = $dados['lucro_venda'];
         $dados['preco_entrega']  = $dados['preco_venda'];
 
         $result = EntregaItem::create($dados);
-        if(!$result){
+        if (!$result) {
             return ['message' => 'Falha ao procesar dados!', 'code' => 500];
         }
 
-        $dadosVenda = Entrega::where('id_entrega', '=', $dados['entrega_id'])->first();
-        if(!$dadosVenda){
+        $dadosEntrega = Entrega::where('id_entrega', '=', $dados['entrega_id'])->first();
+        if (!$dadosEntrega) {
             return ['message' => 'Falha ao procesar dados!', 'code' => 500];
         }
 
-        $total = $result->preco_entrega * $result->qtd_produto;
+        if ($dadosEntrega->status == 'pendente') {
+            $dadoProduto = $result->produto()->first();
+            $dadoEstoque = $dadoProduto->estoque()->first();
 
-        $resultFinal = $dadosVenda->total_final? $dadosVenda->total_final + $total : 0 + $total;
-        $resultLucro = $dadosVenda->lucro + ($result->lucro_entrega * $result->qtd_produto);
-        $resultQtd   = $dadosVenda->qtd_produtos + $result->qtd_produto;
+            if (!$dadoEstoque) {
+                return ['code' => 500, 'message' => 'Falha no estoque'];
+            }
 
-        $dadosVenda->update(['total_final' => $resultFinal, 'lucro' => $resultLucro, 'qtd_produtos' =>  $resultQtd]);
-        return ['message' => 'Item cadastrado com sucesso!'];  
+            $dadoEstoque->decrement('und', $dados['qtd_disponivel']);
+            $dadoEstoque->save();
+        }
+
+        return ['message' => 'Item cadastrado com sucesso!', 'code' => 200];
     }
 
-    public function updateItem($dados, $id){
+    public function updateItem($dados, $id)
+    {
+
+        $dadosItem = EntregaItem::where('id', '=', $id)->first();
+        if (!$dadosItem) {
+            return ['code' => 500, 'message' => 'Falha ao processar a entrega'];
+        }
+
+        $dadosEntrega = Entrega::where('id_entrega', '=', $dados['entrega_id'])->first();
+        if (!$dadosEntrega) {
+            return ['code' => 500, 'message' => 'Falha ao processar a entrega'];
+        }
+
+        // Config input
         $dados['qtd_produto']    = $dados['qtd_venda'];
         $dados['qtd_disponivel'] = $dados['qtd_produto'];
         $dados['lucro_entrega']  = $dados['lucro_venda'];
         $dados['preco_entrega']  = $dados['preco_venda'];
 
-        $dadosItem = EntregaItem::where('id', '=', $id)->first();
-        if (!$dadosItem) {
-            return false;
-        }
-        
-        $dadosVenda = Entrega::where('id_entrega', '=', $dados['entrega_id'])->first();
-        if (!$dadosVenda) {
-            return false;
-        }
-        
-        if(isset($dados['add'])) {
-            $dadosItem->increment('qtd_produto', $dados['qtd_produto']);
-            $dadosItem->increment('qtd_disponivel', $dados['qtd_produto']);
-            $dadosVenda->increment('qtd_produtos', $dados['qtd_produto']);
-            return ['message' => 'Atualizado com sucesso!'];
+        $estoque = Estoque::where('id_estoque', $dados['produto']['estoque']['id_estoque'])->where('produto_id', $dados['produto']['estoque']['produto_id'])->first();
+        if (!$estoque) {
+            return ['code' => 500, 'message' => 'Falha no estoque'];
         }
 
-        $configResult             = $dadosItem->preco_entrega * $dadosItem->qtd_produto;
-        $dadosVenda->lucro        = $dadosVenda->lucro - ($dadosItem->lucro_entrega * $dadosItem->qtd_produto);
-        $dadosVenda->total_final  = $dadosVenda->total_final - $configResult;
-        $dadosVenda->qtd_produtos = $dadosVenda->qtd_produtos - $dadosItem->qtd_produto;
+        if ($dadosEntrega->status == 'pendente') {
 
-        $dadosItem->update([
-            'preco_entrega'    => $dados['preco_entrega'], 
-            'lucro_entrega'    => $dados['lucro_venda'], 
-            'qtd_produto'      => $dados['qtd_produto'],
-            'qtd_disponivel'   => $dados['qtd_produto'],
-        ]);
-        if(!$dadosItem){
-            return false;
+            if (!isset($dados['add'])) {
+                $estoque->increment('und', $dadosItem->qtd_produto);
+                $estoque->decrement('und', $dados['qtd_produto']);
+                $estoque->save();
+
+                $dadosItem->update([
+                    'qtd_produto'      => $dados['qtd_produto'],
+                    'qtd_disponivel'   => $dados['qtd_produto'],
+                    'lucro_entrega'    => $dados['lucro_venda'],
+                    'preco_entrega'    => $dados['preco_entrega'],
+                ]);
+            }
+
+            if (isset($dados['add'])) {
+                $estoque->decrement('und', $dados['qtd_produto']);
+                $estoque->save();
+
+                $dadosItem->increment('qtd_produto', $dados['qtd_produto']);
+                $dadosItem->increment('qtd_disponivel', $dados['qtd_produto']);
+                $dadosEntrega->increment('qtd_produtos', $dados['qtd_produto']);
+            }
         }
-        
-        $resultFinal = $dadosVenda->total_final + ($dadosItem->preco_entrega * $dadosItem->qtd_produto);
-        $resultLucro = $dadosVenda->lucro + ($dadosItem->lucro_entrega * $dadosItem->qtd_produto);
-        $resultQtd   = $dadosVenda->qtd_produtos + $dadosItem->qtd_produto;
 
-        $dadosVenda->update(['total_final' => $resultFinal, 'lucro' => $resultLucro, 'qtd_produtos' =>  $resultQtd]);
-        if(!$dadosVenda){
-            return false;
+        if ($dadosEntrega->status == null) {
+
+            if (isset($dados['add'])) {
+                $dadosItem->increment('qtd_produto', $dados['qtd_produto']);
+                $dadosItem->increment('qtd_disponivel', $dados['qtd_produto']);
+                $dadosEntrega->increment('qtd_produtos', $dados['qtd_produto']);
+            }
+
+            if (!isset($dados['add'])) {
+
+                $dadosItem->update([
+                    'qtd_produto'      => $dados['qtd_produto'],
+                    'qtd_disponivel'   => $dados['qtd_produto'],
+                    'lucro_entrega'    => $dados['lucro_venda'],
+                    'preco_entrega'    => $dados['preco_entrega'],
+                ]);
+            }
         }
 
         return ['message' => 'Atualizado com sucesso!'];
     }
-    
-    public function deleteItem($id){
+
+    public function deleteItem($id)
+    {
         $dados = EntregaItem::where('id', '=', $id)->first();
+
         if (!$dados) {
             return false;
         }
-        
-        $dadosVenda = Entrega::where('id_entrega', '=', $dados['entrega_id'])->first();
-        if (!$dadosVenda) {
+
+        $dadosEntrega = Entrega::where('id_entrega', '=', $dados['entrega_id'])->first();
+        if (!$dadosEntrega) {
             return false;
         }
 
-        $resultFinal = $dadosVenda->total_final - ($dados->preco_entrega * $dados->qtd_produto);
-        $resultLucro = $dadosVenda->lucro - ($dados->lucro_entrega * $dados->qtd_produto);
-        $resultQtd   = $dadosVenda->qtd_produtos - $dados->qtd_produto;
+        $dadoProduto = $dados->produto()->first();
+        $dadoEstoque = $dadoProduto->estoque()->first();
 
-        $dadosVenda->update(['total_final' => $resultFinal, 'lucro' => $resultLucro, 'qtd_produtos' =>  $resultQtd]);
-        
-        if(!$dados->delete()) {
-            return false;
+        if ($dadosEntrega->status == 'pendente') {
+            $dadoEstoque->increment('und', $dados->qtd_disponivel);
+            $dadoEstoque->save();
         }
+
+        $dados->delete();
 
         return ['message' => 'Item deletado com sucesso!'];
     }
@@ -316,25 +366,27 @@ class EntregaRepository extends AbstractRepository implements EntregaRepositoryI
     public function baixaEntrega($dados, $id)
     {
         $dadosEntrega = Entrega::where('id_entrega', '=', $id)->first();
-        if(!$dadosEntrega) {
+        if (!$dadosEntrega) {
             return ['message' => 'Não encontrou a entrega!', 'code' => 500];
         }
-        
+
         foreach ($dadosEntrega->entregasItens()->get() as $item) {
-            
+
             $dadoProduto = $item->produto()->first();
             $dadoEstoque = $dadoProduto->estoque()->first();
 
-            if ($dadoEstoque->und == 0) {
-                $dadoProduto->update(['status' => 'ok']);
-            }
-
-            if($item->qtd_disponivel > 0){
+            if ($item->qtd_disponivel > 0) {
                 $dadoEstoque->increment('und', $item->qtd_disponivel);
                 $item->decrement('qtd_disponivel', $item->qtd_disponivel);
             }
+
+            if ($dadoEstoque->und > 0) {
+                $dadoProduto->update(['status' => 'ok']);
+            } else {
+                $dadoProduto->update(['status' => 'vendido']);
+            }
         }
-        
+
         $dadosEntrega->update(['status' => 'ok']);
 
         return ['message' => 'Baixa com sucesso!', 'code' => 200];
@@ -348,25 +400,24 @@ class EntregaRepository extends AbstractRepository implements EntregaRepositoryI
             if (!$dadosEstoque) {
                 return false;
             }
-            
+
             $dadosProduto = $dadosEstoque->produto;
             if (!$dadosProduto) {
                 return false;
             }
 
-            if(!$dadosEstoque->getIsHasUndAttribute()){
+            if (!$dadosEstoque->getIsHasUndAttribute()) {
                 $dadosProduto->update(['status' => 'vendido']);
                 return false;
             }
 
             $dadosEstoque->decrement('und', $item['qtd_produto']);
-            
-            if(!$dadosEstoque->getIsHasUndAttribute()){
+
+            if (!$dadosEstoque->getIsHasUndAttribute()) {
                 $dadosProduto->update(['status' => 'vendido']);
             }
         }
 
         return true;
     }
-
 }

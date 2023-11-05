@@ -7,7 +7,7 @@ use App\Models\Venda;
 
 class FormaPagamento extends Model
 {
-    protected $table = 'forma_pagamento';
+    protected $table = 'formas_pagamentos';
     protected $primaryKey = 'id';
 
     public $timestamps = true;

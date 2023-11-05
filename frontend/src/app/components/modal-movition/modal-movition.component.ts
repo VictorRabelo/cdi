@@ -20,6 +20,7 @@ export class ModalMovitionComponent implements OnInit, OnDestroy {
   @Input() type: string;
 
   dados: any = {};
+  tiposCaixas: any[] = [];
 
   constructor(
     private activeModal: NgbActiveModal,
@@ -28,6 +29,7 @@ export class ModalMovitionComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.getTiposCaixas();
     this.dados.status = this.type;
   }
 
@@ -54,6 +56,12 @@ export class ModalMovitionComponent implements OnInit, OnDestroy {
     );
   }
 
+  getTiposCaixas() {
+    this.service.getAllItem().subscribe(res => {
+      this.tiposCaixas = res;
+    },error =>console.log(error));
+  }
+  
   ngOnDestroy() {
     this.sub.unsubscribe();
   }

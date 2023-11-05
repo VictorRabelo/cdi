@@ -58,12 +58,12 @@ class VendaController extends Controller
             $dados = $request->all();
             $res = $this->vendaRepository->create($dados);
 
-            if (!$res) {
-                return response()->json(['response' => 'Erro de Servidor'], 500);
+            if (isset($res['code']) && $res['code'] == 500) {
+                return response()->json(['response' => $res], $res['code']);
+            } else {
+                return response()->json(['response' => $res], 201);
             }
-
-            return response()->json(['response' => $res], 201);
-
+            
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
         }

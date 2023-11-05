@@ -35,23 +35,6 @@ class FormaPagamentoController extends Controller
         }
     }
     
-    public function total()
-    {
-        try {
-
-            $res = $this->formaPagamentoRepository->all();
-
-            if (!$res) {
-                return response()->json(['response' => 'Erro de Servidor'], 500);
-            }
-
-            return response()->json(['response' => $res, 'count' => $res->count()], 200);
-
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => $e->getMessage(), 'message' => 'Erro de servidor'], 500);
-        }
-    }
-    
     public function show($id)
     {
         try {
@@ -69,7 +52,7 @@ class FormaPagamentoController extends Controller
         }
     }
 
-    public function store(ClienteRequest $request)
+    public function store(Request $request)
     {
         try {
             $dados = $request->all();

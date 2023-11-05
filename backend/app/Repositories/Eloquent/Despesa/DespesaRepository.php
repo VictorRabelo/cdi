@@ -21,9 +21,14 @@ class DespesaRepository extends AbstractRepository implements DespesaRepositoryI
      */
     protected $tools = Tools::class;
 
-    public function index()
+    public function index($queryParams)
     {
-        $model = Despesa::orderBy('created_at', 'desc')->get();
+        if (isset($queryParams['despesa']) && $queryParams['despesa'] == 'true') {
+            $model = Despesa::where('despesa', '=', 1)->orderBy('created_at', 'desc')->get();
+        } else {
+            $model = Despesa::where('despesa', '=', 0)->orderBy('created_at', 'desc')->get();
+        }
+        
         if (!$model) {
             return ['message' => 'Falha ao processar as despesas!', 'code' => 500];
         }
